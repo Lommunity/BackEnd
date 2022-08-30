@@ -24,7 +24,7 @@ public class User {
 
     // Social 로그인을 통해 얻을 내용
     private String name;
-    private String profileImgUrl;
+    private String profileImageUrl;
     private String provider;
     private String providerId;
 

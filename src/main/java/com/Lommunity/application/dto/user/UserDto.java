@@ -11,14 +11,16 @@ public class UserDto {
     private String name;
     private String profileImageUrl;
     private String provider;
+    private String providerId;
     private boolean registered;
 
     public static UserDto fromEntity(User user) {
         return UserDto.builder()
                       .id(user.getId())
                       .name(user.getName())
-                      .profileImageUrl(user.getProfileImgUrl())
+                      .profileImageUrl(user.getProfileImageUrl())
                       .provider(user.getProvider())
+                      .providerId(user.getProviderId())
                       .registered(user.isRegistered())
                       .build();
     }

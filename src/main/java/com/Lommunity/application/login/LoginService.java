@@ -5,7 +5,6 @@ import com.Lommunity.application.dto.user.UserDto;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,7 +27,6 @@ public class LoginService {
                             .jwt("jwt")
                             .build();
     }
-
     private Oauth2UserInfo getOauth2UserInfo(LoginRequest loginRequest) {
         if (loginRequest.getProvider().equals("kakao")) {
             return kakaoOauth2LoginService.login(loginRequest);
@@ -44,7 +42,7 @@ public class LoginService {
         if (user.isPresent()) { // userRepository에 providerId에 해당하는 user 가 있는 경우(registered는 false 혹은 true)
             return user.get();
         }
-        return null; // kakao 혹은 naver에서 넘겨주지 않는 도시와 같은 정보는 어떻게 해야할까?
+        return null;
     }
 
 }
