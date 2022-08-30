@@ -1,6 +1,7 @@
 package com.Lommunity.application.login;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -10,20 +11,21 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class KakaoOauth2LoginService {
+
+    private final RestTemplate restTemplate;
 
     @Getter
     private static class KakaoProfileResponse {
         private Long id;
-        private KakaoUserAccount kakaoUserAccount;
+        private KakaoUserAccount kakao_account;
     }
 
     @Getter
     private static class KakaoUserAccount {
         private Map<String, String> profile;
     }
-
-    private RestTemplate restTemplate = new RestTemplate();
 
     public Oauth2UserInfo login(LoginRequest loginRequest) {
         String accessToken = loginRequest.getAccessToken();
@@ -35,7 +37,7 @@ public class KakaoOauth2LoginService {
         KakaoProfileResponse response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(httpHeaders), KakaoProfileResponse.class)
                                                     .getBody();
         String id = response.getId().toString();
-        String nickname = response.getKakaoUserAccount().getProfile().get("nickname");
+        String nickname = response.getKakao_account().getProfile().get("nickname");
 
         return Oauth2UserInfo.builder()
                              .providerId(id)

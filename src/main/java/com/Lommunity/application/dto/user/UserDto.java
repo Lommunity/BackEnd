@@ -11,7 +11,6 @@ public class UserDto {
     private String name;
     private String profileImageUrl;
     private String provider;
-    private String providerId;
     private boolean registered;
 
     public static UserDto fromEntity(User user) {
@@ -20,7 +19,6 @@ public class UserDto {
                       .name(user.getName())
                       .profileImageUrl(user.getProfileImageUrl())
                       .provider(user.getProvider())
-                      .providerId(user.getProviderId())
                       .registered(user.isRegistered())
                       .build();
     }

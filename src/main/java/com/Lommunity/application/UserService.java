@@ -1,7 +1,5 @@
 package com.Lommunity.application;
 
-import com.Lommunity.application.dto.user.UserDto;
-import com.Lommunity.application.dto.user.UserJoinRequest;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;

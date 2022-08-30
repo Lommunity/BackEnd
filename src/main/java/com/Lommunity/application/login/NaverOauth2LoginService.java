@@ -1,6 +1,7 @@
 package com.Lommunity.application.login;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -10,7 +11,10 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class NaverOauth2LoginService {
+
+    private final RestTemplate restTemplate;
 
     @Getter
     private static class NaverProfileResponse {
@@ -18,8 +22,6 @@ public class NaverOauth2LoginService {
         private String message;
         private Map<String, String> response;
     }
-
-    private RestTemplate restTemplate;
 
     public Oauth2UserInfo login(LoginRequest loginRequest) {
         String accessToken = loginRequest.getAccessToken();

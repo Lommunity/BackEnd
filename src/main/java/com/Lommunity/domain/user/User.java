@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Builder
@@ -19,20 +16,15 @@ public class User {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    // Social 로그인을 통해 얻을 내용
-    private String name;
+    private String name; // Social 로그인을 통해 얻을 내용
     private String profileImageUrl;
     private String provider;
     private String providerId;
-
     private UserRole role;
     private boolean registered;
-
-    // 회원 가입시 따로 입력
-    private String userNickname;
+    private String userNickname; // 회원 가입시 따로 입력
     private String city;
     private String gu;
     private String dong;
