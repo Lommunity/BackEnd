@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class UserDto {
     private Long id;
-    private String name;
+    private String nickname;
     private String profileImageUrl;
     private String provider;
     private boolean registered;
@@ -16,7 +16,7 @@ public class UserDto {
     public static UserDto fromEntity(User user) {
         return UserDto.builder()
                       .id(user.getId())
-                      .name(user.getName())
+                      .nickname(user.getNickname())
                       .profileImageUrl(user.getProfileImageUrl())
                       .provider(user.getProvider())
                       .registered(user.isRegistered())

@@ -43,7 +43,7 @@ public class LoginService {
         }
         // SNS 로그인을 처음 해본 사용자
         return userRepository.save(User.builder()
-                                       .name(oauth2UserInfo.getName())
+                                       .nickname(oauth2UserInfo.getName())
                                        .profileImageUrl(oauth2UserInfo.getProfileImageUrl())
                                        .provider(provider)
                                        .providerId(oauth2UserInfo.getProviderId())
