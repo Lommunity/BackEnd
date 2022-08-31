@@ -1,5 +1,6 @@
 package com.Lommunity.application.login;
 
+import com.Lommunity.application.login.dto.LoginRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;

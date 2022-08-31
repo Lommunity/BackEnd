@@ -1,13 +1,14 @@
 package com.Lommunity.controller;
 
-import com.Lommunity.application.login.LoginRequest;
-import com.Lommunity.application.login.LoginResponse;
 import com.Lommunity.application.login.LoginService;
+import com.Lommunity.application.login.dto.LoginRequest;
+import com.Lommunity.application.login.dto.LoginResponse;
+import com.Lommunity.application.user.UserDto;
+import com.Lommunity.application.user.UserService;
+import com.Lommunity.application.user.dto.JoinRequest;
+import com.Lommunity.application.user.dto.JoinResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -16,7 +17,7 @@ public class AuthController {
 
     private final LoginService loginService;
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         return loginService.login(request);
     }

@@ -1,4 +1,4 @@
-package com.Lommunity.application.login;
+package com.Lommunity.application.login.dto;
 
 import lombok.Getter;
 import lombok.ToString;
