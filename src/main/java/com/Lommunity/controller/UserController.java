@@ -1,6 +1,5 @@
 package com.Lommunity.controller;
 
-import com.Lommunity.application.user.UserDto;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.JoinRequest;
 import com.Lommunity.application.user.dto.JoinResponse;
@@ -19,8 +18,6 @@ public class UserController {
 
     @PutMapping("/register")
     public JoinResponse join(@RequestBody JoinRequest request) {
-        return JoinResponse.builder()
-                           .user(UserDto.fromEntity(userService.join(request)))
-                           .build();
+        return userService.join(request);
     }
 }

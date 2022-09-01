@@ -1,4 +1,4 @@
-package com.Lommunity.application.user;
+package com.Lommunity.application.user.dto;
 
 import com.Lommunity.domain.user.User;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import static com.Lommunity.domain.user.User.UserRole;
 @Builder
 public class UserDto {
 
-    private Long id;
+    private Long userId;
     private String nickname; // Social 로그인을 통해 얻을 내용(naver에서 넘겨주는 name을 nickname으로 취급한다.)
     private String profileImageUrl;
     private String provider; // 회원가입 시 사용자가 수정불가한 부분
@@ -23,7 +23,7 @@ public class UserDto {
 
     public static UserDto fromEntity(User user) {
         return UserDto.builder()
-                      .id(user.getId())
+                      .userId(user.getId())
                       .nickname(user.getNickname())
                       .profileImageUrl(user.getProfileImageUrl())
                       .provider(user.getProvider())

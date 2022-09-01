@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 
 import static com.Lommunity.domain.user.User.UserRole;
 import static com.Lommunity.domain.user.User.builder;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -33,10 +34,10 @@ class UserServiceTest {
                 .build());
 
         // Join 하기 전
-        System.out.println("X, id: " + uncompleteJoin.getId());
-        System.out.println("X, registered: " + uncompleteJoin.isRegistered());
-        System.out.println("X, profile: " + uncompleteJoin.getProfileImageUrl());
-        System.out.println("X, city:" + uncompleteJoin.getCity());
+        assertThat(uncompleteJoin.getId()).isEqualTo(1);
+        assertThat(uncompleteJoin.isRegistered()).isEqualTo(false);
+        assertThat(uncompleteJoin.getProfileImageUrl()).isEqualTo("aaa");
+        assertThat(uncompleteJoin.getCity()).isEqualTo(null);
 
         userService.join(JoinRequest.builder()
                                     .id(uncompleteJoin.getId())
@@ -51,9 +52,9 @@ class UserServiceTest {
         User completeJoin = userRepository.findById(uncompleteJoin.getId()).get();
 
         // Join 후
-        System.out.println("O, id: " + completeJoin.getId());
-        System.out.println("O, registered: " + completeJoin.isRegistered());
-        System.out.println("O, profile: " + completeJoin.getProfileImageUrl());
-        System.out.println("O, city:" + completeJoin.getCity());
+        assertThat(completeJoin.getId()).isEqualTo(uncompleteJoin.getId());
+        assertThat(completeJoin.isRegistered()).isEqualTo(true);
+        assertThat(completeJoin.getProfileImageUrl()).isEqualTo(null);
+        assertThat(completeJoin.getCity()).isEqualTo("부산");
     }
 }
