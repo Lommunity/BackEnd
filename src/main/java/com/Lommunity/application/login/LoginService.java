@@ -2,7 +2,7 @@ package com.Lommunity.application.login;
 
 import com.Lommunity.application.login.dto.LoginRequest;
 import com.Lommunity.application.login.dto.LoginResponse;
-import com.Lommunity.application.login.dto.UserLoginDto;
+import com.Lommunity.application.user.dto.UserDto;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
 import com.Lommunity.infrastructure.security.JwtHelper;
@@ -24,7 +24,7 @@ public class LoginService {
         Oauth2UserInfo oauth2UserInfo = getOauth2UserInfo(loginRequest); // provider에게서 얻은 정보를 담은 oauth2UserInfo
         User user = findUser(oauth2UserInfo, loginRequest.getProvider());
         return LoginResponse.builder()
-                            .user(UserLoginDto.fromEntity(user))
+                            .user(UserDto.fromEntity(user))
                             .jwt(jwtHelper.createJwt(user))
                             .build();
     }
