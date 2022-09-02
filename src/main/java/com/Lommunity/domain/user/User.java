@@ -43,4 +43,10 @@ public class User {
         this.dong = joinRequest.getDong();
     }
 
+    public void checkRegister() {
+        if (!this.isRegistered()) {
+            throw new IllegalArgumentException("회원가입을 하지 않은 사용자 입니다.");
+        }
+    }
+
 }

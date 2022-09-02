@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import static com.Lommunity.domain.user.User.UserRole;
 import static com.Lommunity.domain.user.User.builder;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -32,6 +33,10 @@ class UserServiceTest {
                 .role(UserRole.USER)
                 .registered(false)
                 .build());
+
+        assertThatThrownBy(uncompleteJoin::checkRegister)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("회원가입을 하지 않은 사용자 입니다.");
 
         // Join 하기 전
         assertThat(uncompleteJoin.getId()).isEqualTo(1);
