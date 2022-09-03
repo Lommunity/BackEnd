@@ -1,15 +1,15 @@
 package com.Lommunity.application.user.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @ToString
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class JoinRequest {
 
-    private Long id; // userId
+    private Long userId; // userId
     private String nickname;
     private String profileImageUrl;
     private String city;

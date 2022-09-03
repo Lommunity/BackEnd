@@ -1,4 +1,4 @@
-package com.Lommunity.controller;
+package com.Lommunity.controller.auth;
 
 import com.Lommunity.application.login.LoginService;
 import com.Lommunity.application.login.dto.LoginRequest;

@@ -1,4 +1,4 @@
-package com.Lommunity.controller;
+package com.Lommunity.controller.user;
 
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.JoinRequest;

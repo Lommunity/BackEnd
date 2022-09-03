@@ -45,7 +45,7 @@ class UserServiceTest {
         assertThat(uncompleteJoin.getCity()).isEqualTo(null);
 
         userService.join(JoinRequest.builder()
-                                    .id(uncompleteJoin.getId())
+                                    .userId(uncompleteJoin.getId())
                                     .nickname("순대곱창전골")
                                     .profileImageUrl(null)
                                     .city("부산")

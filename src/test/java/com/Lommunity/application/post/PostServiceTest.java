@@ -3,8 +3,6 @@ package com.Lommunity.application.post;
 import com.Lommunity.application.post.dto.*;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.JoinRequest;
-import com.Lommunity.application.user.dto.JoinResponse;
-import com.Lommunity.application.user.dto.UserDto;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -16,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.transaction.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import static com.Lommunity.domain.user.User.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +46,7 @@ class PostServiceTest {
                 .registered(false)
                 .build());
         userService.join(JoinRequest.builder()
-                                    .id(user.getId())
+                                    .userId(user.getId())
                                     .nickname("순대곱창전골")
                                     .profileImageUrl(null)
                                     .city("부산")
@@ -58,11 +55,11 @@ class PostServiceTest {
                                     .build());
 
         // when
-        PostResponse postResponse = postService.create(PostRequest.builder()
-                                                                  .userId(user.getId())
-                                                                  .title("title 1")
-                                                                  .content("content 1")
-                                                                  .build());
+        PostResponse postResponse = postService.createPost(PostRequest.builder()
+                                                                      .userId(user.getId())
+                                                                      .title("title 1")
+                                                                      .content("content 1")
+                                                                      .build());
         // then
         System.out.println(user.getId());
         System.out.println(postResponse.getPost().getPostId());
@@ -84,18 +81,18 @@ class PostServiceTest {
                 .registered(false)
                 .build());
         userService.join(JoinRequest.builder()
-                                    .id(user.getId())
+                                    .userId(user.getId())
                                     .nickname("순대곱창전골")
                                     .profileImageUrl(null)
                                     .city("부산")
                                     .gu("사상구")
                                     .dong("주례동")
                                     .build());
-        PostResponse createResponse = postService.create(PostRequest.builder()
-                                                                    .userId(user.getId())
-                                                                    .title("title 1")
-                                                                    .content("content 1")
-                                                                    .build());
+        PostResponse createResponse = postService.createPost(PostRequest.builder()
+                                                                        .userId(user.getId())
+                                                                        .title("title 1")
+                                                                        .content("content 1")
+                                                                        .build());
         // when
         PostEditRequest editRequest = PostEditRequest.builder()
                                                      .userId(user.getId())
@@ -125,18 +122,18 @@ class PostServiceTest {
                 .registered(false)
                 .build());
         userService.join(JoinRequest.builder()
-                                    .id(user.getId())
+                                    .userId(user.getId())
                                     .nickname("순대곱창전골")
                                     .profileImageUrl(null)
                                     .city("부산")
                                     .gu("사상구")
                                     .dong("주례동")
                                     .build());
-        PostDto createdPost = postService.create(PostRequest.builder()
-                                                            .userId(user.getId())
-                                                            .title("title 1")
-                                                            .content("content 1")
-                                                            .build()).getPost();
+        PostDto createdPost = postService.createPost(PostRequest.builder()
+                                                                .userId(user.getId())
+                                                                .title("title 1")
+                                                                .content("content 1")
+                                                                .build()).getPost();
         Long postId = createdPost.getPostId();
         // when
         PostDeleteRequest deleteRequest = PostDeleteRequest.builder()

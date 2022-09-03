@@ -6,6 +6,8 @@ import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,7 +20,7 @@ public class PostService {
     private final UserRepository userRepository;
 
     // 게시물 작성
-    public PostResponse create(PostRequest createRequest) {
+    public PostResponse createPost(PostRequest createRequest) {
         User user = isPresentUser(createRequest.getUserId());
         user.checkRegister();
         Post savePost = postRepository.save(Post.builder()
@@ -36,6 +38,19 @@ public class PostService {
                            .build();
     }
 
+    // 전체 게시물 목록 조회
+    public Page<PostDto> inquiryAllPosts(Pageable pageable) {
+        return postRepository.findAll(pageable)
+                             .map(PostDto::fromEntity);
+    }
+
+    // 작성자별 게시물 목록 조회 → Pagination
+    public Page<PostDto> inquiryUserPosts(Long userId, Pageable pageable) {
+        isPresentUser(userId);
+        return postRepository.findByUserId(userId, pageable)
+                             .map(PostDto::fromEntity);
+    }
+
     // 게시물 수정
     public PostResponse editPost(PostEditRequest editRequest) {
         isPresentUser(editRequest.getUserId());
@@ -44,6 +59,7 @@ public class PostService {
             throw new IllegalArgumentException("userID에 해당하는 사용자는 이 게시물의 작성자가 아닙니다.");
         }
         post.editPost(editRequest.getUserId(), editRequest.getTitle(), editRequest.getContent(), editRequest.getImageUrl());
+        postRepository.save(post);
         return PostResponse.builder()
                            .post(PostDto.fromEntity(post))
                            .build();

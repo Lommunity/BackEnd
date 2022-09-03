@@ -16,12 +16,13 @@ public class UserService {
 
     // 회원 가입
     public JoinResponse join(JoinRequest joinRequest) {
-        User user = userRepository.findById(joinRequest.getId())
-                                  .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + joinRequest.getId()));
+        User user = userRepository.findById(joinRequest.getUserId())
+                                  .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + joinRequest.getUserId()));
         if (user.isRegistered()) {
             throw new IllegalArgumentException("해당 사용자는 이미 가입되어 있습니다.");
         }
         user.userJoin(joinRequest);
+        userRepository.save(user);
         return JoinResponse.builder()
                            .user(UserDto.fromEntity(user))
                            .build();
