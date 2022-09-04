@@ -5,6 +5,7 @@ import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.JoinRequest;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
+import com.Lommunity.domain.post.PostTopic;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -12,13 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-
 import java.util.NoSuchElementException;
 
-import static com.Lommunity.domain.user.User.*;
+import static com.Lommunity.domain.user.User.UserRole;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -57,14 +56,15 @@ class PostServiceTest {
         // when
         PostResponse postResponse = postService.createPost(PostRequest.builder()
                                                                       .userId(user.getId())
-                                                                      .title("title 1")
+                                                                      .topicId(1L)
                                                                       .content("content 1")
                                                                       .build());
         // then
         System.out.println(user.getId());
         System.out.println(postResponse.getPost().getPostId());
+        assertThat(postResponse.getPost().getPostId()).isEqualTo(1L);
+        assertThat(PostTopic.findTopicById(postResponse.getPost().getPostId()).name()).isEqualTo("QUESTION");
         assertThat(postResponse.getPost().getCreatedBy()).isEqualTo(user.getId());
-        assertThat(postResponse.getPost().getTitle()).isEqualTo("title 1");
         assertThat(postResponse.getPost().getImageUrl()).isEqualTo(null);
     }
 
@@ -90,21 +90,21 @@ class PostServiceTest {
                                     .build());
         PostResponse createResponse = postService.createPost(PostRequest.builder()
                                                                         .userId(user.getId())
-                                                                        .title("title 1")
+                                                                        .topicId(1L)
                                                                         .content("content 1")
                                                                         .build());
         // when
         PostEditRequest editRequest = PostEditRequest.builder()
                                                      .userId(user.getId())
+                                                     .topicId(3L)
                                                      .postId(createResponse.getPost().getPostId())
-                                                     .title("title 수정")
                                                      .content(null)
                                                      .imageUrl("aaa")
                                                      .build();
         postService.editPost(editRequest);
         Post post = postRepository.findById(createResponse.getPost().getPostId()).get();
         // then
-        assertThat(post.getTitle()).isEqualTo("title 수정");
+        assertThat(post.getTopicId()).isEqualTo(3L);
         assertThat(post.getContent()).isEqualTo("content 1"); // null을 넘길경우 수정 안된다.
         assertThat(post.getImageUrl()).isEqualTo("aaa");
     }
@@ -131,7 +131,7 @@ class PostServiceTest {
                                     .build());
         PostDto createdPost = postService.createPost(PostRequest.builder()
                                                                 .userId(user.getId())
-                                                                .title("title 1")
+                                                                .topicId(2L)
                                                                 .content("content 1")
                                                                 .build()).getPost();
         Long postId = createdPost.getPostId();

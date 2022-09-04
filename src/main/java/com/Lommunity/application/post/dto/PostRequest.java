@@ -2,8 +2,6 @@ package com.Lommunity.application.post.dto;
 
 import lombok.*;
 
-import static com.Lommunity.domain.post.Post.PostTopic;
-
 @Getter
 @ToString
 @Builder
@@ -12,8 +10,7 @@ import static com.Lommunity.domain.post.Post.PostTopic;
 public class PostRequest {
 
     private Long userId;
-//    private PostTopic topic;
-    private String title;
+    private Long topicId;
     private String content;
     private String imageUrl;
 }

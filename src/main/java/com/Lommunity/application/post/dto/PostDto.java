@@ -16,19 +16,21 @@ import java.time.LocalDateTime;
 public class PostDto {
     private Long postId;
     private User user;
-    private String title;
+    private Long topicId;
     private String content;
     private String imageUrl;
     private Long createdBy;
     private Long lastModifiedBy;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
+    private String postTopicId;
+    private String postTopicDesc;
 
     public static PostDto fromEntity(Post post) {
         return PostDto.builder()
                       .postId(post.getId())
+                      .topicId(post.getTopicId())
                       .user(post.getUser())
-                      .title(post.getTitle())
                       .content(post.getContent())
                       .imageUrl(post.getImageUrl())
                       .createdBy(post.getCreatedBy())

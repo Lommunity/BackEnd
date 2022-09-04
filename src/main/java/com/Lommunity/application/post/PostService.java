@@ -25,7 +25,7 @@ public class PostService {
         user.checkRegister();
         Post savePost = postRepository.save(Post.builder()
                                                 .user(user)
-                                                .title(createRequest.getTitle())
+                                                .topicId(createRequest.getTopicId())
                                                 .content(createRequest.getContent())
                                                 .imageUrl(createRequest.getImageUrl())
                                                 .createdBy(createRequest.getUserId())
@@ -58,7 +58,7 @@ public class PostService {
         if (!post.getCreatedBy().equals(editRequest.getUserId())) {
             throw new IllegalArgumentException("userID에 해당하는 사용자는 이 게시물의 작성자가 아닙니다.");
         }
-        post.editPost(editRequest.getUserId(), editRequest.getTitle(), editRequest.getContent(), editRequest.getImageUrl());
+        post.editPost(editRequest.getUserId(), editRequest.getTopicId(), editRequest.getContent(), editRequest.getImageUrl());
         postRepository.save(post);
         return PostResponse.builder()
                            .post(PostDto.fromEntity(post))

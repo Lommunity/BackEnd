@@ -24,8 +24,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    private PostTopic topic;
-    private String title;
+    private Long topicId;
     private String content;
     private String imageUrl;
     private Long createdBy;
@@ -33,20 +32,16 @@ public class Post {
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 
-    public void editPost(Long userId, String title, String content, String imageUrl) {
+    public void editPost(Long userId, Long topicId, String content, String imageUrl) {
+        PostTopic.isPresentTopicId(topicId);
         this.lastModifiedBy = userId;
         this.lastModifiedDate = LocalDateTime.now();
+        this.topicId = topicId;
 
-        if (title != null) {
-            this.title = title;
-        }
         if (content != null) {
             this.content = content;
         }
         this.imageUrl = imageUrl;
     }
 
-    public enum PostTopic {
-        QUESTION, RESTAURANT, NEWS, HOBBY, LOST, PLEASE, DAILY
-    }
 }
