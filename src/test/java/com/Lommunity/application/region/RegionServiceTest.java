@@ -2,6 +2,7 @@ package com.Lommunity.application.region;
 
 import com.Lommunity.application.region.dto.RegionDto;
 import com.Lommunity.domain.region.RegionRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +26,7 @@ class RegionServiceTest {
     public void regionSearchTest() {
         List<RegionDto> searchRegion = regionService.findRegion("연제");
         for (RegionDto regionDto : searchRegion) {
-            System.out.println(regionDto.getFullName());
+            Assertions.assertThat(regionDto.getFullName()).contains("연제");
         }
     }
 

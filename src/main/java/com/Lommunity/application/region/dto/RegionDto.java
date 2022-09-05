@@ -22,7 +22,7 @@ public class RegionDto {
                         .code(region.getCode())
                         .parentCode(region.getParentCode())
                         .level(region.getLevel())
-                        .fullName(region.getFullName())
+                        .fullName(region.getFullname())
                         .build();
     }
 }

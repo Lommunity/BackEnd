@@ -34,7 +34,7 @@ public class RegionInitializer implements ApplicationRunner {
                                                      .code(Long.parseLong(split[1]))
                                                      .level(Long.parseLong(split[0]))
                                                      .parentCode(parentCode)
-                                                     .fullName(split[3])
+                                                     .fullname(split[3])
                                                      .build();
                                     })
                                     .collect(Collectors.toList());

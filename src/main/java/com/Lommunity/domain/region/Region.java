@@ -19,5 +19,5 @@ public class Region {
     private Long code; // region code
     private Long parentCode;
     private Long level;
-    private String fullName;
+    private String fullname;
 }
