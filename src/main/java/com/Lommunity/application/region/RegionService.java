@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -17,10 +18,8 @@ public class RegionService {
 
     public List<RegionDto> findRegion(String word) {
         List<RegionDto> regionDtoList = new ArrayList<>();
-        for (Region region : regionRepository.findAll()) {
-            if (region.getFullName().contains(word)) {
-                regionDtoList.add(RegionDto.fromEntity(region));
-            }
+        for (Region region : regionRepository.findRegionByWord(word)) {
+            regionDtoList.add(RegionDto.fromEntity(region));
         }
         return regionDtoList;
     }

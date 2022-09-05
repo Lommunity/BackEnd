@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RegionResponse {
-    List<RegionDto> searchRegions;
+public class RegionSearchResponse {
+    private List<RegionDto> regions;
 }
