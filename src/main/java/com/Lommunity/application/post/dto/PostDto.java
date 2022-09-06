@@ -23,8 +23,6 @@ public class PostDto {
     private Long lastModifiedBy;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
-    private String postTopicId;
-    private String postTopicDesc;
 
     public static PostDto fromEntity(Post post) {
         return PostDto.builder()

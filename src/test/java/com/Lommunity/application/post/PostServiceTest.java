@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 
 import static com.Lommunity.domain.user.User.UserRole;
@@ -20,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@Transactional
 class PostServiceTest {
 
     @Autowired
@@ -63,7 +61,7 @@ class PostServiceTest {
         System.out.println(user.getId());
         System.out.println(postResponse.getPost().getPostId());
         assertThat(postResponse.getPost().getPostId()).isEqualTo(1L);
-        assertThat(PostTopic.findTopicById(postResponse.getPost().getPostId()).name()).isEqualTo("QUESTION");
+        assertThat(PostTopic.findTopicById(postResponse.getPost().getTopicId()).name()).isEqualTo("QUESTION");
         assertThat(postResponse.getPost().getCreatedBy()).isEqualTo(user.getId());
         assertThat(postResponse.getPost().getImageUrl()).isEqualTo(null);
     }

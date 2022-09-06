@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -28,10 +26,8 @@ public class PostService {
                                                 .topicId(createRequest.getTopicId())
                                                 .content(createRequest.getContent())
                                                 .imageUrl(createRequest.getImageUrl())
-                                                .createdBy(createRequest.getUserId())
-                                                .lastModifiedBy(createRequest.getUserId())
-                                                .createdDate(LocalDateTime.now())
-                                                .lastModifiedDate(LocalDateTime.now())
+                                                .createdBy(user.getId())
+                                                .lastModifiedBy(user.getId())
                                                 .build());
         return PostResponse.builder()
                            .post(PostDto.fromEntity(savePost))

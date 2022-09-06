@@ -3,7 +3,7 @@ package com.Lommunity.controller.post;
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.*;
 import com.Lommunity.domain.post.PostTopic;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +22,11 @@ public class PostController {
     @PostMapping
     public PostResponse createPosts(@RequestBody PostRequest postRequest) {
         return postService.createPost(postRequest);
+    }
+
+    @PutMapping
+    private PostResponse editPost(@RequestBody PostEditRequest editRequest) {
+        return postService.editPost(editRequest);
     }
 
     @GetMapping
