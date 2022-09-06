@@ -2,10 +2,10 @@ package com.Lommunity.domain.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -22,21 +22,18 @@ public enum PostTopic {
     private long id;
     private String description;
 
+    private static Map<Long, PostTopic> CACHED_MAP = Arrays.stream(PostTopic.values())
+                                                           .collect(Collectors.toMap(value -> value.getId(), value -> value));
+
     public static PostTopic findTopicById(Long id) {
         isPresentTopicId(id);
-        return mapInit().get(id);
-    }
-
-    public static Map<Long, PostTopic> mapInit() {
-        Map<Long, PostTopic> longToPostTopicMap = new HashMap<>();
-        for (PostTopic value : PostTopic.values()) {
-            longToPostTopicMap.put(value.getId(), value);
-        }
-        return longToPostTopicMap;
+        return CACHED_MAP.get(id);
     }
 
     public static void isPresentTopicId(Long id) {
-        if (!PostTopic.mapInit().containsKey(id)) {
+
+        if (!Arrays.stream(PostTopic.values())
+                   .collect(Collectors.toMap(value -> value.getId(), value -> value)).containsKey(id)) {
             throw new IllegalArgumentException("ID에 해당하는 postTopic은 존재하지 않습니다. ID: " + id);
         }
     }

@@ -33,10 +33,8 @@ public class SecurityConfig {
         // 3. spring security는 SecurityContext에서 추가된 authentication를 가져와 권한을 확인한다.
         // 4. 권한이 맞으면 api가 수행. 권한이 맞지 않으면 api가 실패.
         http.authorizeRequests()
-            .antMatchers("/admin/**").hasRole("ADMIN")
-            .antMatchers("/user/**").hasRole("USER")
-            .antMatchers("/post/**").authenticated()
-            .anyRequest().permitAll();
+            .antMatchers("/auth/login").permitAll()
+            .anyRequest().authenticated();
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationProvider, authenticationExceptionHandler), UsernamePasswordAuthenticationFilter.class);
 

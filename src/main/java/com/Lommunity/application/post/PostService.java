@@ -39,8 +39,8 @@ public class PostService {
 
     // 전체 게시물 목록 조회
     public PostPageResponse allPostsByPage(Pageable pageable) {
-        Page<PostDto> postDtoPage = postRepository.findAll(pageable)
-                                                  .map(PostDto::fromEntity);
+        Page<Post> all = postRepository.findAll(pageable);
+        Page<PostDto> postDtoPage = all.map(PostDto::fromEntity);
         return PostPageResponse.builder()
                                .postDtoPage(postDtoPage)
                                .build();
