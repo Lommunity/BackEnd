@@ -1,5 +1,6 @@
-package com.Lommunity.application.post.dto;
+package com.Lommunity.application.post.dto.response;
 
+import com.Lommunity.application.post.dto.PostTopicDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

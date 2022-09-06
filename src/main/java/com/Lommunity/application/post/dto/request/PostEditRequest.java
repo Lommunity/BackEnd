@@ -1,4 +1,4 @@
-package com.Lommunity.application.post.dto;
+package com.Lommunity.application.post.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

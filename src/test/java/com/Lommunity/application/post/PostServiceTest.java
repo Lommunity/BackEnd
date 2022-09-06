@@ -1,6 +1,10 @@
 package com.Lommunity.application.post;
 
 import com.Lommunity.application.post.dto.*;
+import com.Lommunity.application.post.dto.request.PostDeleteRequest;
+import com.Lommunity.application.post.dto.request.PostEditRequest;
+import com.Lommunity.application.post.dto.request.PostRequest;
+import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.JoinRequest;
 import com.Lommunity.domain.post.Post;

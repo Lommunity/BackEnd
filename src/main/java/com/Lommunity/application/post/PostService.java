@@ -1,6 +1,11 @@
 package com.Lommunity.application.post;
 
 import com.Lommunity.application.post.dto.*;
+import com.Lommunity.application.post.dto.request.PostDeleteRequest;
+import com.Lommunity.application.post.dto.request.PostEditRequest;
+import com.Lommunity.application.post.dto.request.PostRequest;
+import com.Lommunity.application.post.dto.response.PostPageResponse;
+import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -35,16 +40,23 @@ public class PostService {
     }
 
     // 전체 게시물 목록 조회
-    public Page<PostDto> inquiryAllPosts(Pageable pageable) {
-        return postRepository.findAll(pageable)
-                             .map(PostDto::fromEntity);
+    public PostPageResponse allPostsByPage(Pageable pageable) {
+        Page<PostDto> postDtoPage = postRepository.findAll(pageable)
+                                                  .map(PostDto::fromEntity);
+        return PostPageResponse.builder()
+                               .postDtoPage(postDtoPage)
+                               .build();
+
     }
 
     // 작성자별 게시물 목록 조회 → Pagination
-    public Page<PostDto> inquiryUserPosts(Long userId, Pageable pageable) {
+    public PostPageResponse userPostsByPage(Long userId, Pageable pageable) {
         isPresentUser(userId);
-        return postRepository.findByUserId(userId, pageable)
-                             .map(PostDto::fromEntity);
+        Page<PostDto> postDtoPageByuserId = postRepository.findByUserId(userId, pageable)
+                                                          .map(PostDto::fromEntity);
+        return PostPageResponse.builder()
+                               .postDtoPage(postDtoPageByuserId)
+                               .build();
     }
 
     // 게시물 수정

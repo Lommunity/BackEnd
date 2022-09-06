@@ -1,7 +1,6 @@
 package com.Lommunity.application.post.dto;
 
 import com.Lommunity.domain.post.Post;
-import com.Lommunity.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PostDto {
     private Long postId;
-    private User user;
+//    private User user;
+    private Long userId;
     private Long topicId;
     private String content;
     private String imageUrl;
@@ -28,7 +28,7 @@ public class PostDto {
         return PostDto.builder()
                       .postId(post.getId())
                       .topicId(post.getTopicId())
-                      .user(post.getUser())
+                      .userId(post.getUser().getId())
                       .content(post.getContent())
                       .imageUrl(post.getImageUrl())
                       .createdBy(post.getCreatedBy())

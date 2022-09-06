@@ -2,9 +2,14 @@ package com.Lommunity.controller.post;
 
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.*;
+import com.Lommunity.application.post.dto.request.PostDeleteRequest;
+import com.Lommunity.application.post.dto.request.PostEditRequest;
+import com.Lommunity.application.post.dto.request.PostRequest;
+import com.Lommunity.application.post.dto.response.PostPageResponse;
+import com.Lommunity.application.post.dto.response.PostResponse;
+import com.Lommunity.application.post.dto.response.PostTopicListResponse;
 import com.Lommunity.domain.post.PostTopic;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +35,13 @@ public class PostController {
     }
 
     @GetMapping
-    public Page<PostDto> getUserPostsPage(@RequestParam(value = "userId") Long userId, Pageable pageable) {
-        return postService.inquiryUserPosts(userId, pageable);
+    public PostPageResponse getAllPostsByPage(Pageable pageable) {
+        return postService.allPostsByPage(pageable);
+    }
+
+    @GetMapping("/{userId}")
+    public PostPageResponse getUserPostsByPage(@PathVariable(value = "userId") Long userId, Pageable pageable) {
+        return postService.userPostsByPage(userId, pageable);
     }
 
     @DeleteMapping
