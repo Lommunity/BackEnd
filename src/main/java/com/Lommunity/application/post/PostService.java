@@ -31,8 +31,6 @@ public class PostService {
                                                 .topicId(createRequest.getTopicId())
                                                 .content(createRequest.getContent())
                                                 .imageUrl(createRequest.getImageUrl())
-                                                .createdBy(user.getId())
-                                                .lastModifiedBy(user.getId())
                                                 .build());
         return PostResponse.builder()
                            .post(PostDto.fromEntity(savePost))

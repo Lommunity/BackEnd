@@ -1,6 +1,6 @@
 package com.Lommunity.domain.post;
 
-import com.Lommunity.domain.entity.BaseTimeEntity;
+import com.Lommunity.domain.entity.BaseEntity;
 import com.Lommunity.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "posts")
-public class Post extends BaseTimeEntity {
+public class Post extends BaseEntity {
 
     @Id
     @Column(name = "post_id")
@@ -27,12 +27,9 @@ public class Post extends BaseTimeEntity {
     private Long topicId;
     private String content;
     private String imageUrl;
-    private Long createdBy;
-    private Long lastModifiedBy;
 
     public void editPost(Long userId, Long topicId, String content, String imageUrl) {
         PostTopic.isPresentTopicId(topicId);
-        this.lastModifiedBy = userId;
 
         if (topicId != null) {
             this.topicId = topicId;
