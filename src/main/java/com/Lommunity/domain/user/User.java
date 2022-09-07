@@ -25,9 +25,7 @@ public class User {
     private String providerId; // 회원가입 시 사용자가 수정불가한 부분
     private UserRole role; // 회원가입 시 사용자가 수정불가한 부분
     private boolean registered; // 회원가입 시 사용자가 수정불가한 부분
-    private String city;
-    private String gu;
-    private String dong;
+    private Long regionCode;
 
     public enum UserRole {
         USER, ADMIN
@@ -37,10 +35,8 @@ public class User {
         this.role = UserRole.USER;
         this.registered = true;
         this.nickname = joinRequest.getNickname();
+        this.regionCode = joinRequest.getRegionCode();
         this.profileImageUrl = joinRequest.getProfileImageUrl();
-        this.city = joinRequest.getCity();
-        this.gu = joinRequest.getGu();
-        this.dong = joinRequest.getDong();
     }
 
 }

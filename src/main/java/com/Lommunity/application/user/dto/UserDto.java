@@ -17,9 +17,7 @@ public class UserDto {
     private String providerId; // 회원가입 시 사용자가 수정불가한 부분
     private UserRole role; // 회원가입 시 사용자가 수정불가한 부분
     private boolean registered; // 회원가입 시 사용자가 수정불가한 부분
-    private String city;
-    private String gu;
-    private String dong;
+    private Long regionCode;
 
     public static UserDto fromEntity(User user) {
         return UserDto.builder()
@@ -30,9 +28,7 @@ public class UserDto {
                       .providerId(user.getProviderId())
                       .role(user.getRole())
                       .registered(user.isRegistered())
-                      .city(user.getCity())
-                      .gu(user.getGu())
-                      .dong(user.getDong())
+                      .regionCode(user.getRegionCode())
                       .build();
     }
 }

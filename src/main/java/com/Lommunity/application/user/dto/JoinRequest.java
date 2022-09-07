@@ -11,8 +11,6 @@ public class JoinRequest {
 
     private Long id; // userId
     private String nickname;
+    private Long regionCode;
     private String profileImageUrl;
-    private String city;
-    private String gu;
-    private String dong;
 }
