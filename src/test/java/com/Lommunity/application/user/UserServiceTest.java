@@ -1,7 +1,6 @@
 package com.Lommunity.application.user;
 
 import com.Lommunity.application.user.dto.RegisterRequest;
-import com.Lommunity.domain.region.Region;
 import com.Lommunity.domain.region.RegionRepository;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
@@ -9,14 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.transaction.Transactional;
-
 import static com.Lommunity.domain.user.User.UserRole;
 import static com.Lommunity.domain.user.User.builder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
 class UserServiceTest {
 
     @Autowired
@@ -43,7 +39,7 @@ class UserServiceTest {
         assertThat(uncompleteJoin.getProfileImageUrl()).isEqualTo("aaa");
 
         userService.register(RegisterRequest.builder()
-                                            .id(uncompleteJoin.getId())
+                                            .userId(uncompleteJoin.getId())
                                             .nickname("순대곱창전골")
                                             .profileImageUrl(null)
                                             .regionCode(2611051000L)
