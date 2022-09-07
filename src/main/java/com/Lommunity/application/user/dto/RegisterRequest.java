@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder
-public class JoinRequest {
+public class RegisterRequest {
 
     private Long id; // userId
     private String nickname;

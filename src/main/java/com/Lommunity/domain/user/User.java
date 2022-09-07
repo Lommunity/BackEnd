@@ -1,6 +1,6 @@
 package com.Lommunity.domain.user;
 
-import com.Lommunity.application.user.dto.JoinRequest;
+import com.Lommunity.application.user.dto.RegisterRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,12 +31,12 @@ public class User {
         USER, ADMIN
     }
 
-    public void userJoin(JoinRequest joinRequest) {
+    public void registerInfo(RegisterRequest registerRequest) {
         this.role = UserRole.USER;
         this.registered = true;
-        this.nickname = joinRequest.getNickname();
-        this.regionCode = joinRequest.getRegionCode();
-        this.profileImageUrl = joinRequest.getProfileImageUrl();
+        this.nickname = registerRequest.getNickname();
+        this.regionCode = registerRequest.getRegionCode();
+        this.profileImageUrl = registerRequest.getProfileImageUrl();
     }
 
 }
