@@ -35,12 +35,10 @@ public class PostController {
     }
 
     @GetMapping
-    public PostPageResponse getAllPostsByPage(Pageable pageable) {
-        return postService.allPostsByPage(pageable);
-    }
-
-    @GetMapping("/{userId}")
-    public PostPageResponse getUserPostsByPage(@PathVariable(value = "userId") Long userId, Pageable pageable) {
+    public PostPageResponse getPostsByPage(@RequestParam(value = "userId", required = false) Long userId, Pageable pageable) {
+        if (userId == null) {
+            return postService.allPostsByPage(pageable);
+        }
         return postService.userPostsByPage(userId, pageable);
     }
 
