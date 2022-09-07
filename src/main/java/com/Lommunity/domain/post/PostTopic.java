@@ -32,8 +32,7 @@ public enum PostTopic {
 
     public static void isPresentTopicId(Long id) {
 
-        if (!Arrays.stream(PostTopic.values())
-                   .collect(Collectors.toMap(value -> value.getId(), value -> value)).containsKey(id)) {
+        if (!CACHED_MAP.containsKey(id)) {
             throw new IllegalArgumentException("ID에 해당하는 postTopic은 존재하지 않습니다. ID: " + id);
         }
     }
