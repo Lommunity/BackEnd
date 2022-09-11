@@ -1,6 +1,7 @@
 package com.Lommunity.domain.user;
 
 import com.Lommunity.application.user.dto.RegisterRequest;
+import com.Lommunity.domain.region.Region;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,17 +26,19 @@ public class User {
     private String providerId; // 회원가입 시 사용자가 수정불가한 부분
     private UserRole role; // 회원가입 시 사용자가 수정불가한 부분
     private boolean registered; // 회원가입 시 사용자가 수정불가한 부분
-    private Long regionCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "code")
+    private Region region;
 
     public enum UserRole {
         USER, ADMIN
     }
 
-    public void registerInfo(RegisterRequest registerRequest) {
+    public void registerInfo(RegisterRequest registerRequest, Region region) {
         this.role = UserRole.USER;
         this.registered = true;
         this.nickname = registerRequest.getNickname();
-        this.regionCode = registerRequest.getRegionCode();
+        this.region = region;
         this.profileImageUrl = registerRequest.getProfileImageUrl();
     }
 

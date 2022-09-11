@@ -1,6 +1,7 @@
 package com.Lommunity.application.user;
 
 import com.Lommunity.application.user.dto.RegisterRequest;
+import com.Lommunity.application.user.dto.RegisterResponse;
 import com.Lommunity.domain.region.RegionRepository;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
@@ -33,17 +34,12 @@ class UserServiceTest {
                 .registered(false)
                 .build());
 
-        // Join 하기 전
-        assertThat(uncompleteJoin.getId()).isEqualTo(1);
-        assertThat(uncompleteJoin.isRegistered()).isEqualTo(false);
-        assertThat(uncompleteJoin.getProfileImageUrl()).isEqualTo("aaa");
-
-        userService.register(RegisterRequest.builder()
-                                            .userId(uncompleteJoin.getId())
-                                            .nickname("순대곱창전골")
-                                            .profileImageUrl(null)
-                                            .regionCode(2611051000L)
-                                            .build());
+        RegisterResponse response = userService.register(RegisterRequest.builder()
+                                                                        .userId(uncompleteJoin.getId())
+                                                                        .nickname("순대곱창전골")
+                                                                        .profileImageUrl(null)
+                                                                        .regionCode(2611051000L)
+                                                                        .build());
 
 
         User completeJoin = userRepository.findById(uncompleteJoin.getId()).get();
@@ -52,6 +48,6 @@ class UserServiceTest {
         assertThat(completeJoin.getId()).isEqualTo(uncompleteJoin.getId());
         assertThat(completeJoin.isRegistered()).isEqualTo(true);
         assertThat(completeJoin.getProfileImageUrl()).isEqualTo(null);
-        assertThat(regionRepository.findRegionByCode(completeJoin.getRegionCode()).get().getFullname()).isEqualTo("부산 중구 중앙동");
+        assertThat(regionRepository.findRegionByCode(completeJoin.getRegion().getCode()).get().getFullname()).isEqualTo("부산 중구 중앙동");
     }
 }

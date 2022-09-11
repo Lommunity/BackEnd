@@ -1,5 +1,6 @@
 package com.Lommunity.application.user.dto;
 
+import com.Lommunity.application.region.dto.RegionDto;
 import com.Lommunity.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class UserDto {
     private String providerId; // 회원가입 시 사용자가 수정불가한 부분
     private UserRole role; // 회원가입 시 사용자가 수정불가한 부분
     private boolean registered; // 회원가입 시 사용자가 수정불가한 부분
-    private Long regionCode;
+    private RegionDto regionDto;
 
     public static UserDto fromEntity(User user) {
         return UserDto.builder()
@@ -28,7 +29,7 @@ public class UserDto {
                       .providerId(user.getProviderId())
                       .role(user.getRole())
                       .registered(user.isRegistered())
-                      .regionCode(user.getRegionCode())
+                      .regionDto(RegionDto.fromEntity(user.getRegion()))
                       .build();
     }
 }
