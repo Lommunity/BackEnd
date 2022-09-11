@@ -1,8 +1,8 @@
 package com.Lommunity.controller.user;
 
 import com.Lommunity.application.user.UserService;
-import com.Lommunity.application.user.dto.JoinRequest;
-import com.Lommunity.application.user.dto.JoinResponse;
+import com.Lommunity.application.user.dto.RegisterRequest;
+import com.Lommunity.application.user.dto.RegisterResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,7 @@ public class UserController {
     private final UserService userService;
 
     @PutMapping("/register")
-    public JoinResponse join(@RequestBody JoinRequest request) {
-        return userService.join(request);
+    public RegisterResponse register(@RequestBody RegisterRequest request) {
+        return userService.register(request);
     }
 }
