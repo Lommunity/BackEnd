@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class JoinResponse {
+public class RegisterResponse {
     private UserDto user;
 }
