@@ -6,7 +6,7 @@ import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.request.PostRequest;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.application.user.UserService;
-import com.Lommunity.application.user.dto.JoinRequest;
+import com.Lommunity.application.user.dto.RegisterRequest;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.post.PostTopic;
@@ -47,14 +47,12 @@ class PostServiceTest {
                 .role(UserRole.USER)
                 .registered(false)
                 .build());
-        userService.join(JoinRequest.builder()
-                                    .userId(user.getId())
-                                    .nickname("순대곱창전골")
-                                    .profileImageUrl(null)
-                                    .city("부산")
-                                    .gu("사상구")
-                                    .dong("주례동")
-                                    .build());
+        userService.register(RegisterRequest.builder()
+                                        .userId(user.getId())
+                                        .nickname("순대곱창전골")
+                                        .profileImageUrl(null)
+                                        .regionCode(2611051000L)
+                                        .build());
 
         // when
         PostResponse postResponse = postService.createPost(PostRequest.builder()
@@ -85,14 +83,12 @@ class PostServiceTest {
                 .role(UserRole.USER)
                 .registered(false)
                 .build());
-        userService.join(JoinRequest.builder()
-                                    .userId(user.getId())
-                                    .nickname("순대곱창전골")
-                                    .profileImageUrl(null)
-                                    .city("부산")
-                                    .gu("사상구")
-                                    .dong("주례동")
-                                    .build());
+        userService.register(RegisterRequest.builder()
+                                            .userId(user.getId())
+                                            .nickname("순대곱창전골")
+                                            .profileImageUrl(null)
+                                            .regionCode(2611051000L)
+                                            .build());
         PostResponse createResponse = postService.createPost(PostRequest.builder()
                                                                         .userId(user.getId())
                                                                         .topicId(1L)
@@ -126,14 +122,12 @@ class PostServiceTest {
                 .role(UserRole.USER)
                 .registered(false)
                 .build());
-        userService.join(JoinRequest.builder()
-                                    .userId(user.getId())
-                                    .nickname("순대곱창전골")
-                                    .profileImageUrl(null)
-                                    .city("부산")
-                                    .gu("사상구")
-                                    .dong("주례동")
-                                    .build());
+        userService.register(RegisterRequest.builder()
+                                            .userId(user.getId())
+                                            .nickname("순대곱창전골")
+                                            .profileImageUrl(null)
+                                            .regionCode(2611051000L)
+                                            .build());
         PostDto createdPost = postService.createPost(PostRequest.builder()
                                                                 .userId(user.getId())
                                                                 .topicId(2L)
