@@ -22,17 +22,17 @@ public enum PostTopic {
     private long id;
     private String description;
 
-    private static Map<Long, PostTopic> CACHED_MAP = Arrays.stream(PostTopic.values())
-                                                           .collect(Collectors.toMap(value -> value.getId(), value -> value));
+    private static Map<Long, PostTopic> CACHE = Arrays.stream(PostTopic.values())
+                                                      .collect(Collectors.toMap(value -> value.getId(), value -> value));
 
     public static PostTopic findTopicById(Long id) {
         isPresentTopicId(id);
-        return CACHED_MAP.get(id);
+        return CACHE.get(id);
     }
 
     public static void isPresentTopicId(Long id) {
 
-        if (!CACHED_MAP.containsKey(id)) {
+        if (!CACHE.containsKey(id)) {
             throw new IllegalArgumentException("ID에 해당하는 postTopic은 존재하지 않습니다. ID: " + id);
         }
     }
