@@ -24,7 +24,7 @@ class UserServiceTest {
     RegionRepository regionRepository;
 
     @Test
-    public void joinTest() {
+    public void registerTest() {
         User uncompleteJoin = userRepository.save(builder()
                 .nickname("이혜은")
                 .profileImageUrl("aaa")
@@ -42,12 +42,12 @@ class UserServiceTest {
                                                                         .build());
 
 
-        User completeJoin = userRepository.findById(uncompleteJoin.getId()).get();
+        User completeJoin = userRepository.findWithRegionById(uncompleteJoin.getId()).get();
 
         // Join 후
         assertThat(completeJoin.getId()).isEqualTo(uncompleteJoin.getId());
         assertThat(completeJoin.isRegistered()).isEqualTo(true);
         assertThat(completeJoin.getProfileImageUrl()).isEqualTo(null);
-        assertThat(regionRepository.findRegionByCode(completeJoin.getRegion().getCode()).get().getFullname()).isEqualTo("부산 중구 중앙동");
+        assertThat(completeJoin.getRegion().getFullname()).isEqualTo("부산 중구 중앙동");
     }
 }

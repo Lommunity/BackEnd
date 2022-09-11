@@ -32,7 +32,7 @@ class UserRepositoryTest {
                 .region(regionRepository.findRegionByCode(2611051000L).get())
                 .build());
 
-        User user = userRepository.findFetchById(uncompleteJoin.getId()).get();
+        User user = userRepository.findWithRegionById(uncompleteJoin.getId()).get();
         assertThat(user.getRegion().getCode()).isEqualTo(2611051000L);
         assertThat(user.getRegion().getFullname()).isEqualTo("부산 중구 중앙동");
     }

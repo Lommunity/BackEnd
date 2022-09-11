@@ -19,17 +19,14 @@ public class UserService {
 
     // 회원 가입
     public RegisterResponse register(RegisterRequest registerRequest) {
-//        User user = userRepository.findById(registerRequest.getUserId())
-//                                  .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + registerRequest.getUserId()));
+        User user = userRepository.findById(registerRequest.getUserId())
+                                  .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + registerRequest.getUserId()));
 
-        User user = userRepository.findFetchById(registerRequest.getUserId())
-                                             .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + registerRequest.getUserId()));
         if (user.isRegistered()) {
             throw new IllegalArgumentException("해당 사용자는 이미 가입되어 있습니다.");
         }
-//        Region region = regionRepository.findById(registerRequest.getRegionCode())
-//                                        .orElseThrow(() -> new IllegalArgumentException("regionCode에 해당하는 Region이 없습니다. regionCode: " + registerRequest.getRegionCode()));
-        Region region = user.getRegion();
+        Region region = regionRepository.findById(registerRequest.getRegionCode())
+                                        .orElseThrow(() -> new IllegalArgumentException("regionCode에 해당하는 Region이 없습니다. regionCode: " + registerRequest.getRegionCode()));
         user.registerInfo(registerRequest, region);
         userRepository.save(user);
         return RegisterResponse.builder()
