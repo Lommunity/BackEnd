@@ -12,13 +12,13 @@ import static com.Lommunity.domain.user.User.UserRole;
 public class UserDto {
 
     private Long userId;
-    private String nickname; // Social 로그인을 통해 얻을 내용(naver에서 넘겨주는 name을 nickname으로 취급한다.)
+    private String nickname;
     private String profileImageUrl;
-    private String provider; // 회원가입 시 사용자가 수정불가한 부분
-    private String providerId; // 회원가입 시 사용자가 수정불가한 부분
-    private UserRole role; // 회원가입 시 사용자가 수정불가한 부분
-    private boolean registered; // 회원가입 시 사용자가 수정불가한 부분
-    private RegionDto regionDto;
+    private String provider;
+    private String providerId;
+    private UserRole role;
+    private boolean registered;
+    private RegionDto region;
 
     public static UserDto fromEntity(User user) {
         return UserDto.builder()
@@ -29,7 +29,7 @@ public class UserDto {
                       .providerId(user.getProviderId())
                       .role(user.getRole())
                       .registered(user.isRegistered())
-                      .regionDto(RegionDto.fromEntity(user.getRegion()))
+                      .region(RegionDto.fromEntity(user.getRegion()))
                       .build();
     }
 }
