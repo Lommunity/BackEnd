@@ -6,6 +6,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -19,26 +22,31 @@ public class SecurityConfig {
         http.csrf().disable();
         http.formLogin().disable();
         http.httpBasic().disable();
-        http.cors(cors -> cors.disable());
+        http.cors().configurationSource(corsConfigurationSource());
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.exceptionHandling()
             .authenticationEntryPoint(authenticationExceptionHandler);
-        // ------------------------ 위에건 일단 무시 ------------------------
 
-        // 1. admin/test api를 호출한다.
-        // 2. JwtAuthenticationFilter에서 authentication을 SecurityContext에 추가한다.
-        // 3. spring security는 SecurityContext에서 추가된 authentication를 가져와 권한을 확인한다.
-        // 4. 권한이 맞으면 api가 수행. 권한이 맞지 않으면 api가 실패.
         http.authorizeRequests()
-            .antMatchers("/admin/**").hasRole("ADMIN")
-            .antMatchers("/user/**").hasRole("USER")
-            .antMatchers("/post/**").authenticated()
-            .anyRequest().permitAll();
+            .antMatchers("/auth/login").permitAll()
+            .anyRequest().authenticated();
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationProvider, authenticationExceptionHandler), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

@@ -29,7 +29,7 @@ public class UserDto {
                       .providerId(user.getProviderId())
                       .role(user.getRole())
                       .registered(user.isRegistered())
-                      .region(RegionDto.fromEntity(user.getRegion()))
+                      .region(user.getRegion() == null ? null : RegionDto.fromEntity(user.getRegion()))
                       .build();
     }
 }
