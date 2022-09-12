@@ -1,6 +1,6 @@
 package com.Lommunity.application.post;
 
-import com.Lommunity.application.post.dto.*;
+import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.request.PostRequest;
@@ -15,8 +15,8 @@ import com.Lommunity.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Pageable;
 
+import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 
 import static com.Lommunity.domain.user.User.UserRole;
@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
+@Transactional
 class PostServiceTest {
 
     @Autowired
@@ -143,56 +144,5 @@ class PostServiceTest {
         // then
         assertThrows(NoSuchElementException.class, () -> postRepository.findById(postId)
                                                                        .orElseThrow(() -> new NoSuchElementException("postId에 해당하는 게시물은 없습니다.")));
-    }
-
-    @Test
-    public void print() {
-        User user1 = userRepository.save(User
-                .builder()
-                .nickname("이혜은")
-                .profileImageUrl("aaa")
-                .provider("naver")
-                .providerId("0430")
-                .role(UserRole.USER)
-                .registered(true)
-                .build());
-
-        User user2 = userRepository.save(User
-                .builder()
-                .nickname("이혜은")
-                .profileImageUrl("aaa")
-                .provider("naver")
-                .providerId("0430")
-                .role(UserRole.USER)
-                .registered(true)
-                .build());
-
-        User user3 = userRepository.save(User
-                .builder()
-                .nickname("이혜은")
-                .profileImageUrl("aaa")
-                .provider("naver")
-                .providerId("0430")
-                .role(UserRole.USER)
-                .registered(true)
-                .build());
-
-        PostDto post1 = postService.createPost(PostRequest.builder()
-                                                          .userId(user1.getId())
-                                                          .topicId(2L)
-                                                          .content("content 1")
-                                                          .build()).getPost();
-        PostDto post2 = postService.createPost(PostRequest.builder()
-                                                          .userId(user2.getId())
-                                                          .topicId(2L)
-                                                          .content("content 2")
-                                                          .build()).getPost();
-        PostDto post3 = postService.createPost(PostRequest.builder()
-                                                          .userId(user3.getId())
-                                                          .topicId(2L)
-                                                          .content("content 3")
-                                                          .build()).getPost();
-
-        postService.allPostsByPage(Pageable.ofSize(10));
     }
 }
