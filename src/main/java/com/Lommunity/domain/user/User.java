@@ -26,7 +26,7 @@ public class User {
     private String providerId; // 회원가입 시 사용자가 수정불가한 부분
     private UserRole role; // 회원가입 시 사용자가 수정불가한 부분
     private boolean registered; // 회원가입 시 사용자가 수정불가한 부분
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "code")
     private Region region;
 
