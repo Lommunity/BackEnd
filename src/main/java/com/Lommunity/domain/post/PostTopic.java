@@ -19,11 +19,11 @@ public enum PostTopic {
     DAILY(7L, "일상"),
     ;
 
-    private long id;
+    private Long topicId;
     private String description;
 
     private static Map<Long, PostTopic> CACHE = Arrays.stream(PostTopic.values())
-                                                      .collect(Collectors.toMap(value -> value.getId(), value -> value));
+                                                      .collect(Collectors.toMap(value -> value.getTopicId(), value -> value));
 
     public static PostTopic findTopicById(Long id) {
         isPresentTopicId(id);

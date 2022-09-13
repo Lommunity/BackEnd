@@ -7,12 +7,12 @@ import lombok.Getter;
 @Getter
 @Builder
 public class PostTopicDto {
-    private Long id;
+    private Long topicId;
     private String description;
 
     public static PostTopicDto fromPostTopic(PostTopic postTopic) {
         return PostTopicDto.builder()
-                           .id(postTopic.getId())
+                           .topicId(postTopic.getTopicId())
                            .description(postTopic.getDescription())
                            .build();
     }
