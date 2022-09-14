@@ -64,9 +64,9 @@ public class PostService {
     public PostResponse editPost(PostEditRequest editRequest) {
         isPresentUser(editRequest.getUserId());
         Post post = isPresentPost(editRequest.getPostId());
-/*        if (!post.getCreatedBy().equals(editRequest.getUserId())) {// TODO
+        if (!post.getCreatedBy().equals(editRequest.getUserId())) {// TODO
             throw new IllegalArgumentException("userID에 해당하는 사용자는 이 게시물의 작성자가 아닙니다.");
-        }*/
+        }
         post.editPost(editRequest.getUserId(), editRequest.getTopicId(), editRequest.getContent(), editRequest.getImageUrl());
         postRepository.save(post);
         return PostResponse.builder()
@@ -78,9 +78,9 @@ public class PostService {
     public void deletePost(PostDeleteRequest deleteRequest) {
         isPresentUser(deleteRequest.getUserId());
         Post post = isPresentPost(deleteRequest.getPostId());
-/*        if (!post.getCreatedBy().equals(deleteRequest.getUserId())) { // TODO
+        if (!post.getCreatedBy().equals(deleteRequest.getUserId())) { // TODO
             throw new IllegalArgumentException("userID에 해당하는 사용자는 이 게시물의 작성자가 아니기에 삭제가 불가능합니다.");
-        }*/
+        }
         postRepository.delete(post);
     }
 
