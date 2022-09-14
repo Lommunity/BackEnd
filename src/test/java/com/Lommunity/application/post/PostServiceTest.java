@@ -1,17 +1,15 @@
 package com.Lommunity.application.post;
 
-import com.Lommunity.TestHelper.EntityTestHelper;
+import com.Lommunity.testHelper.EntityTestHelper;
 import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
-import com.Lommunity.application.user.UserService;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.post.PostTopic;
 import com.Lommunity.domain.user.User;
-import com.Lommunity.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,10 +28,6 @@ class PostServiceTest {
     PostService postService;
     @Autowired
     PostRepository postRepository;
-    @Autowired
-    UserService userService;
-    @Autowired
-    UserRepository userRepository;
     @Autowired
     EntityTestHelper entityTestHelper;
 
@@ -94,6 +88,7 @@ class PostServiceTest {
     @Test
     public void allPostsByPageTest() {
         // given
+        postRepository.deleteAll();
         User user = entityTestHelper.createUser("홍길동");
 
         for (int i = 0; i < 10; i++) {

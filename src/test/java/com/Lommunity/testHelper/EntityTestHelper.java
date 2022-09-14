@@ -1,4 +1,4 @@
-package com.Lommunity.TestHelper;
+package com.Lommunity.testHelper;
 
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.request.PostRequest;
