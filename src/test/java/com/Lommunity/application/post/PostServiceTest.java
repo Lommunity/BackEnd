@@ -1,6 +1,6 @@
 package com.Lommunity.application.post;
 
-import com.Lommunity.testHelper.EntityTestHelper;
+import com.Lommunity.testhelper.EntityTestHelper;
 import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
