@@ -42,4 +42,10 @@ public class User {
         this.profileImageUrl = registerRequest.getProfileImageUrl();
     }
 
+    public void checkRegister() {
+        if (!this.isRegistered()) {
+            throw new IllegalArgumentException("회원가입을 하지 않은 사용자 입니다.");
+        }
+    }
+
 }

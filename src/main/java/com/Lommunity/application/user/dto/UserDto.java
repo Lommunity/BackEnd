@@ -32,4 +32,5 @@ public class UserDto {
                       .region(user.getRegion() == null ? null : RegionDto.fromEntity(user.getRegion()))
                       .build();
     }
+
 }
