@@ -19,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 
 import static com.Lommunity.domain.user.User.UserRole;
@@ -27,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@Transactional
 class PostServiceTest {
 
     @Autowired
@@ -65,9 +63,7 @@ class PostServiceTest {
                                                                       .content("content 1")
                                                                       .build());
         // then
-        assertThat(postResponse.getPost().getPostId()).isEqualTo(1L);
         assertThat(PostTopic.findTopicById(postResponse.getPost().getTopic().getTopicId()).name()).isEqualTo("QUESTION");
-        assertThat(postResponse.getPost().getTopic().getTopicId()).isEqualTo(1L);
         assertThat(postResponse.getPost().getTopic().getDescription()).isEqualTo("동네 질문");
         assertThat(postResponse.getPost().getImageUrl()).isEqualTo(null);
 
