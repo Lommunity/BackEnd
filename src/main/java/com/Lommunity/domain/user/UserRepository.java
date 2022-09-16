@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByProviderId(String providerId);
 
-    @Query(value = "select u from users u join fetch u.region where u.id = :userId")
+    @Query(value = "select u from users u left join fetch u.region where u.id = :userId")
     Optional<User> findWithRegionById(@Param("userId") Long userId);
 }
