@@ -3,10 +3,7 @@ package com.Lommunity.application.post.dto;
 import com.Lommunity.application.user.dto.UserDto;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostTopic;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class PostDto {
     private Long postId;
     private UserDto user;

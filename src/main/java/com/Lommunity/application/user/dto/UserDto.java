@@ -3,12 +3,14 @@ package com.Lommunity.application.user.dto;
 import com.Lommunity.application.region.dto.RegionDto;
 import com.Lommunity.domain.user.User;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import static com.Lommunity.domain.user.User.UserRole;
 
 @Getter
 @Builder
+@EqualsAndHashCode
 public class UserDto {
 
     private Long userId;

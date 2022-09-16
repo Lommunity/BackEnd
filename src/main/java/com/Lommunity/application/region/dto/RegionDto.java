@@ -1,15 +1,13 @@
 package com.Lommunity.application.region.dto;
 
 import com.Lommunity.domain.region.Region;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode
 public class RegionDto {
 
     private Long code;

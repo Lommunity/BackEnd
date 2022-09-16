@@ -1,6 +1,5 @@
 package com.Lommunity.application.post;
 
-import com.Lommunity.testhelper.EntityTestHelper;
 import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
@@ -10,12 +9,15 @@ import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.post.PostTopic;
 import com.Lommunity.domain.user.User;
+import com.Lommunity.testhelper.EntityTestHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,8 +93,10 @@ class PostServiceTest {
         postRepository.deleteAll();
         User user = entityTestHelper.createUser("홍길동");
 
+        List<PostDto> originPostDtoList = new ArrayList<>();
+
         for (int i = 0; i < 10; i++) {
-            entityTestHelper.createPosts(user.getId(), (i + 1));
+            originPostDtoList.add(entityTestHelper.createPosts(user.getId(), (i + 1)).getPost());
         }
         // when
         PageRequest pageable = PageRequest.of(1, 5);
@@ -100,7 +104,8 @@ class PostServiceTest {
 
         // then
         Page<PostDto> postPage = allPostsPageResponse.getPostPage();
-        assertThat(postPage.getTotalPages()).isEqualTo(2);
+        List<PostDto> postDtoList = postPage.getContent();
+        assertThat(postDtoList).isEqualTo(originPostDtoList.subList(5, 10));
     }
 
     @Test
