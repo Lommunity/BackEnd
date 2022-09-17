@@ -5,7 +5,6 @@ import com.Lommunity.application.post.dto.request.PostRequest;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.RegisterRequest;
-import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
 import com.Lommunity.infrastructure.security.JwtAuthenticationToken;
@@ -27,8 +26,6 @@ public class EntityTestHelper {
     @Autowired
     UserService userService;
     @Autowired
-    PostRepository postRepository;
-    @Autowired
     PostService postService;
 
     public User createUser(String nickname) {
@@ -46,28 +43,29 @@ public class EntityTestHelper {
                                             .profileImageUrl(null)
                                             .regionCode(2611051000L)
                                             .build());
+        User registeredUser = userRepository.findWithRegionById(user.getId()).get();
 
-        Authentication authentication = new JwtAuthenticationToken(user, "jwt");
+        Authentication authentication = new JwtAuthenticationToken(registeredUser, "jwt");
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
 
-        return user;
+        return registeredUser;
     }
 
-    public PostResponse createPost(Long userId) {
+    public PostResponse createPost(User user) {
         return postService.createPost(PostRequest.builder()
-                                                 .userId(userId)
+                                                 .userId(user.getId())
                                                  .topicId(1L)
                                                  .content("content")
-                                                 .build());
+                                                 .build(), user);
     }
 
-    public PostResponse createPosts(Long userId, int contentNumber) {
+    public PostResponse createPosts(User user, int contentNumber) {
         return postService.createPost(PostRequest.builder()
-                                                 .userId(userId)
+                                                 .userId(user.getId())
                                                  .topicId(1L)
                                                  .content("content" + contentNumber)
-                                                 .build());
+                                                 .build(), user);
     }
 }
