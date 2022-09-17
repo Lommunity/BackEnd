@@ -19,6 +19,7 @@ public class JwtAuthenticationProvider {
         try {
             String userId = jwtHelper.extractUserId(jwt);
             User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자는 존재하지 않습니다. userID: " + userId));
+            // TODO: Check Register 추가하기
             // 실제 인증을 처리한다. jwt에서 userId를 추출하고, userRepository에서 userId에 해당하는 user 데이터가 있는지 찾는다. (인증 완료)
             return new JwtAuthenticationToken(user, jwt);
         } catch (ExpiredJwtException e) {
