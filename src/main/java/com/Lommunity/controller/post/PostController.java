@@ -1,6 +1,6 @@
 package com.Lommunity.controller.post;
 
-import com.Lommunity.annotation.AuthUser;
+import com.Lommunity.infrastructure.security.AuthUser;
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.PostTopicDto;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;

@@ -1,4 +1,4 @@
-package com.Lommunity.annotation;
+package com.Lommunity.infrastructure.security;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
