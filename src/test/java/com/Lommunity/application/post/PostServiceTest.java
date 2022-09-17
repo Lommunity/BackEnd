@@ -39,7 +39,7 @@ class PostServiceTest {
         User user = entityTestHelper.createUser("홍길동");
 
         // when
-        PostResponse postResponse = entityTestHelper.createPost(user.getId());
+        PostResponse postResponse = entityTestHelper.createPost(user);
 
         // then
         assertThat(PostTopic.findTopicById(postResponse.getPost().getTopic().getTopicId()).name()).isEqualTo("QUESTION");
@@ -52,7 +52,7 @@ class PostServiceTest {
     public void editPostTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
-        PostResponse postResponse = entityTestHelper.createPost(user.getId());
+        PostResponse postResponse = entityTestHelper.createPost(user);
         // when
         PostEditRequest editRequest = PostEditRequest.builder()
                                                      .userId(user.getId())
@@ -61,7 +61,7 @@ class PostServiceTest {
                                                      .content(null)
                                                      .imageUrl("aaa")
                                                      .build();
-        postService.editPost(editRequest);
+        postService.editPost(editRequest, user);
         Post post = postRepository.findById(postResponse.getPost().getPostId()).get();
         // then
         assertThat(post.getTopicId()).isEqualTo(3L);
@@ -74,14 +74,14 @@ class PostServiceTest {
     public void deletePostTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
-        PostDto createdPost = entityTestHelper.createPost(user.getId()).getPost();
+        PostDto createdPost = entityTestHelper.createPost(user).getPost();
         Long postId = createdPost.getPostId();
         // when
         PostDeleteRequest deleteRequest = PostDeleteRequest.builder()
                                                            .userId(user.getId())
                                                            .postId(createdPost.getPostId())
                                                            .build();
-        postService.deletePost(deleteRequest);
+        postService.deletePost(deleteRequest, user);
         // then
         assertThrows(NoSuchElementException.class, () -> postRepository.findById(postId)
                                                                        .orElseThrow(() -> new NoSuchElementException("postId에 해당하는 게시물은 없습니다.")));
@@ -96,7 +96,7 @@ class PostServiceTest {
         List<PostDto> originPostDtoList = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            originPostDtoList.add(entityTestHelper.createPosts(user.getId(), (i + 1)).getPost());
+            originPostDtoList.add(entityTestHelper.createPosts(user, (i + 1)).getPost());
         }
         // when
         PageRequest pageable = PageRequest.of(1, 5);
@@ -114,19 +114,19 @@ class PostServiceTest {
         User user1 = entityTestHelper.createUser("홍길동");
 
         for (int i = 0; i < 5; i++) {
-            entityTestHelper.createPosts(user1.getId(), (i + 1));
+            entityTestHelper.createPosts(user1, (i + 1));
         }
 
         User user2 = entityTestHelper.createUser("이혜은");
         for (int i = 0; i < 6; i++) {
-            entityTestHelper.createPosts(user2.getId(), (i + 1));
+            entityTestHelper.createPosts(user2, (i + 1));
         }
 
         // when
         PageRequest pageable1 = PageRequest.of(0, 5);
         PageRequest pageable2 = PageRequest.of(1, 3);
-        PostPageResponse userPostsPageResponse1 = postService.userPostsByPage(user1.getId(), pageable1);
-        PostPageResponse userPostsPageResponse2 = postService.userPostsByPage(user2.getId(), pageable2);
+        PostPageResponse userPostsPageResponse1 = postService.userPostsByPage(user1.getId(), pageable1, user1);
+        PostPageResponse userPostsPageResponse2 = postService.userPostsByPage(user2.getId(), pageable2, user2);
 
         // then
         assertThat(userPostsPageResponse1.getPostPage().getTotalPages()).isEqualTo(1);
