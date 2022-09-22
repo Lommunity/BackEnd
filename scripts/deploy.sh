@@ -7,7 +7,7 @@ echo ">> Git pull <<"
 sudo git pull origin ex2-test-he
 
 echo ">> Gradle build <<"
-sudo ./gradlew clean build
+sudo ./gradlew clean build -x test
 
 echo ">> 구동중인 애플리케이션 확인 <<"
 PID=$(pgrep -f Lommunity-0.0.1-SNAPSHOT.jar)
