@@ -12,5 +12,4 @@ public class RegisterRequest {
     private Long userId; // userId
     private String nickname;
     private Long regionCode;
-    private String profileImageUrl;
 }

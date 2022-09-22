@@ -1,5 +1,7 @@
 package com.Lommunity.application.user;
 
+import com.Lommunity.application.file.FileService;
+import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.user.dto.RegisterRequest;
 import com.Lommunity.application.user.dto.RegisterResponse;
 import com.Lommunity.application.user.dto.UserDto;
@@ -16,11 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserService {
 
+    private static final String PROFILE_IMAGE_DIRECTORY = "profile";
+
     private final UserRepository userRepository;
     private final RegionRepository regionRepository;
+    private final FileService fileService;
 
     // 회원 가입
-    public RegisterResponse register(RegisterRequest registerRequest) {
+    public RegisterResponse register(RegisterRequest registerRequest, FileUploadRequest fileUploadRequest) {
         User user = userRepository.findById(registerRequest.getUserId())
                                   .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + registerRequest.getUserId()));
 
@@ -29,7 +34,13 @@ public class UserService {
         }
         Region region = regionRepository.findById(registerRequest.getRegionCode())
                                         .orElseThrow(() -> new IllegalArgumentException("regionCode에 해당하는 Region이 없습니다. regionCode: " + registerRequest.getRegionCode()));
-        user.registerInfo(registerRequest, region);
+
+        String profileImageUrl = null;
+        if (fileUploadRequest != null) {
+            profileImageUrl = fileService.upload(fileUploadRequest, PROFILE_IMAGE_DIRECTORY);
+        }
+
+        user.registerInfo(registerRequest, profileImageUrl, region);
         return RegisterResponse.builder()
                                .user(UserDto.fromEntity(user))
                                .build();
