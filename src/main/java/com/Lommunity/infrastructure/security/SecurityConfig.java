@@ -31,6 +31,7 @@ public class SecurityConfig {
             .authenticationEntryPoint(authenticationExceptionHandler);
 
         http.authorizeRequests()
+            .antMatchers("/hello").permitAll()
             .antMatchers("/auth/login").permitAll()
             .anyRequest().authenticated();
 
