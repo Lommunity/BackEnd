@@ -4,7 +4,7 @@ echo ">> 배포 시작 <<"
 cd BackEnd/
 
 echo ">> Git pull <<"
-sudo git pull origin ex2-test-he
+sudo git pull origin main
 
 echo ">> Gradle build <<"
 sudo ./gradlew clean build -x test
