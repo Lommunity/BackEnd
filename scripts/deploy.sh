@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo ">> 배포 시작 <<"
-sudo cd BackEnd/
+cd /lommunity/BackEnd
 
 echo ">> Git pull <<"
 sudo git pull origin main
