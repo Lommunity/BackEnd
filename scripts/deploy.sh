@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo ">> 배포 시작 <<"
-cd BackEnd/
+sudo cd BackEnd/
 
 echo ">> Git pull <<"
 sudo git pull origin main
