@@ -2,9 +2,7 @@ package com.Lommunity.controller.user;
 
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.user.UserService;
-import com.Lommunity.application.user.dto.RegisterRequest;
-import com.Lommunity.application.user.dto.RegisterResponse;
-import com.Lommunity.application.user.dto.UserDto;
+import com.Lommunity.application.user.dto.*;
 import com.Lommunity.controller.user.dto.UserInfoResponse;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.infrastructure.security.AuthUser;
@@ -38,6 +36,17 @@ public class UserController {
         return UserInfoResponse.builder()
                                .user(UserDto.fromEntity(user))
                                .build();
+    }
+
+    @PutMapping("/{userId}")
+    public UserEditResponse editUserInfo(@PathVariable Long userId, @RequestPart("dto") UserEditRequest editRequest,
+                                         @RequestPart(required = false) MultipartFile profileImageFile) {
+        FileUploadRequest fileUploadRequest = null;
+        if (profileImageFile != null) {
+            ensureImageFile(profileImageFile);
+            fileUploadRequest = toFileUploadRequest(profileImageFile);
+        }
+        return userService.edit(userId, editRequest, fileUploadRequest);
     }
 
     private void ensureImageFile(MultipartFile profileImageFile) {

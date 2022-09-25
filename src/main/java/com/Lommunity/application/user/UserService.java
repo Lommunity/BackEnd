@@ -2,9 +2,7 @@ package com.Lommunity.application.user;
 
 import com.Lommunity.application.file.FileService;
 import com.Lommunity.application.file.dto.FileUploadRequest;
-import com.Lommunity.application.user.dto.RegisterRequest;
-import com.Lommunity.application.user.dto.RegisterResponse;
-import com.Lommunity.application.user.dto.UserDto;
+import com.Lommunity.application.user.dto.*;
 import com.Lommunity.domain.region.Region;
 import com.Lommunity.domain.region.RegionRepository;
 import com.Lommunity.domain.user.User;
@@ -26,24 +24,60 @@ public class UserService {
 
     // 회원 가입
     public RegisterResponse register(RegisterRequest registerRequest, FileUploadRequest fileUploadRequest) {
-        User user = userRepository.findById(registerRequest.getUserId())
-                                  .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + registerRequest.getUserId()));
+        User user = getUser(registerRequest.getUserId());
 
         if (user.isRegistered()) {
             throw new IllegalArgumentException("해당 사용자는 이미 가입되어 있습니다.");
         }
-        Region region = regionRepository.findById(registerRequest.getRegionCode())
-                                        .orElseThrow(() -> new IllegalArgumentException("regionCode에 해당하는 Region이 없습니다. regionCode: " + registerRequest.getRegionCode()));
+
+        if (registerRequest.getRegionCode() == null) {
+            throw new IllegalArgumentException("회원가입 시 지역 선택은 필수입니다.");
+        }
+        Region region = getRegion(registerRequest.getRegionCode());
 
         String profileImageUrl = null;
         if (fileUploadRequest != null) {
-            profileImageUrl = fileService.upload(fileUploadRequest, PROFILE_IMAGE_DIRECTORY);
+            profileImageUrl = getProfileImageUrl(fileUploadRequest, PROFILE_IMAGE_DIRECTORY);
         }
 
         user.registerInfo(registerRequest, profileImageUrl, region);
         return RegisterResponse.builder()
                                .user(UserDto.fromEntity(user))
                                .build();
+    }
+
+    public UserEditResponse edit(Long userId, UserEditRequest editRequest, FileUploadRequest fileUploadRequest) {
+        User user = getUser(userId);
+
+        Region newRegion = null;
+        if (editRequest.getRegionCode() != null) {
+            newRegion = getRegion(editRequest.getRegionCode());
+        }
+
+        String newProfileImageUrl = null;
+        if (fileUploadRequest != null) {
+            newProfileImageUrl = getProfileImageUrl(fileUploadRequest, PROFILE_IMAGE_DIRECTORY);
+        }
+
+        user.editUserInfo(editRequest.getNickname() != null ? editRequest.getNickname() : null, newProfileImageUrl, newRegion);
+
+        return UserEditResponse.builder()
+                               .editUser(UserDto.fromEntity(user))
+                               .build();
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                             .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + userId));
+    }
+
+    private Region getRegion(Long regionCode) {
+        return regionRepository.findById(regionCode)
+                               .orElseThrow(() -> new IllegalArgumentException("regionCode에 해당하는 Region이 없습니다. regionCode: " + regionCode));
+    }
+
+    private String getProfileImageUrl(FileUploadRequest uploadRequest, String directory) {
+        return fileService.upload(uploadRequest, directory);
     }
 
 }

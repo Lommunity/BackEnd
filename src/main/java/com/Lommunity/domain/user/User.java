@@ -48,4 +48,16 @@ public class User {
         }
     }
 
+    public void editUserInfo(String newNickname, String newProfileImageUrl, Region newRegion) {
+        if (newNickname != null) {
+            this.nickname = newNickname;
+        }
+        if (newRegion != null) {
+            this.region = newRegion;
+        }
+        if (newProfileImageUrl != null) {
+            this.profileImageUrl = newProfileImageUrl;
+        }
+    }
+
 }
