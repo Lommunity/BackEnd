@@ -4,12 +4,13 @@ import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.RegisterRequest;
 import com.Lommunity.application.user.dto.RegisterResponse;
+import com.Lommunity.application.user.dto.UserDto;
+import com.Lommunity.controller.user.dto.UserInfoResponse;
+import com.Lommunity.domain.user.User;
+import com.Lommunity.infrastructure.security.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -32,9 +33,16 @@ public class UserController {
         return userService.register(request, fileUploadRequest);
     }
 
+    @GetMapping("/retrieve")
+    public UserInfoResponse getUserInfo(@AuthUser User user) {
+        return UserInfoResponse.builder()
+                               .user(UserDto.fromEntity(user))
+                               .build();
+    }
+
     private void ensureImageFile(MultipartFile profileImageFile) {
         if (!StringUtils.startsWith(profileImageFile.getContentType(), "image")) {
-            throw new IllegalArgumentException("ContentType must start with image. ContentType: " + profileImageFile.getContentType());
+            throw new IllegalArgumentException("ContentType은 'image'로 시작해야합니다. ContentType: " + profileImageFile.getContentType());
         }
     }
 
@@ -47,7 +55,7 @@ public class UserController {
                                     .size(multipartFile.getSize())
                                     .build();
         } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid multipartFile", e);
+            throw new IllegalArgumentException("유효하지 않은 multipartFile 입니다.", e);
         }
     }
 }
