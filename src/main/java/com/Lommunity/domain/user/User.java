@@ -34,12 +34,12 @@ public class User {
         USER, ADMIN
     }
 
-    public void registerInfo(RegisterRequest registerRequest, Region region) {
+    public void registerInfo(RegisterRequest registerRequest, String profileImageUrl, Region region) {
         this.role = UserRole.USER;
         this.registered = true;
         this.nickname = registerRequest.getNickname();
         this.region = region;
-        this.profileImageUrl = registerRequest.getProfileImageUrl();
+        this.profileImageUrl = profileImageUrl;
     }
 
     public void checkRegister() {
