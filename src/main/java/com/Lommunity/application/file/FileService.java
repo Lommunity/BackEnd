@@ -26,11 +26,11 @@ public class FileService {
 
     public String upload(FileUploadRequest uploadRequest, String directory) {
         if (StringUtils.isEmpty(uploadRequest.getContentType()) || StringUtils.isEmpty(directory)) {
-            throw new IllegalArgumentException("ContentType and Directory must not be empty.");
+            throw new IllegalArgumentException("ContentType과 direcotry는 비어있으면 안됩니다.");
         }
         String extension = FilenameUtils.getExtension(uploadRequest.getFilename());
         if (StringUtils.isEmpty(extension)) {
-            throw new IllegalArgumentException("Extension must not be empty.");
+            throw new IllegalArgumentException("Extention은 비어있으면 안됩니다.");
         }
         String path = directory + "/" + createRandomFileName(extension); // directory + filename
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()

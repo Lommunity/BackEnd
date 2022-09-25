@@ -7,5 +7,4 @@ import lombok.Getter;
 @Builder
 public class RegisterResponse {
     private UserDto user;
-    private String profileImageUrl;
 }
