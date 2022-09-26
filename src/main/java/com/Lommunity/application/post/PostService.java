@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,11 +35,12 @@ public class PostService {
                                    User user) {
         validateUser(createRequest.getUserId(), user);
 
-        String imageUrls = "";
+        List<String> imageUrlsList = null;
         if (fileUploadRequests != null) {
+            imageUrlsList = new ArrayList<>();
             for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
                 String imageUrl = fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY);
-                imageUrls += (imageUrl + ",");
+                imageUrlsList.add(imageUrl);
             }
         }
 
@@ -48,7 +50,7 @@ public class PostService {
                                                 .user(user)
                                                 .topicId(createRequest.getTopicId())
                                                 .content(createRequest.getContent())
-                                                .imageUrls(imageUrls)
+                                                .imageUrls(imageUrlsList)
                                                 .build());
         return PostResponse.builder()
                            .post(PostDto.fromEntity(savePost))

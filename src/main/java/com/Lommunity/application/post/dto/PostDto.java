@@ -6,6 +6,7 @@ import com.Lommunity.domain.post.PostTopic;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -18,7 +19,7 @@ public class PostDto {
     private UserDto user;
     private PostTopicDto topic;
     private String content;
-    private String imageUrls;
+    private List<String> imageUrls;
     private Long createdBy;
     private Long lastModifiedBy;
     private LocalDateTime createdDate;
