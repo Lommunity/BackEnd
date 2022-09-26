@@ -18,7 +18,7 @@ public class PostDto {
     private UserDto user;
     private PostTopicDto topic;
     private String content;
-    private String imageUrl;
+    private String imageUrls;
     private Long createdBy;
     private Long lastModifiedBy;
     private LocalDateTime createdDate;
@@ -30,7 +30,7 @@ public class PostDto {
                       .topic(PostTopicDto.fromPostTopic(PostTopic.findTopicById(post.getTopicId())))
                       .user(UserDto.fromEntity(post.getUser()))
                       .content(post.getContent())
-                      .imageUrl(post.getImageUrl())
+                      .imageUrls(post.getImageUrls())
                       .createdBy(post.getCreatedBy())
                       .lastModifiedBy(post.getLastModifiedBy())
                       .createdDate(post.getCreatedDate())

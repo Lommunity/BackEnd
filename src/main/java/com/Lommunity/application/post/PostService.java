@@ -1,5 +1,7 @@
 package com.Lommunity.application.post;
 
+import com.Lommunity.application.file.FileService;
+import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
@@ -15,22 +17,38 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class PostService {
+    private static final String POST_IMAGE_DIRECTORY = "post";
 
     private final PostRepository postRepository;
+    private final FileService fileService;
 
     // 게시물 작성
-    public PostResponse createPost(PostRequest createRequest, User user) {
+    public PostResponse createPost(PostRequest createRequest,
+                                   List<FileUploadRequest> fileUploadRequests,
+                                   User user) {
         validateUser(createRequest.getUserId(), user);
+
+        String imageUrls = "";
+        if (fileUploadRequests != null) {
+            for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
+                String imageUrl = fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY);
+                imageUrls += (imageUrl + ",");
+            }
+        }
+
+
+
         Post savePost = postRepository.save(Post.builder()
                                                 .user(user)
                                                 .topicId(createRequest.getTopicId())
                                                 .content(createRequest.getContent())
-                                                .imageUrl(createRequest.getImageUrl())
+                                                .imageUrls(imageUrls)
                                                 .build());
         return PostResponse.builder()
                            .post(PostDto.fromEntity(savePost))
@@ -65,7 +83,7 @@ public class PostService {
         if (!post.getCreatedBy().equals(editRequest.getUserId())) {
             throw new IllegalArgumentException("userID에 해당하는 사용자는 이 게시물의 작성자가 아닙니다.");
         }
-        post.editPost(editRequest.getUserId(), editRequest.getTopicId(), editRequest.getContent(), editRequest.getImageUrl());
+        post.editPost(editRequest.getUserId(), editRequest.getTopicId(), editRequest.getContent());
         postRepository.save(post);
         return PostResponse.builder()
                            .post(PostDto.fromEntity(post))

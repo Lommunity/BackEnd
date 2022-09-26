@@ -26,9 +26,11 @@ public class Post extends BaseEntity {
     private User user;
     private Long topicId;
     private String content;
-    private String imageUrl;
 
-    public void editPost(Long userId, Long topicId, String content, String imageUrl) {
+    @Column(length = 500)
+    private String imageUrls;
+
+    public void editPost(Long userId, Long topicId, String content) {
         PostTopic.isPresentTopicId(topicId);
 
         if (topicId != null) {
@@ -38,7 +40,6 @@ public class Post extends BaseEntity {
         if (content != null) {
             this.content = content;
         }
-        this.imageUrl = imageUrl;
     }
 
 }
