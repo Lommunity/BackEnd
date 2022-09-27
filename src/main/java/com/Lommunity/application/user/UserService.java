@@ -62,7 +62,7 @@ public class UserService {
         user.editUserInfo(editRequest.getNickname() != null ? editRequest.getNickname() : null, newProfileImageUrl, newRegion);
 
         return UserEditResponse.builder()
-                               .editUser(UserDto.fromEntity(user))
+                               .user(UserDto.fromEntity(user))
                                .build();
     }
 

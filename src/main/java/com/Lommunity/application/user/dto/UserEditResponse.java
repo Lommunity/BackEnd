@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class UserEditResponse {
-    private UserDto editUser;
+    private UserDto user;
 }
