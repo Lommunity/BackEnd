@@ -33,7 +33,6 @@ public class PostService {
     public PostResponse createPost(PostRequest createRequest,
                                    List<FileUploadRequest> fileUploadRequests,
                                    User user) {
-        validateUser(createRequest.getUserId(), user);
 
         List<String> imageUrlsList = null;
         if (fileUploadRequests != null) {
@@ -43,7 +42,6 @@ public class PostService {
                 imageUrlsList.add(imageUrl);
             }
         }
-
 
 
         Post savePost = postRepository.save(Post.builder()
@@ -68,7 +66,7 @@ public class PostService {
     }
 
     // 작성자별 게시물 목록 조회 → Pagination
-    public PostPageResponse userPostsByPage(Long userId, Pageable pageable, User user) {
+    public PostPageResponse userPostsByPage(Long userId, Pageable pageable, User user) { // userId 없애야 하나 ?
         validateUser(userId, user);
         Page<PostDto> postDtoPageByuserId = postRepository.findByUserId(userId, pageable)
                                                           .map(PostDto::fromEntity);
@@ -78,14 +76,22 @@ public class PostService {
     }
 
     // 게시물 수정
-    public PostResponse editPost(PostEditRequest editRequest, User user) {
-        validateUser(editRequest.getUserId(), user);
+    public PostResponse editPost(PostEditRequest editRequest,
+                                 List<FileUploadRequest> fileUploadRequests,
+                                 User user) {
 
         Post post = isPresentPost(editRequest.getPostId());
-        if (!post.getCreatedBy().equals(editRequest.getUserId())) {
-            throw new IllegalArgumentException("userID에 해당하는 사용자는 이 게시물의 작성자가 아닙니다.");
+        isWriter(post, user.getId());
+
+        List<String> editImageUrls = null;
+        if (fileUploadRequests != null) {
+            editImageUrls = new ArrayList<>();
+            for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
+                editImageUrls.add(fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY));
+            }
         }
-        post.editPost(editRequest.getUserId(), editRequest.getTopicId(), editRequest.getContent());
+
+        post.editPost(editRequest.getTopicId(), editRequest.getContent(), editImageUrls);
         postRepository.save(post);
         return PostResponse.builder()
                            .post(PostDto.fromEntity(post))
@@ -94,22 +100,24 @@ public class PostService {
 
     // 게시물 삭제
     public void deletePost(PostDeleteRequest deleteRequest, User user) {
-        validateUser(deleteRequest.getUserId(), user);
         Post post = isPresentPost(deleteRequest.getPostId());
-        if (!post.getCreatedBy().equals(deleteRequest.getUserId())) {
-            throw new IllegalArgumentException("userID에 해당하는 사용자는 이 게시물의 작성자가 아니기에 삭제가 불가능합니다.");
-        }
+        isWriter(post, user.getId());
         postRepository.delete(post);
     }
 
-    private static void validateUser(Long userId, User user) {
+    private void validateUser(Long userId, User user) {
         if (user == null || !userId.equals(user.getId())) {
             throw new IllegalArgumentException("User 정보가 일치하지 않습니다.");
         }
     }
 
-    public Post isPresentPost(Long postId) {
+    private Post isPresentPost(Long postId) {
         return postRepository.findById(postId)
                              .orElseThrow(() -> new IllegalArgumentException("해당 postID에 해당하는 게시물은 존재하지 않습니다. userID: " + postId));
+    }
+    private void isWriter(Post post, Long userId) {
+        if (!post.getCreatedBy().equals(userId)) {
+            throw new IllegalArgumentException("userId에 해당하는 사용자가 작성한 게시물이 아닙니다. userID: " + userId);
+        }
     }
 }

@@ -12,6 +12,7 @@ public class ListStringConverter implements AttributeConverter<List<String>, Str
 
     @Override
     public String convertToDatabaseColumn(List<String> attribute) {
+        if (attribute == null) return "";
         return attribute.stream().map(String::valueOf).collect(Collectors.joining(SPLIT_CHAR));
     }
 

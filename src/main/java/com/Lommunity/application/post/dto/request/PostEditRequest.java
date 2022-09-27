@@ -11,9 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostEditRequest {
 
-    private Long userId;
     private Long postId;
     private Long topicId;
     private String content;
-    private String imageUrl;
 }

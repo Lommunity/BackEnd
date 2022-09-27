@@ -43,12 +43,22 @@ public class PostController {
                 fileUploadRequests.add(toFileUploadRequest(imageFile));
             }
         }
-        return postService.createPost(postRequest, fileUploadRequests,user);
+        return postService.createPost(postRequest, fileUploadRequests, user);
     }
 
     @PutMapping
-    private PostResponse editPost(@RequestBody PostEditRequest editRequest, @AuthUser User user) {
-        return postService.editPost(editRequest, user);
+    private PostResponse editPost(@RequestPart("dto") PostEditRequest editRequest,
+                                  @RequestPart(required = false) List<MultipartFile> editImageFiles,
+                                  @AuthUser User user) {
+        List<FileUploadRequest> fileUploadRequests = null;
+        if (editImageFiles != null) {
+            fileUploadRequests = new ArrayList<>();
+            for (MultipartFile editImageFile : editImageFiles) {
+                ensureImageFile(editImageFile);
+                fileUploadRequests.add(toFileUploadRequest(editImageFile));
+            }
+        }
+        return postService.editPost(editRequest, fileUploadRequests,user);
     }
 
     @GetMapping

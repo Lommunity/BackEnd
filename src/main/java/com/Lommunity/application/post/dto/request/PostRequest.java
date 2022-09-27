@@ -9,7 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 public class PostRequest {
 
-    private Long userId;
     private Long topicId;
     private String content;
 }
