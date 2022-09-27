@@ -61,6 +61,11 @@ public class PostController {
         return postService.editPost(editRequest, fileUploadRequests,user);
     }
 
+    @GetMapping("/{pageId}")
+    public PostResponse getPost(@PathVariable("pageId") Long postId, @AuthUser User user) {
+        return postService.getPost(postId);
+    }
+
     @GetMapping
     public PostPageResponse getPostsByPage(@RequestParam(value = "userId", required = false) Long userId, Pageable pageable, @AuthUser User user) {
         if (userId == null) {

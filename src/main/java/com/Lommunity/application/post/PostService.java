@@ -55,6 +55,14 @@ public class PostService {
                            .build();
     }
 
+    // 단일 게시물 조회
+    public PostResponse getPost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
+        return PostResponse.builder()
+                           .post(PostDto.fromEntity(post))
+                           .build();
+    }
+
     // 전체 게시물 목록 조회
     public PostPageResponse allPostsByPage(Pageable pageable) {
         Page<Post> all = postRepository.findAll(pageable);
@@ -115,6 +123,7 @@ public class PostService {
         return postRepository.findById(postId)
                              .orElseThrow(() -> new IllegalArgumentException("해당 postID에 해당하는 게시물은 존재하지 않습니다. userID: " + postId));
     }
+
     private void isWriter(Post post, Long userId) {
         if (!post.getCreatedBy().equals(userId)) {
             throw new IllegalArgumentException("userId에 해당하는 사용자가 작성한 게시물이 아닙니다. userID: " + userId);
