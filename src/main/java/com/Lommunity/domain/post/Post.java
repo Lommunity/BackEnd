@@ -1,6 +1,6 @@
 package com.Lommunity.domain.post;
 
-import com.Lommunity.domain.converter.ListStringConverter;
+import com.Lommunity.domain.common.ListStringConverter;
 import com.Lommunity.domain.entity.BaseEntity;
 import com.Lommunity.domain.user.User;
 import lombok.AllArgsConstructor;

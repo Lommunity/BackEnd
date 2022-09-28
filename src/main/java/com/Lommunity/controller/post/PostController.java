@@ -15,6 +15,7 @@ import com.Lommunity.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,12 +33,11 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public PostResponse createPosts(@RequestPart("dto") PostRequest postRequest,
-                                    @RequestPart(required = false) List<MultipartFile> imageFiles,
-                                    @AuthUser User user) {
-        List<FileUploadRequest> fileUploadRequests = null;
-        if (imageFiles != null) {
-            fileUploadRequests = new ArrayList<>();
+    public PostResponse createPost(@RequestPart("dto") PostRequest postRequest,
+                                   @RequestPart(required = false) List<MultipartFile> imageFiles,
+                                   @AuthUser User user) {
+        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(imageFiles)) {
             for (MultipartFile imageFile : imageFiles) {
                 ensureImageFile(imageFile);
                 fileUploadRequests.add(toFileUploadRequest(imageFile));
@@ -50,28 +50,27 @@ public class PostController {
     private PostResponse editPost(@RequestPart("dto") PostEditRequest editRequest,
                                   @RequestPart(required = false) List<MultipartFile> editImageFiles,
                                   @AuthUser User user) {
-        List<FileUploadRequest> fileUploadRequests = null;
-        if (editImageFiles != null) {
-            fileUploadRequests = new ArrayList<>();
+        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(editImageFiles)) {
             for (MultipartFile editImageFile : editImageFiles) {
                 ensureImageFile(editImageFile);
                 fileUploadRequests.add(toFileUploadRequest(editImageFile));
             }
         }
-        return postService.editPost(editRequest, fileUploadRequests,user);
+        return postService.editPost(editRequest, fileUploadRequests, user);
     }
 
-    @GetMapping("/{pageId}")
-    public PostResponse getPost(@PathVariable("pageId") Long postId, @AuthUser User user) {
+    @GetMapping("/{postId}")
+    public PostResponse getPost(@PathVariable("postId") Long postId) {
         return postService.getPost(postId);
     }
 
     @GetMapping
-    public PostPageResponse getPostsByPage(@RequestParam(value = "userId", required = false) Long userId, Pageable pageable, @AuthUser User user) {
+    public PostPageResponse getPostsByPage(@RequestParam(value = "userId", required = false) Long userId, Pageable pageable) {
         if (userId == null) {
             return postService.allPostsByPage(pageable);
         }
-        return postService.userPostsByPage(userId, pageable, user);
+        return postService.userPostsByPage(userId, pageable);
     }
 
     @DeleteMapping

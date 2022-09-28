@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -34,13 +35,10 @@ public class PostService {
                                    List<FileUploadRequest> fileUploadRequests,
                                    User user) {
 
-        List<String> imageUrlsList = null;
-        if (fileUploadRequests != null) {
-            imageUrlsList = new ArrayList<>();
-            for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
-                String imageUrl = fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY);
-                imageUrlsList.add(imageUrl);
-            }
+        List<String> imageUrlList = new ArrayList<>();
+        for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
+            String imageUrl = fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY);
+            imageUrlList.add(imageUrl);
         }
 
 
@@ -48,7 +46,7 @@ public class PostService {
                                                 .user(user)
                                                 .topicId(createRequest.getTopicId())
                                                 .content(createRequest.getContent())
-                                                .imageUrls(imageUrlsList)
+                                                .imageUrls(imageUrlList)
                                                 .build());
         return PostResponse.builder()
                            .post(PostDto.fromEntity(savePost))
@@ -74,8 +72,8 @@ public class PostService {
     }
 
     // 작성자별 게시물 목록 조회 → Pagination
-    public PostPageResponse userPostsByPage(Long userId, Pageable pageable, User user) { // userId 없애야 하나 ?
-        validateUser(userId, user);
+    public PostPageResponse userPostsByPage(Long userId, Pageable pageable) { // userId 없애야 하나 ?
+
         Page<PostDto> postDtoPageByuserId = postRepository.findByUserId(userId, pageable)
                                                           .map(PostDto::fromEntity);
         return PostPageResponse.builder()
@@ -91,9 +89,8 @@ public class PostService {
         Post post = isPresentPost(editRequest.getPostId());
         isWriter(post, user.getId());
 
-        List<String> editImageUrls = null;
-        if (fileUploadRequests != null) {
-            editImageUrls = new ArrayList<>();
+        List<String> editImageUrls = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(fileUploadRequests)) {
             for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
                 editImageUrls.add(fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY));
             }
