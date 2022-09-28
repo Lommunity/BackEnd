@@ -20,7 +20,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PutMapping("/register")
+    @PostMapping("/register")
     public RegisterResponse register(@RequestPart("dto") RegisterRequest request,
                                      @RequestPart(required = false) MultipartFile profileImageFile) {
         FileUploadRequest fileUploadRequest = null;
