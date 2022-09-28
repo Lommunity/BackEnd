@@ -49,17 +49,24 @@ public class UserService {
     public UserEditResponse edit(Long userId, UserEditRequest editRequest, FileUploadRequest fileUploadRequest) {
         User user = getUser(userId);
 
-        Region newRegion = null;
+        String nickname = null;
+        if (editRequest.getNickname() != null) {
+            nickname = editRequest.getNickname();
+        }
+
+        Region region = null;
         if (editRequest.getRegionCode() != null) {
-            newRegion = getRegion(editRequest.getRegionCode());
+            region = getRegion(editRequest.getRegionCode());
         }
 
-        String newProfileImageUrl = null;
+        String profileImageUrl;
         if (fileUploadRequest != null) {
-            newProfileImageUrl = getProfileImageUrl(fileUploadRequest, PROFILE_IMAGE_DIRECTORY);
+            profileImageUrl = getProfileImageUrl(fileUploadRequest, PROFILE_IMAGE_DIRECTORY);
+        } else {
+            profileImageUrl = editRequest.getProfileImageUrl();
         }
 
-        user.editUserInfo(editRequest.getNickname() != null ? editRequest.getNickname() : null, newProfileImageUrl, newRegion);
+        user.editUserInfo(nickname, profileImageUrl, region);
 
         return UserEditResponse.builder()
                                .user(UserDto.fromEntity(user))

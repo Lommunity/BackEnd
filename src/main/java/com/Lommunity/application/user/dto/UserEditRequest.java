@@ -10,4 +10,5 @@ import lombok.*;
 public class UserEditRequest {
     private String nickname;
     private Long regionCode;
+    private String profileImageUrl;
 }

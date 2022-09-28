@@ -55,9 +55,6 @@ public class User {
         if (newRegion != null) {
             this.region = newRegion;
         }
-//        if (newProfileImageUrl != null) {
-//            this.profileImageUrl = newProfileImageUrl;
-//        }
         this.profileImageUrl = newProfileImageUrl;
     }
 
