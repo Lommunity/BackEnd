@@ -36,6 +36,7 @@ public class PostService {
                                    User user) {
 
         List<String> imageUrlList = new ArrayList<>();
+        checkImageNumber(fileUploadRequests.size());
         for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
             String imageUrl = fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY);
             imageUrlList.add(imageUrl);
@@ -88,13 +89,17 @@ public class PostService {
 
         Post post = isPresentPost(editRequest.getPostId());
         isWriter(post, user.getId());
-
+        checkImageNumber(fileUploadRequests.size());
         List<String> editImageUrls = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(editRequest.getImageUrls())) {
+            editImageUrls.addAll(editRequest.getImageUrls());
+        }
         if (!CollectionUtils.isEmpty(fileUploadRequests)) {
             for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
                 editImageUrls.add(fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY));
             }
         }
+        checkImageNumber(editImageUrls.size());
 
         post.editPost(editRequest.getTopicId(), editRequest.getContent(), editImageUrls);
         postRepository.save(post);
@@ -124,6 +129,12 @@ public class PostService {
     private void isWriter(Post post, Long userId) {
         if (!post.getCreatedBy().equals(userId)) {
             throw new IllegalArgumentException("userId에 해당하는 사용자가 작성한 게시물이 아닙니다. userID: " + userId);
+        }
+    }
+
+    private void checkImageNumber(int size) {
+        if (size > 5) {
+            throw new IllegalArgumentException("게시물에 업로드할 수 있는 이미지의 개수는 최대 5개 입니다.");
         }
     }
 }
