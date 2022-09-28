@@ -35,11 +35,11 @@ public class PostService {
                                    List<FileUploadRequest> fileUploadRequests,
                                    User user) {
 
-        List<String> imageUrlList = new ArrayList<>();
+        List<String> imageUrls = new ArrayList<>();
         checkImageNumber(fileUploadRequests.size());
         for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
             String imageUrl = fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY);
-            imageUrlList.add(imageUrl);
+            imageUrls.add(imageUrl);
         }
 
 
@@ -47,7 +47,7 @@ public class PostService {
                                                 .user(user)
                                                 .topicId(createRequest.getTopicId())
                                                 .content(createRequest.getContent())
-                                                .imageUrls(imageUrlList)
+                                                .imageUrls(imageUrls)
                                                 .build());
         return PostResponse.builder()
                            .post(PostDto.fromEntity(savePost))
@@ -90,18 +90,18 @@ public class PostService {
         Post post = isPresentPost(editRequest.getPostId());
         isWriter(post, user.getId());
         checkImageNumber(fileUploadRequests.size());
-        List<String> editImageUrls = new ArrayList<>();
+        List<String> imageUrls = new ArrayList<>();
         if (!CollectionUtils.isEmpty(editRequest.getImageUrls())) {
-            editImageUrls.addAll(editRequest.getImageUrls());
+            imageUrls.addAll(editRequest.getImageUrls());
         }
         if (!CollectionUtils.isEmpty(fileUploadRequests)) {
             for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
-                editImageUrls.add(fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY));
+                imageUrls.add(fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY));
             }
         }
-        checkImageNumber(editImageUrls.size());
+        checkImageNumber(imageUrls.size());
 
-        post.editPost(editRequest.getTopicId(), editRequest.getContent(), editImageUrls);
+        post.editPost(editRequest.getTopicId(), editRequest.getContent(), imageUrls);
         postRepository.save(post);
         return PostResponse.builder()
                            .post(PostDto.fromEntity(post))
