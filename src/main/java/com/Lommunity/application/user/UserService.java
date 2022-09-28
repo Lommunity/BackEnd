@@ -49,10 +49,7 @@ public class UserService {
     public UserEditResponse edit(Long userId, UserEditRequest editRequest, FileUploadRequest fileUploadRequest) {
         User user = getUser(userId);
 
-        String nickname = null;
-        if (editRequest.getNickname() != null) {
-            nickname = editRequest.getNickname();
-        }
+        String nickname = editRequest.getNickname();
 
         Region region = null;
         if (editRequest.getRegionCode() != null) {
