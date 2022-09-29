@@ -36,7 +36,7 @@ public class PostService {
                                    User user) {
 
         List<String> postImageUrls = new ArrayList<>();
-        checkImageNumber(fileUploadRequests.size());
+        checkPostImageSize(fileUploadRequests.size());
         for (FileUploadRequest fileUploadRequest : fileUploadRequests) {
             String imageUrl = fileService.upload(fileUploadRequest, POST_IMAGE_DIRECTORY);
             postImageUrls.add(imageUrl);
@@ -89,7 +89,7 @@ public class PostService {
 
         Post post = isPresentPost(editRequest.getPostId());
         isWriter(post, user.getId());
-        checkImageNumber(fileUploadRequests.size() + editRequest.getPostImageUrls().size());
+        checkPostImageSize(fileUploadRequests.size() + editRequest.getPostImageUrls().size());
         List<String> postImageUrls = new ArrayList<>();
         if (!CollectionUtils.isEmpty(editRequest.getPostImageUrls())) {
             postImageUrls.addAll(editRequest.getPostImageUrls());
@@ -131,7 +131,7 @@ public class PostService {
         }
     }
 
-    private void checkImageNumber(int size) {
+    private void checkPostImageSize(int size) {
         if (size > 5) {
             throw new IllegalArgumentException("게시물에 업로드할 수 있는 이미지의 개수는 최대 5개 입니다.");
         }
