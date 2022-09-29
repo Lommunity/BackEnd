@@ -31,9 +31,9 @@ public class Post extends BaseEntity {
 
     @Convert(converter = ListStringConverter.class)
     @Column(length = 500)
-    private List<String> imageUrls;
+    private List<String> postImageUrls;
 
-    public void editPost(Long topicId, String content, List<String> editImageUrls) {
+    public void editPost(Long topicId, String content, List<String> postImageUrls) {
         PostTopic.isPresentTopicId(topicId);
 
         this.topicId = topicId;
@@ -41,8 +41,8 @@ public class Post extends BaseEntity {
         if (content != null) {
             this.content = content;
         }
-        if (editImageUrls != null) {
-            this.imageUrls = editImageUrls;
+        if (postImageUrls != null) {
+            this.postImageUrls = postImageUrls;
         }
     }
 }

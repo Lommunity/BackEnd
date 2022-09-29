@@ -34,11 +34,11 @@ public class PostController {
 
     @PostMapping
     public PostResponse createPost(@RequestPart("dto") PostRequest postRequest,
-                                   @RequestPart(required = false) List<MultipartFile> imageFiles,
+                                   @RequestPart(required = false) List<MultipartFile> postImageFiles,
                                    @AuthUser User user) {
         List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(imageFiles)) {
-            for (MultipartFile imageFile : imageFiles) {
+        if (!CollectionUtils.isEmpty(postImageFiles)) {
+            for (MultipartFile imageFile : postImageFiles) {
                 ensureImageFile(imageFile);
                 fileUploadRequests.add(toFileUploadRequest(imageFile));
             }
@@ -48,13 +48,16 @@ public class PostController {
 
     @PutMapping
     private PostResponse editPost(@RequestPart("dto") PostEditRequest editRequest,
-                                  @RequestPart(required = false) List<MultipartFile> editImageFiles,
+                                  @RequestPart(required = false) List<MultipartFile> postImageFiles,
                                   @AuthUser User user) {
+        if (CollectionUtils.isEmpty(editRequest.getPostImageUrls())) {
+            editRequest.nullImageUrls(new ArrayList<>());
+        }
         List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(editImageFiles)) {
-            for (MultipartFile editImageFile : editImageFiles) {
-                ensureImageFile(editImageFile);
-                fileUploadRequests.add(toFileUploadRequest(editImageFile));
+        if (!CollectionUtils.isEmpty(postImageFiles)) {
+            for (MultipartFile postImageFile : postImageFiles) {
+                ensureImageFile(postImageFile);
+                fileUploadRequests.add(toFileUploadRequest(postImageFile));
             }
         }
         return postService.editPost(editRequest, fileUploadRequests, user);
