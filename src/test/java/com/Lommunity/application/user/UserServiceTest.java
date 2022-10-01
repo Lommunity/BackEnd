@@ -4,10 +4,8 @@ import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.user.dto.RegisterRequest;
 import com.Lommunity.application.user.dto.RegisterResponse;
 import com.Lommunity.application.user.dto.UserEditRequest;
-import com.Lommunity.domain.region.RegionRepository;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
-import com.Lommunity.testhelper.EntityTestHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,10 +21,7 @@ class UserServiceTest {
     UserRepository userRepository;
     @Autowired
     UserService userService;
-    @Autowired
-    RegionRepository regionRepository;
-    @Autowired
-    EntityTestHelper entityTestHelper;
+
 
     @Test
     public void register() {
