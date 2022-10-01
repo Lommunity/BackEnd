@@ -1,5 +1,6 @@
 package com.Lommunity.testhelper;
 
+import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.request.PostRequest;
 import com.Lommunity.application.post.dto.response.PostResponse;
@@ -40,9 +41,8 @@ public class EntityTestHelper {
         userService.register(RegisterRequest.builder()
                                             .userId(user.getId())
                                             .nickname(nickname)
-                                            .profileImageUrl(null)
                                             .regionCode(2611051000L)
-                                            .build());
+                                            .build(), FileUploadRequest.builder().build());
         User registeredUser = userRepository.findWithRegionById(user.getId()).get();
 
         Authentication authentication = new JwtAuthenticationToken(registeredUser, "jwt");
