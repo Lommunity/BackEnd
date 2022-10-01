@@ -24,7 +24,7 @@ public class UserService {
 
     // 회원 가입
     public RegisterResponse register(RegisterRequest registerRequest, FileUploadRequest fileUploadRequest) {
-        User user = getUser(registerRequest.getUserId());
+        User user = findUser(registerRequest.getUserId());
 
         if (user.isRegistered()) {
             throw new IllegalArgumentException("해당 사용자는 이미 가입되어 있습니다.");
@@ -33,11 +33,11 @@ public class UserService {
         if (registerRequest.getRegionCode() == null) {
             throw new IllegalArgumentException("회원가입 시 지역 선택은 필수입니다.");
         }
-        Region region = getRegion(registerRequest.getRegionCode());
+        Region region = findRegion(registerRequest.getRegionCode());
 
         String profileImageUrl = null;
         if (fileUploadRequest != null) {
-            profileImageUrl = getProfileImageUrl(fileUploadRequest, PROFILE_IMAGE_DIRECTORY);
+            profileImageUrl = uploadProfileImage(fileUploadRequest);
         }
 
         user.registerInfo(registerRequest, profileImageUrl, region);
@@ -47,18 +47,18 @@ public class UserService {
     }
 
     public UserEditResponse edit(Long userId, UserEditRequest editRequest, FileUploadRequest fileUploadRequest) {
-        User user = getUser(userId);
+        User user = findUser(userId);
 
         String nickname = editRequest.getNickname();
 
         Region region = null;
         if (editRequest.getRegionCode() != null) {
-            region = getRegion(editRequest.getRegionCode());
+            region = findRegion(editRequest.getRegionCode());
         }
 
         String profileImageUrl;
         if (fileUploadRequest != null) {
-            profileImageUrl = getProfileImageUrl(fileUploadRequest, PROFILE_IMAGE_DIRECTORY);
+            profileImageUrl = uploadProfileImage(fileUploadRequest);
         } else {
             profileImageUrl = editRequest.getProfileImageUrl();
         }
@@ -70,18 +70,18 @@ public class UserService {
                                .build();
     }
 
-    private User getUser(Long userId) {
+    private User findUser(Long userId) {
         return userRepository.findById(userId)
                              .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + userId));
     }
 
-    private Region getRegion(Long regionCode) {
+    private Region findRegion(Long regionCode) {
         return regionRepository.findById(regionCode)
                                .orElseThrow(() -> new IllegalArgumentException("regionCode에 해당하는 Region이 없습니다. regionCode: " + regionCode));
     }
 
-    private String getProfileImageUrl(FileUploadRequest uploadRequest, String directory) {
-        return fileService.upload(uploadRequest, directory);
+    private String uploadProfileImage(FileUploadRequest uploadRequest) {
+        return fileService.upload(uploadRequest, PROFILE_IMAGE_DIRECTORY);
     }
 
 }
