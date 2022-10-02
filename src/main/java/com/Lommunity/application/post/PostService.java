@@ -3,9 +3,9 @@ package com.Lommunity.application.post;
 import com.Lommunity.application.file.FileService;
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.dto.PostDto;
+import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
-import com.Lommunity.application.post.dto.request.PostRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.post.Post;
@@ -31,7 +31,7 @@ public class PostService {
     private final FileService fileService;
 
     // 게시물 작성
-    public PostResponse createPost(PostRequest createRequest,
+    public PostResponse createPost(PostCreateRequest createRequest,
                                    List<FileUploadRequest> fileUploadRequests,
                                    User user) {
 
@@ -52,34 +52,6 @@ public class PostService {
         return PostResponse.builder()
                            .post(PostDto.fromEntity(savePost))
                            .build();
-    }
-
-    // 단일 게시물 조회
-    public PostResponse getPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
-        return PostResponse.builder()
-                           .post(PostDto.fromEntity(post))
-                           .build();
-    }
-
-    // 전체 게시물 목록 조회
-    public PostPageResponse allPostsByPage(Pageable pageable) {
-        Page<Post> all = postRepository.findAll(pageable);
-        Page<PostDto> postDtoPage = all.map(PostDto::fromEntity);
-        return PostPageResponse.builder()
-                               .postPage(postDtoPage)
-                               .build();
-
-    }
-
-    // 작성자별 게시물 목록 조회 → Pagination
-    public PostPageResponse userPostsByPage(Long userId, Pageable pageable) { // userId 없애야 하나 ?
-
-        Page<PostDto> postDtoPageByuserId = postRepository.findByUserId(userId, pageable)
-                                                          .map(PostDto::fromEntity);
-        return PostPageResponse.builder()
-                               .postPage(postDtoPageByuserId)
-                               .build();
     }
 
     // 게시물 수정
@@ -113,6 +85,35 @@ public class PostService {
         isWriter(post, user.getId());
         postRepository.delete(post);
     }
+
+    // 단일 게시물 조회
+    public PostResponse getPost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
+        return PostResponse.builder()
+                           .post(PostDto.fromEntity(post))
+                           .build();
+    }
+
+    // 전체 게시물 목록 조회
+    public PostPageResponse allPostsByPage(Pageable pageable) {
+        Page<Post> all = postRepository.findAll(pageable);
+        Page<PostDto> postDtoPage = all.map(PostDto::fromEntity);
+        return PostPageResponse.builder()
+                               .postPage(postDtoPage)
+                               .build();
+
+    }
+
+    // 작성자별 게시물 목록 조회 → Pagination
+    public PostPageResponse userPostsByPage(Long userId, Pageable pageable) { // userId 없애야 하나 ?
+
+        Page<PostDto> postDtoPageByuserId = postRepository.findByUserId(userId, pageable)
+                                                          .map(PostDto::fromEntity);
+        return PostPageResponse.builder()
+                               .postPage(postDtoPageByuserId)
+                               .build();
+    }
+
 
     private void validateUser(Long userId, User user) {
         if (user == null || !userId.equals(user.getId())) {

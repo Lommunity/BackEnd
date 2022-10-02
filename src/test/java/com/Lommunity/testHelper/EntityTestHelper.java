@@ -1,8 +1,8 @@
-package com.Lommunity.testhelper;
+package com.Lommunity.testHelper;
 
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.PostService;
-import com.Lommunity.application.post.dto.request.PostRequest;
+import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.RegisterRequest;
@@ -15,6 +15,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.Lommunity.domain.user.User.UserRole;
@@ -54,18 +56,32 @@ public class EntityTestHelper {
     }
 
     public PostResponse createPost(User user) {
-        return postService.createPost(PostRequest.builder()
-                                                 .userId(user.getId())
-                                                 .topicId(1L)
-                                                 .content("content")
-                                                 .build(), user);
+        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            fileUploadRequests.add(FileUploadRequest.builder()
+                                                    .filename("fileName " + (i + 1))
+                                                    .build());
+        }
+        return postService.createPost(PostCreateRequest.builder()
+                                                       .topicId(1L)
+                                                       .content("content")
+                                                       .build(),
+                fileUploadRequests,
+                user);
     }
 
-    public PostResponse createPosts(User user, int contentNumber) {
-        return postService.createPost(PostRequest.builder()
-                                                 .userId(user.getId())
-                                                 .topicId(1L)
-                                                 .content("content" + contentNumber)
-                                                 .build(), user);
+    public PostResponse createPostWithNumber(User user, int contentNumber) { // 한 명의 사용자가 다수개의 post를 게시할 때 사용하는 메서드
+        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            fileUploadRequests.add(FileUploadRequest.builder()
+                                                    .filename("file name " + i + 1)
+                                                    .build());
+        }
+        return postService.createPost(PostCreateRequest.builder()
+                                                       .topicId(1L)
+                                                       .content("content" + contentNumber)
+                                                       .build(),
+                fileUploadRequests
+                , user);
     }
 }

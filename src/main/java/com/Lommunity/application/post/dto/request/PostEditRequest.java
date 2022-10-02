@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,7 +19,7 @@ public class PostEditRequest {
     private String content;
     private List<String> postImageUrls;
 
-    public void nullImageUrls(List<String> imageUrls) {
-        this.postImageUrls = imageUrls;
+    public void nullImageUrls() {
+        this.postImageUrls = new ArrayList<>();
     }
 }

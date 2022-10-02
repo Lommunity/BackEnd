@@ -6,7 +6,7 @@ import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.PostTopicDto;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
-import com.Lommunity.application.post.dto.request.PostRequest;
+import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.application.post.dto.response.PostTopicListResponse;
@@ -33,7 +33,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public PostResponse createPost(@RequestPart("dto") PostRequest postRequest,
+    public PostResponse createPost(@RequestPart("dto") PostCreateRequest createRequest,
                                    @RequestPart(required = false) List<MultipartFile> postImageFiles,
                                    @AuthUser User user) {
         List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
@@ -43,7 +43,7 @@ public class PostController {
                 fileUploadRequests.add(toFileUploadRequest(imageFile));
             }
         }
-        return postService.createPost(postRequest, fileUploadRequests, user);
+        return postService.createPost(createRequest, fileUploadRequests, user);
     }
 
     @PutMapping
@@ -51,7 +51,7 @@ public class PostController {
                                   @RequestPart(required = false) List<MultipartFile> postImageFiles,
                                   @AuthUser User user) {
         if (CollectionUtils.isEmpty(editRequest.getPostImageUrls())) {
-            editRequest.nullImageUrls(new ArrayList<>());
+            editRequest.nullImageUrls();
         }
         List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
         if (!CollectionUtils.isEmpty(postImageFiles)) {
