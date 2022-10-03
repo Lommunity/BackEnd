@@ -1,6 +1,7 @@
 package com.Lommunity.application.comment;
 
 import com.Lommunity.application.comment.dto.request.CommentCreateRequest;
+import com.Lommunity.application.comment.dto.request.CommentEditRequest;
 import com.Lommunity.application.comment.dto.response.CommentResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.comment.Comment;
@@ -41,5 +42,23 @@ class CommentServiceTest {
         assertThat(comment.getPost().getId()).isEqualTo(post.getPost().getPostId());
         assertThat(comment.getUser().getId()).isEqualTo(user.getId());
         assertThat(comment.getContent()).isEqualTo("comment content");
+    }
+
+    @Test
+    public void editCommentTest() {
+        // given
+        User user = entityTestHelper.createUser("홍길동");
+        PostResponse post = entityTestHelper.createPost(user);
+        Long postId = post.getPost().getPostId();
+        CommentResponse comment_content = entityTestHelper.createComment(postId, "comment content", user);
+        Long commentId = comment_content.getComment().getCommentId();
+        // when
+        CommentEditRequest editRequest = CommentEditRequest.builder()
+                                                                    .content("edit comment content")
+                                                                    .build();
+        commentService.editComment(commentId, editRequest, user);
+        Comment findComment = commentRepository.findById(commentId).get();
+        // then
+        assertThat(findComment.getContent()).isEqualTo("edit comment content");
     }
 }

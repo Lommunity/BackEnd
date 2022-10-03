@@ -31,4 +31,11 @@ public class Comment extends BaseTimeEntity {
     private User user;
 
     private String content;
+
+    public void editComment(String content) {
+        if (content == null) {
+            throw new IllegalArgumentException("빈 내용으로 코멘트 수정이 불가능합니다.");
+        }
+        this.content = content;
+    }
 }

@@ -1,5 +1,8 @@
 package com.Lommunity.testhelper;
 
+import com.Lommunity.application.comment.CommentService;
+import com.Lommunity.application.comment.dto.request.CommentCreateRequest;
+import com.Lommunity.application.comment.dto.response.CommentResponse;
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.request.PostCreateRequest;
@@ -30,6 +33,8 @@ public class EntityTestHelper {
     UserService userService;
     @Autowired
     PostService postService;
+    @Autowired
+    CommentService commentService;
 
     public User createUser(String nickname) {
         User user = userRepository.save(builder()
@@ -83,5 +88,13 @@ public class EntityTestHelper {
                                                        .build(),
                 fileUploadRequests
                 , user);
+    }
+
+    public CommentResponse createComment(Long postId, String content, User user) {
+        CommentCreateRequest createRequest = CommentCreateRequest.builder()
+                                                                 .postId(postId)
+                                                                 .content(content)
+                                                                 .build();
+        return commentService.createComment(createRequest, user);
     }
 }
