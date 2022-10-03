@@ -1,17 +1,17 @@
 package com.Lommunity.controller.post;
 
 import com.Lommunity.application.file.dto.FileUploadRequest;
-import com.Lommunity.infrastructure.security.AuthUser;
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.PostTopicDto;
+import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
-import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.application.post.dto.response.PostTopicListResponse;
 import com.Lommunity.domain.post.PostTopic;
 import com.Lommunity.domain.user.User;
+import com.Lommunity.infrastructure.security.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -63,6 +63,11 @@ public class PostController {
         return postService.editPost(editRequest, fileUploadRequests, user);
     }
 
+    @DeleteMapping
+    public void deletePost(@RequestBody PostDeleteRequest deleteRequest, @AuthUser User user) {
+        postService.deletePost(deleteRequest, user);
+    }
+
     @GetMapping("/{postId}")
     public PostResponse getPost(@PathVariable("postId") Long postId) {
         return postService.getPost(postId);
@@ -76,10 +81,6 @@ public class PostController {
         return postService.userPostsByPage(userId, pageable);
     }
 
-    @DeleteMapping
-    public void deletePost(@RequestBody PostDeleteRequest deleteRequest, @AuthUser User user) {
-        postService.deletePost(deleteRequest, user);
-    }
 
     @GetMapping("/post-topics")
     public PostTopicListResponse getPostTopics() {

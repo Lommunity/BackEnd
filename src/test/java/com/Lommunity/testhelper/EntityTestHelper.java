@@ -5,7 +5,7 @@ import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.application.user.UserService;
-import com.Lommunity.application.user.dto.RegisterRequest;
+import com.Lommunity.application.user.dto.request.RegisterRequest;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
 import com.Lommunity.infrastructure.security.JwtAuthenticationToken;

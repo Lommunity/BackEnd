@@ -16,12 +16,10 @@ import java.util.List;
 @ToString
 public class PostDto {
     private Long postId;
-    private UserDto user;
+    private UserDto writer;
     private PostTopicDto topic;
     private String content;
     private List<String> postImageUrls;
-    private Long createdBy;
-    private Long lastModifiedBy;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 
@@ -29,11 +27,9 @@ public class PostDto {
         return PostDto.builder()
                       .postId(post.getId())
                       .topic(PostTopicDto.fromPostTopic(PostTopic.findTopicById(post.getTopicId())))
-                      .user(UserDto.fromEntity(post.getUser()))
+                      .writer(UserDto.fromEntity(post.getUser()))
                       .content(post.getContent())
                       .postImageUrls(post.getPostImageUrls())
-                      .createdBy(post.getCreatedBy())
-                      .lastModifiedBy(post.getLastModifiedBy())
                       .createdDate(post.getCreatedDate())
                       .lastModifiedDate(post.getLastModifiedDate())
                       .build();

@@ -1,9 +1,9 @@
 package com.Lommunity.application.user;
 
 import com.Lommunity.application.file.dto.FileUploadRequest;
-import com.Lommunity.application.user.dto.RegisterRequest;
-import com.Lommunity.application.user.dto.RegisterResponse;
-import com.Lommunity.application.user.dto.UserEditRequest;
+import com.Lommunity.application.user.dto.request.RegisterRequest;
+import com.Lommunity.application.user.dto.response.RegisterResponse;
+import com.Lommunity.application.user.dto.request.UserEditRequest;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
 import com.Lommunity.testhelper.EntityTestHelper;

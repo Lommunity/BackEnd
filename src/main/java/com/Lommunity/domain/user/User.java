@@ -1,6 +1,6 @@
 package com.Lommunity.domain.user;
 
-import com.Lommunity.application.user.dto.RegisterRequest;
+import com.Lommunity.application.user.dto.request.RegisterRequest;
 import com.Lommunity.domain.region.Region;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
