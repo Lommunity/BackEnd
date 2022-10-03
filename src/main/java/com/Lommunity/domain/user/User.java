@@ -14,6 +14,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "users") // users로 설정을 안하면 오류 발생
+@Table(uniqueConstraints = {@UniqueConstraint(
+        name = "PROVIDER_PROVIDERID_UNIQUE", columnNames = {"provider", "providerId"}
+)})
 public class User {
 
     @Id

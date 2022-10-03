@@ -39,7 +39,7 @@ public class LoginService {
     }
 
     private User findUser(Oauth2UserInfo oauth2UserInfo, String provider) {
-        Optional<User> user = userRepository.findByProviderId(oauth2UserInfo.getProviderId());
+        Optional<User> user = userRepository.findByProviderProviderId(provider, oauth2UserInfo.getProviderId());
         if (user.isPresent()) { // userRepository에 providerId에 해당하는 user 가 있는 경우(registered는 false 혹은 true)
             return user.get();
         }

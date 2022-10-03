@@ -7,7 +7,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByProviderId(String providerId);
+    @Query(value = "select u from users u where u.provider = :provider and u.providerId = :providerId")
+    Optional<User> findByProviderProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
 
     @Query(value = "select u from users u left join fetch u.region where u.id = :userId")
     Optional<User> findWithRegionById(@Param("userId") Long userId);

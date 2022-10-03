@@ -6,9 +6,12 @@ import com.Lommunity.application.user.dto.RegisterResponse;
 import com.Lommunity.application.user.dto.UserEditRequest;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
+import com.Lommunity.testhelper.EntityTestHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.UUID;
 
 import static com.Lommunity.domain.user.User.UserRole;
 import static com.Lommunity.domain.user.User.builder;
@@ -21,6 +24,8 @@ class UserServiceTest {
     UserRepository userRepository;
     @Autowired
     UserService userService;
+    @Autowired
+    EntityTestHelper entityTestHelper;
 
 
     @Test
@@ -29,7 +34,7 @@ class UserServiceTest {
                 .nickname("이혜은")
                 .profileImageUrl("aaa")
                 .provider("naver")
-                .providerId("0430")
+                .providerId(UUID.randomUUID().toString())
                 .role(UserRole.USER)
                 .registered(false)
                 .build());
@@ -56,23 +61,7 @@ class UserServiceTest {
     @Test
     public void edit() {
         // given
-        User user = userRepository.save(builder()
-                .nickname("이혜은")
-                .profileImageUrl("aaa")
-                .provider("naver")
-                .providerId("0430")
-                .role(UserRole.USER)
-                .registered(false)
-                .build());
-
-        RegisterResponse response = userService.register(RegisterRequest.builder()
-                                                                        .userId(user.getId())
-                                                                        .nickname("순대곱창전골")
-                                                                        .regionCode(2611051000L)
-                                                                        .build(),
-                FileUploadRequest.builder()
-                                 .filename("testImageUrl")
-                                 .build());
+        User user = entityTestHelper.createUser("홍길동");
 
         // when
         UserEditRequest editRequest = UserEditRequest.builder()
@@ -83,11 +72,10 @@ class UserServiceTest {
         userService.edit(user.getId(), editRequest, uploadRequest);
 
         // then
-        User completeJoin = userRepository.findWithRegionById(user.getId()).get();
-        assertThat(completeJoin.getNickname()).isEqualTo("apple");
-        assertThat(completeJoin.getId()).isEqualTo(user.getId());
-        assertThat(completeJoin.isRegistered()).isEqualTo(true);
-        assertThat(completeJoin.getProfileImageUrl()).isEqualTo("editImageFile");
-        assertThat(completeJoin.getRegion().getCode()).isEqualTo(2611060000L);
+        User findUser = userRepository.findWithRegionById(user.getId()).get();
+        assertThat(findUser.getNickname()).isEqualTo("apple");
+        assertThat(findUser.getId()).isEqualTo(user.getId());
+        assertThat(findUser.getProfileImageUrl()).isEqualTo("editImageFile");
+        assertThat(findUser.getRegion().getCode()).isEqualTo(2611060000L);
     }
 }
