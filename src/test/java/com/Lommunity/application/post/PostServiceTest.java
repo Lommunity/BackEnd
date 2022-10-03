@@ -1,13 +1,14 @@
 package com.Lommunity.application.post;
 
+import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.dto.PostDto;
+import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
-import com.Lommunity.domain.post.PostTopic;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.testhelper.EntityTestHelper;
 import org.junit.jupiter.api.Test;
@@ -39,12 +40,24 @@ class PostServiceTest {
         User user = entityTestHelper.createUser("홍길동");
 
         // when
-        PostResponse postResponse = entityTestHelper.createPost(user);
+        PostCreateRequest createRequest = PostCreateRequest.builder()
+                                                     .topicId(1L)
+                                                     .content("content")
+                                                     .build();
+        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
+        fileUploadRequests.add(FileUploadRequest.builder()
+                                                .filename("fileName 1")
+                                                .build());
+        fileUploadRequests.add(FileUploadRequest.builder()
+                                                .filename("fileName 2")
+                                                .build());
+        PostResponse postResponse = postService.createPost(createRequest, fileUploadRequests, user);
 
         // then
-        assertThat(PostTopic.findTopicById(postResponse.getPost().getTopic().getTopicId()).name()).isEqualTo("QUESTION");
-        assertThat(postResponse.getPost().getTopic().getDescription()).isEqualTo("동네 질문");
-        assertThat(postResponse.getPost().getImageUrl()).isEqualTo(null);
+        assertThat(postResponse.getPost().getTopic().getTopicId()).isEqualTo(1L);
+        assertThat(postResponse.getPost().getPostImageUrls().size()).isEqualTo(2);
+        assertThat(postResponse.getPost().getPostImageUrls().get(0)).isEqualTo("fileName 1");
+        assertThat(postResponse.getPost().getPostImageUrls().get(1)).isEqualTo("fileName 2");
 
     }
 
@@ -53,21 +66,30 @@ class PostServiceTest {
         // given
         User user = entityTestHelper.createUser("홍길동");
         PostResponse postResponse = entityTestHelper.createPost(user);
+        List<String> leavePostImageUrls = postResponse.getPost().getPostImageUrls().subList(0, 1);
+        List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            newPostImageUrls.add(FileUploadRequest
+                    .builder()
+                    .filename("newFileName " + i)
+                    .build());
+        }
         // when
         PostEditRequest editRequest = PostEditRequest.builder()
-                                                     .userId(user.getId())
-                                                     .topicId(3L)
                                                      .postId(postResponse.getPost().getPostId())
-                                                     .content(null)
-                                                     .imageUrl("aaa")
+                                                     .topicId(3L)
+                                                     .content("edit content")
+                                                     .postImageUrls(leavePostImageUrls)
                                                      .build();
-        postService.editPost(editRequest, user);
-        Post post = postRepository.findById(postResponse.getPost().getPostId()).get();
+        postService.editPost(editRequest, newPostImageUrls, user);
+        Post findPost = postRepository.findById(postResponse.getPost().getPostId()).get();
         // then
-        assertThat(post.getTopicId()).isEqualTo(3L);
-        assertThat(post.getCreatedBy()).isEqualTo(user.getId());
-        assertThat(post.getContent()).isEqualTo("content"); // null을 넘길경우 수정 안된다.
-        assertThat(post.getImageUrl()).isEqualTo("aaa");
+        assertThat(findPost.getTopicId()).isEqualTo(3L);
+        assertThat(findPost.getContent()).isEqualTo("edit content");
+        assertThat(findPost.getPostImageUrls().size()).isEqualTo(4);
+        assertThat(findPost.getPostImageUrls().get(0)).isEqualTo("fileName 1");
+        assertThat(findPost.getPostImageUrls().get(1)).isEqualTo("newFileName 1");
+        assertThat(findPost.getPostImageUrls().get(2)).isEqualTo("newFileName 2");
     }
 
     @Test
@@ -75,16 +97,28 @@ class PostServiceTest {
         // given
         User user = entityTestHelper.createUser("홍길동");
         PostDto createdPost = entityTestHelper.createPost(user).getPost();
-        Long postId = createdPost.getPostId();
         // when
         PostDeleteRequest deleteRequest = PostDeleteRequest.builder()
-                                                           .userId(user.getId())
                                                            .postId(createdPost.getPostId())
                                                            .build();
         postService.deletePost(deleteRequest, user);
         // then
-        assertThrows(NoSuchElementException.class, () -> postRepository.findById(postId)
+        assertThrows(NoSuchElementException.class, () -> postRepository.findById(createdPost.getPostId())
                                                                        .orElseThrow(() -> new NoSuchElementException("postId에 해당하는 게시물은 없습니다.")));
+    }
+
+    @Test
+    public void getPost() {
+        // give
+        User user = entityTestHelper.createUser("홍길동");
+        PostResponse postResponse1 = entityTestHelper.createPostWithNumber(user, 1);
+        PostResponse postResponse2 = entityTestHelper.createPostWithNumber(user, 2);
+        PostResponse postResponse3 = entityTestHelper.createPostWithNumber(user, 3);
+        // when
+        PostResponse getPostById = postService.getPost(postResponse1.getPost().getPostId());
+        // then
+        assertThat(getPostById.getPost().getPostId()).isEqualTo(postResponse1.getPost().getPostId());
+        assertThat(getPostById.getPost().getContent()).isEqualTo("content1");
     }
 
     @Test
@@ -96,7 +130,7 @@ class PostServiceTest {
         List<PostDto> originPostDtoList = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            originPostDtoList.add(entityTestHelper.createPosts(user, (i + 1)).getPost());
+            originPostDtoList.add(entityTestHelper.createPostWithNumber(user, (i + 1)).getPost());
         }
         // when
         PageRequest pageable = PageRequest.of(1, 5);
@@ -114,19 +148,19 @@ class PostServiceTest {
         User user1 = entityTestHelper.createUser("홍길동");
 
         for (int i = 0; i < 5; i++) {
-            entityTestHelper.createPosts(user1, (i + 1));
+            entityTestHelper.createPostWithNumber(user1, (i + 1));
         }
 
         User user2 = entityTestHelper.createUser("이혜은");
         for (int i = 0; i < 6; i++) {
-            entityTestHelper.createPosts(user2, (i + 1));
+            entityTestHelper.createPostWithNumber(user2, (i + 1));
         }
 
         // when
         PageRequest pageable1 = PageRequest.of(0, 5);
         PageRequest pageable2 = PageRequest.of(1, 3);
-        PostPageResponse userPostsPageResponse1 = postService.userPostsByPage(user1.getId(), pageable1, user1);
-        PostPageResponse userPostsPageResponse2 = postService.userPostsByPage(user2.getId(), pageable2, user2);
+        PostPageResponse userPostsPageResponse1 = postService.userPostsByPage(user1.getId(), pageable1);
+        PostPageResponse userPostsPageResponse2 = postService.userPostsByPage(user2.getId(), pageable2);
 
         // then
         assertThat(userPostsPageResponse1.getPostPage().getTotalPages()).isEqualTo(1);

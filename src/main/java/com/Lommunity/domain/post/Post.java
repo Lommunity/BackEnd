@@ -1,5 +1,6 @@
 package com.Lommunity.domain.post;
 
+import com.Lommunity.domain.common.ListStringConverter;
 import com.Lommunity.domain.entity.BaseEntity;
 import com.Lommunity.domain.user.User;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Builder
@@ -26,19 +28,21 @@ public class Post extends BaseEntity {
     private User user;
     private Long topicId;
     private String content;
-    private String imageUrl;
 
-    public void editPost(Long userId, Long topicId, String content, String imageUrl) {
+    @Convert(converter = ListStringConverter.class)
+    @Column(length = 500)
+    private List<String> postImageUrls;
+
+    public void editPost(Long topicId, String content, List<String> postImageUrls) {
         PostTopic.isPresentTopicId(topicId);
 
-        if (topicId != null) {
-            this.topicId = topicId;
-        }
+        this.topicId = topicId;
 
         if (content != null) {
             this.content = content;
         }
-        this.imageUrl = imageUrl;
+        if (postImageUrls != null) {
+            this.postImageUrls = postImageUrls;
+        }
     }
-
 }

@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDeleteRequest {
-    private Long userId;
     private Long postId;
 }

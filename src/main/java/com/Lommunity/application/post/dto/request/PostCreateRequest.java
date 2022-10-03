@@ -7,10 +7,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostRequest {
+public class PostCreateRequest {
 
-    private Long userId;
     private Long topicId;
     private String content;
-    private String imageUrl;
 }
