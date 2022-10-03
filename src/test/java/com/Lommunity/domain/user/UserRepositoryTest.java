@@ -2,7 +2,7 @@ package com.Lommunity.domain.user;
 
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.domain.region.RegionRepository;
-import com.Lommunity.testHelper.EntityTestHelper;
+import com.Lommunity.testhelper.EntityTestHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

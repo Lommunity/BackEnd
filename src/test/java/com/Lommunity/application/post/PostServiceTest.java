@@ -2,15 +2,15 @@ package com.Lommunity.application.post;
 
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.dto.PostDto;
+import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
-import com.Lommunity.domain.post.PostTopic;
 import com.Lommunity.domain.user.User;
-import com.Lommunity.testHelper.EntityTestHelper;
+import com.Lommunity.testhelper.EntityTestHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,14 +40,24 @@ class PostServiceTest {
         User user = entityTestHelper.createUser("홍길동");
 
         // when
-        PostResponse postResponse = entityTestHelper.createPost(user);
+        PostCreateRequest createRequest = PostCreateRequest.builder()
+                                                     .topicId(1L)
+                                                     .content("content")
+                                                     .build();
+        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
+        fileUploadRequests.add(FileUploadRequest.builder()
+                                                .filename("fileName 1")
+                                                .build());
+        fileUploadRequests.add(FileUploadRequest.builder()
+                                                .filename("fileName 2")
+                                                .build());
+        PostResponse postResponse = postService.createPost(createRequest, fileUploadRequests, user);
 
         // then
-        assertThat(PostTopic.findTopicById(postResponse.getPost().getTopic().getTopicId()).name()).isEqualTo("QUESTION");
-        assertThat(postResponse.getPost().getTopic().getDescription()).isEqualTo("동네 질문");
-        assertThat(postResponse.getPost().getPostImageUrls().size()).isEqualTo(5);
+        assertThat(postResponse.getPost().getTopic().getTopicId()).isEqualTo(1L);
+        assertThat(postResponse.getPost().getPostImageUrls().size()).isEqualTo(2);
         assertThat(postResponse.getPost().getPostImageUrls().get(0)).isEqualTo("fileName 1");
-        assertThat(postResponse.getPost().getPostImageUrls().get(3)).isEqualTo("fileName 4");
+        assertThat(postResponse.getPost().getPostImageUrls().get(1)).isEqualTo("fileName 2");
 
     }
 
