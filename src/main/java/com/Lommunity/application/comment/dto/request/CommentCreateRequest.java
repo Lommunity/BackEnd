@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentRequest {
+public class CommentCreateRequest {
     private Long postId;
     private String content;
 }

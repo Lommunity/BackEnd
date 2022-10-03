@@ -1,6 +1,6 @@
 package com.Lommunity.application.comment;
 
-import com.Lommunity.application.comment.dto.request.CommentRequest;
+import com.Lommunity.application.comment.dto.request.CommentCreateRequest;
 import com.Lommunity.application.comment.dto.response.CommentResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.comment.Comment;
@@ -31,10 +31,10 @@ class CommentServiceTest {
         PostResponse post = entityTestHelper.createPost(user);
 
         // when
-        CommentRequest request = CommentRequest.builder()
-                                               .postId(post.getPost().getPostId())
-                                               .content("comment content")
-                                               .build();
+        CommentCreateRequest request = CommentCreateRequest.builder()
+                                                           .postId(post.getPost().getPostId())
+                                                           .content("comment content")
+                                                           .build();
         CommentResponse commentResponse = commentService.createComment(request, user);
         // then
         Comment comment = commentRepository.findById(commentResponse.getComment().getCommentId()).get();

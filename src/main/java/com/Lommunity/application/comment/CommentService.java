@@ -1,7 +1,7 @@
 package com.Lommunity.application.comment;
 
 import com.Lommunity.application.comment.dto.CommentDto;
-import com.Lommunity.application.comment.dto.request.CommentRequest;
+import com.Lommunity.application.comment.dto.request.CommentCreateRequest;
 import com.Lommunity.application.comment.dto.response.CommentResponse;
 import com.Lommunity.domain.comment.Comment;
 import com.Lommunity.domain.comment.CommentRepository;
@@ -19,7 +19,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-    public CommentResponse createComment(CommentRequest createRequest, User user) {
+    public CommentResponse createComment(CommentCreateRequest createRequest, User user) {
         Post post = postRepository.findById(createRequest.getPostId())
                                   .orElseThrow(() -> new IllegalArgumentException("postId에 해당하는 게시물이 없습니다. PostID: " + createRequest.getPostId()));
         Comment comment = commentRepository.save(Comment.builder()
