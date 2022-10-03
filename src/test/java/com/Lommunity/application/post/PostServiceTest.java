@@ -66,6 +66,7 @@ class PostServiceTest {
         // given
         User user = entityTestHelper.createUser("홍길동");
         PostResponse postResponse = entityTestHelper.createPost(user);
+        Long postId = postResponse.getPost().getPostId();
         List<String> leavePostImageUrls = postResponse.getPost().getPostImageUrls().subList(0, 1);
         List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
@@ -76,13 +77,12 @@ class PostServiceTest {
         }
         // when
         PostEditRequest editRequest = PostEditRequest.builder()
-                                                     .postId(postResponse.getPost().getPostId())
                                                      .topicId(3L)
                                                      .content("edit content")
                                                      .postImageUrls(leavePostImageUrls)
                                                      .build();
-        postService.editPost(editRequest, newPostImageUrls, user);
-        Post findPost = postRepository.findById(postResponse.getPost().getPostId()).get();
+        postService.editPost(postId, editRequest, newPostImageUrls, user);
+        Post findPost = postRepository.findById(postId).get();
         // then
         assertThat(findPost.getTopicId()).isEqualTo(3L);
         assertThat(findPost.getContent()).isEqualTo("edit content");

@@ -1,17 +1,17 @@
 package com.Lommunity.controller.post;
 
 import com.Lommunity.application.file.dto.FileUploadRequest;
-import com.Lommunity.infrastructure.security.AuthUser;
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.PostTopicDto;
+import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
-import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.application.post.dto.response.PostTopicListResponse;
 import com.Lommunity.domain.post.PostTopic;
 import com.Lommunity.domain.user.User;
+import com.Lommunity.infrastructure.security.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
@@ -46,8 +46,9 @@ public class PostController {
         return postService.createPost(createRequest, fileUploadRequests, user);
     }
 
-    @PutMapping
-    private PostResponse editPost(@RequestPart("dto") PostEditRequest editRequest,
+    @PutMapping("/{postId}")
+    private PostResponse editPost(@PathVariable("postId") Long postId,
+                                  @RequestPart("dto") PostEditRequest editRequest,
                                   @RequestPart(required = false) List<MultipartFile> postImageFiles,
                                   @AuthUser User user) {
         if (CollectionUtils.isEmpty(editRequest.getPostImageUrls())) {
@@ -60,7 +61,7 @@ public class PostController {
                 fileUploadRequests.add(toFileUploadRequest(postImageFile));
             }
         }
-        return postService.editPost(editRequest, fileUploadRequests, user);
+        return postService.editPost(postId, editRequest, fileUploadRequests, user);
     }
 
     @GetMapping("/{postId}")

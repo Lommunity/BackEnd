@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PostEditRequest {
 
-    private Long postId;
     private Long topicId;
     private String content;
     private List<String> postImageUrls;
