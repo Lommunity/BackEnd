@@ -73,7 +73,6 @@ public class PostService {
         }
 
         post.editPost(editRequest.getTopicId(), editRequest.getContent(), postImageUrls);
-        postRepository.save(post);
         return PostResponse.builder()
                            .post(PostDto.fromEntity(post))
                            .build();
