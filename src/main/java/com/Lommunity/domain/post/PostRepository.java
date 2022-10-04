@@ -12,5 +12,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query(value = "select p from posts p left join fetch p.user where p.id = :postId")
     Optional<Post> findWithUserById(@Param("postId") Long postId);
-    Page<Post> findByUserId(Long userId, Pageable pageable);
+    Page<Post> findPostPageByUserId(Long userId, Pageable pageable);
 }

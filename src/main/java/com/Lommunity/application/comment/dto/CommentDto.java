@@ -3,13 +3,16 @@ package com.Lommunity.application.comment.dto;
 import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.user.dto.UserDto;
 import com.Lommunity.domain.comment.Comment;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class CommentDto {
     private Long commentId;
     private PostDto post;
