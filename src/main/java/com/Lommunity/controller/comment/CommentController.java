@@ -27,4 +27,9 @@ public class CommentController {
                                        @AuthUser User user) {
         return commentService.editComment(commentId, editRequest, user);
     }
+
+    @DeleteMapping("/{commentId}")
+    public void deleteComment(@PathVariable("commentId") Long commentId, @AuthUser User user) {
+        commentService.deleteComment(commentId, user);
+    }
 }

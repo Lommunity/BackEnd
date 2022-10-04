@@ -62,4 +62,19 @@ class CommentServiceTest {
         // then
         assertThat(findComment.getContent()).isEqualTo("edit comment content");
     }
+
+    @Test
+    public void deleteCommentTest() {
+        // given
+        User user = entityTestHelper.createUser("홍길동");
+        PostResponse post = entityTestHelper.createPost(user);
+        Long postId = post.getPost().getPostId();
+        CommentResponse comment_content = entityTestHelper.createComment(postId, "comment content", user);
+        Long commentId = comment_content.getComment().getCommentId();
+
+        // when
+        commentService.deleteComment(commentId, user);
+        // then
+        assertThat(commentRepository.existsById(commentId)).isEqualTo(false);
+    }
 }

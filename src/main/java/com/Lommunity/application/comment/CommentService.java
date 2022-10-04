@@ -32,14 +32,25 @@ public class CommentService {
                               .comment(CommentDto.fromEntity(comment))
                               .build();
     }
+
     public CommentResponse editComment(Long commentId, CommentEditRequest editRequest, User user) {
-        Comment comment = commentRepository.findById(commentId)
-                                           .orElseThrow(() -> new IllegalArgumentException("commentId에 해당하는 코멘트가 없습니다. CommentID: " + commentId));
+        Comment comment = isPresentComment(commentId);
         isWriter(comment, user.getId());
         comment.editComment(editRequest.getContent());
         return CommentResponse.builder()
                               .comment(CommentDto.fromEntity(comment))
                               .build();
+    }
+
+    public void deleteComment(Long commentId, User user) {
+        Comment comment = isPresentComment(commentId);
+        isWriter(comment, user.getId());
+        commentRepository.delete(comment);
+    }
+
+    private Comment isPresentComment(Long commentId) {
+        return commentRepository.findById(commentId)
+                                .orElseThrow(() -> new IllegalArgumentException("commentID에 해당하는 코멘트가 존재하지 않습니다. CommentID: " + commentId));
     }
 
     private void isWriter(Comment comment, Long userId) {
