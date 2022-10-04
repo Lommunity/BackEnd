@@ -40,6 +40,7 @@ class CommentServiceTest {
         // then
         Comment comment = commentRepository.findById(commentResponse.getComment().getCommentId()).get();
         assertThat(comment.getPost().getId()).isEqualTo(post.getPost().getPostId());
+//        assertThat(comment.getPost().getContent()).isEqualTo(post.getPost().getContent());
         assertThat(comment.getUser().getId()).isEqualTo(user.getId());
         assertThat(comment.getContent()).isEqualTo("comment content");
     }

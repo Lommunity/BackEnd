@@ -51,11 +51,7 @@ public class EntityTestHelper {
                                             .regionCode(2611051000L)
                                             .build(), FileUploadRequest.builder().build());
         User registeredUser = userRepository.findWithRegionById(user.getId()).get();
-
-        Authentication authentication = new JwtAuthenticationToken(registeredUser, "jwt");
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
+        makeAuthenticationToken(user.getId());
 
         return registeredUser;
     }
@@ -96,5 +92,13 @@ public class EntityTestHelper {
                                                                  .content(content)
                                                                  .build();
         return commentService.createComment(createRequest, user);
+    }
+
+    private void makeAuthenticationToken(Long userId) {
+        User user = userRepository.findWithRegionById(userId).get();
+        Authentication authentication = new JwtAuthenticationToken(user, "jwt");
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
     }
 }
