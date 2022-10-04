@@ -51,7 +51,7 @@ public class CommentService {
     }
 
     public CommentPageResponse getCommentPage(Long postId, Pageable pageable) {
-        isPresentComment(postId);
+        isPresentPost(postId);
         Page<CommentDto> commentDtoPage = commentRepository.findCommentPageByPostId(postId, pageable)
                                                            .map(CommentDto::fromEntity);
         return CommentPageResponse.builder()
