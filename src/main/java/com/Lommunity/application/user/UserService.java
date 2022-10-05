@@ -44,7 +44,7 @@ public class UserService {
             profileImageUrl = uploadProfileImage(fileUploadRequest);
         }
 
-        user.registerInfo(registerRequest, profileImageUrl, region);
+        user.registerInfo(registerRequest.getNickname(), profileImageUrl, region);
         return RegisterResponse.builder()
                                .user(UserDto.fromEntity(user))
                                .build();
@@ -55,10 +55,10 @@ public class UserService {
 
         String nickname = editRequest.getNickname();
 
-        Region region = null;
-        if (editRequest.getRegionCode() != null) {
-            region = findRegion(editRequest.getRegionCode());
+        if (editRequest.getRegionCode() == null) {
+            throw new IllegalArgumentException("사용자 정보 수정시 지역은 필수입니다.");
         }
+        Region region = findRegion(editRequest.getRegionCode());
 
         String profileImageUrl;
         if (fileUploadRequest != null) {

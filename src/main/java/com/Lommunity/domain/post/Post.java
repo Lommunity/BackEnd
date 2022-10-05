@@ -35,8 +35,7 @@ public class Post extends BaseEntity {
 
     @Builder
     public Post(User user, Long topicId, String content, List<String> postImageUrls) {
-        if (topicId == null) throw new IllegalArgumentException("topicId가 비어있으면 안됩니다.");
-        if (StringUtils.isEmpty(content)) throw new IllegalArgumentException("빈 내용으로 게시물 등록은 불가능합니다.");
+        emptyCheck(topicId, content);
         this.user = user;
         this.topicId = topicId;
         this.content = content;
@@ -44,12 +43,16 @@ public class Post extends BaseEntity {
     }
 
     public void editPost(Long topicId, String content, List<String> postImageUrls) {
-        if (topicId == null) throw new IllegalArgumentException("topicId는 비어있으면 안됩니다.");
-        if (StringUtils.isEmpty(content)) throw new IllegalArgumentException("빈 내용으로 게시물 수정이 불가능합니다.");
+        emptyCheck(topicId, content);
         PostTopic.isPresentTopicId(topicId);
 
         this.topicId = topicId;
         this.content = content;
         this.postImageUrls = postImageUrls;
+    }
+
+    private void emptyCheck(Long topicId, String content) {
+        if (topicId == null) throw new IllegalArgumentException("topicId는 비어있으면 안됩니다.");
+        if (StringUtils.isEmpty(content)) throw new IllegalArgumentException("빈 내용으로 게시물 수정이 불가능합니다.");
     }
 }
