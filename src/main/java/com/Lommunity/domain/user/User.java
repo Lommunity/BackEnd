@@ -30,7 +30,7 @@ public class User {
     private UserRole role; // 회원가입 시 사용자가 수정불가한 부분
     private boolean registered; // 회원가입 시 사용자가 수정불가한 부분
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "code")
+    @JoinColumn(name = "region_code")
     private Region region;
 
     public enum UserRole {

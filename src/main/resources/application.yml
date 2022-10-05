@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:test
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://localhost:3306/lommunity
+    username: local
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         #        show_sql: true
