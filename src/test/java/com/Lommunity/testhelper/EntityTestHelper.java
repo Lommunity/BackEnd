@@ -1,11 +1,10 @@
 package com.Lommunity.testhelper;
 
 import com.Lommunity.application.file.dto.FileUploadRequest;
-import com.Lommunity.application.post.PostService;
-import com.Lommunity.application.post.dto.request.PostCreateRequest;
-import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.RegisterRequest;
+import com.Lommunity.domain.post.Post;
+import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
 import com.Lommunity.infrastructure.security.JwtAuthenticationToken;
@@ -29,7 +28,7 @@ public class EntityTestHelper {
     @Autowired
     UserService userService;
     @Autowired
-    PostService postService;
+    PostRepository postRepository;
 
     public User createUser(String nickname) {
         User user = userRepository.save(builder()
@@ -55,33 +54,30 @@ public class EntityTestHelper {
         return registeredUser;
     }
 
-    public PostResponse createPost(User user) {
-        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            fileUploadRequests.add(FileUploadRequest.builder()
-                                                    .filename("fileName " + (i + 1))
-                                                    .build());
+    public Post createPost(User user) {
+        List<String> postImageUrls = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            postImageUrls.add("fileName " + i);
         }
-        return postService.createPost(PostCreateRequest.builder()
-                                                       .topicId(1L)
-                                                       .content("content")
-                                                       .build(),
-                fileUploadRequests,
-                user);
+
+        return postRepository.save(Post.builder()
+                                       .user(user)
+                                       .topicId(1L)
+                                       .content("content")
+                                       .postImageUrls(postImageUrls)
+                                       .build());
     }
 
-    public PostResponse createPostWithNumber(User user, int contentNumber) { // 한 명의 사용자가 다수개의 post를 게시할 때 사용하는 메서드
-        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            fileUploadRequests.add(FileUploadRequest.builder()
-                                                    .filename("file name " + i + 1)
-                                                    .build());
+    public Post createPostWithNumber(User user, int contentNumber) { // 한 명의 사용자가 다수개의 post를 게시할 때 사용하는 메서드
+        List<String> postImageUrls = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            postImageUrls.add("fileName " + i);
         }
-        return postService.createPost(PostCreateRequest.builder()
-                                                       .topicId(1L)
-                                                       .content("content" + contentNumber)
-                                                       .build(),
-                fileUploadRequests
-                , user);
+        return postRepository.save(Post.builder()
+                                       .user(user)
+                                       .topicId(1L)
+                                       .content("content" + contentNumber)
+                                       .postImageUrls(postImageUrls)
+                                       .build());
     }
 }
