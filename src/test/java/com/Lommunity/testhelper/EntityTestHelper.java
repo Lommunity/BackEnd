@@ -1,7 +1,6 @@
 package com.Lommunity.testhelper;
 
 import com.Lommunity.application.file.dto.FileUploadRequest;
-import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.RegisterRequest;
 import com.Lommunity.domain.post.Post;
