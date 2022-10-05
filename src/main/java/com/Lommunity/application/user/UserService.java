@@ -29,15 +29,8 @@ public class UserService {
     // 회원 가입
     public RegisterResponse register(RegisterRequest registerRequest, FileUploadRequest fileUploadRequest) {
         User user = findUser(registerRequest.getUserId());
-
-        if (user.isRegistered()) {
-            throw new IllegalArgumentException("해당 사용자는 이미 가입되어 있습니다.");
-        }
-
-        if (registerRequest.getRegionCode() == null) {
-            throw new IllegalArgumentException("회원가입 시 지역 선택은 필수입니다.");
-        }
-        Region region = findRegion(registerRequest.getRegionCode());
+        if (user.isRegistered()) throw new IllegalArgumentException("해당 사용자는 이미 가입되어 있습니다.");
+        Region region = getRegion(registerRequest.getRegionCode());
 
         String profileImageUrl = null;
         if (fileUploadRequest != null) {
@@ -50,15 +43,10 @@ public class UserService {
                                .build();
     }
 
-    public UserEditResponse edit(Long userId, UserEditRequest editRequest, FileUploadRequest fileUploadRequest) {
+    public UserEditResponse editUser(Long userId, UserEditRequest editRequest, FileUploadRequest fileUploadRequest) {
         User user = findUser(userId);
-
         String nickname = editRequest.getNickname();
-
-        if (editRequest.getRegionCode() == null) {
-            throw new IllegalArgumentException("사용자 정보 수정시 지역은 필수입니다.");
-        }
-        Region region = findRegion(editRequest.getRegionCode());
+        Region region = getRegion(editRequest.getRegionCode());
 
         String profileImageUrl;
         if (fileUploadRequest != null) {
@@ -79,7 +67,7 @@ public class UserService {
                              .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + userId));
     }
 
-    private Region findRegion(Long regionCode) {
+    private Region getRegion(Long regionCode) {
         return regionRepository.findById(regionCode)
                                .orElseThrow(() -> new IllegalArgumentException("regionCode에 해당하는 Region이 없습니다. regionCode: " + regionCode));
     }
@@ -87,5 +75,6 @@ public class UserService {
     private String uploadProfileImage(FileUploadRequest uploadRequest) {
         return fileService.upload(uploadRequest, PROFILE_IMAGE_DIRECTORY);
     }
+
 
 }

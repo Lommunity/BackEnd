@@ -50,7 +50,7 @@ public class UserController {
             ensureImageFile(profileImageFile);
             fileUploadRequest = toFileUploadRequest(profileImageFile);
         }
-        return userService.edit(userId, editRequest, fileUploadRequest);
+        return userService.editUser(userId, editRequest, fileUploadRequest);
     }
 
     private void ensureImageFile(MultipartFile profileImageFile) {

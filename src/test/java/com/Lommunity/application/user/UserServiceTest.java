@@ -94,7 +94,7 @@ class UserServiceTest {
                                                      .profileImageUrl(user.getProfileImageUrl())
                                                      .regionCode(2611060000L).build();
         FileUploadRequest uploadRequest = FileUploadRequest.builder().filename("editImageFile").build();
-        userService.edit(user.getId(), editRequest, uploadRequest);
+        userService.editUser(user.getId(), editRequest, uploadRequest);
 
         // then
         User findUser = userRepository.findWithRegionById(user.getId()).get();
@@ -115,6 +115,6 @@ class UserServiceTest {
                                                      .profileImageUrl(user.getProfileImageUrl())
                                                      .regionCode(2611060000L).build();
         // then
-        assertThrows(IllegalArgumentException.class, () -> userService.edit(user.getId(), editRequest, null));
+        assertThrows(IllegalArgumentException.class, () -> userService.editUser(user.getId(), editRequest, null));
     }
 }
