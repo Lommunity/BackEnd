@@ -14,7 +14,6 @@ import com.Lommunity.testhelper.EntityTestHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
@@ -65,9 +64,8 @@ class PostServiceTest {
     public void editPostTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
-        PostResponse postResponse = entityTestHelper.createPost(user);
-        Long postId = postResponse.getPost().getPostId();
-        List<String> leavePostImageUrls = postResponse.getPost().getPostImageUrls().subList(0, 1);
+        Post post = entityTestHelper.createPost(user);
+        List<String> leavePostImageUrls = post.getPostImageUrls().subList(0, 1);
         List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
             newPostImageUrls.add(FileUploadRequest
@@ -81,8 +79,8 @@ class PostServiceTest {
                                                      .content("edit content")
                                                      .postImageUrls(leavePostImageUrls)
                                                      .build();
-        postService.editPost(postId, editRequest, newPostImageUrls, user);
-        Post findPost = postRepository.findById(postId).get();
+        postService.editPost(post.getId(), editRequest, newPostImageUrls, user);
+        Post findPost = postRepository.findById(post.getId()).get();
         // then
         assertThat(findPost.getTopicId()).isEqualTo(3L);
         assertThat(findPost.getContent()).isEqualTo("edit content");
@@ -96,14 +94,15 @@ class PostServiceTest {
     public void deletePostTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
-        PostDto createdPost = entityTestHelper.createPost(user).getPost();
+        Post post = entityTestHelper.createPost(user);
+
         // when
         PostDeleteRequest deleteRequest = PostDeleteRequest.builder()
-                                                           .postId(createdPost.getPostId())
+                                                           .postId(post.getId())
                                                            .build();
         postService.deletePost(deleteRequest, user);
         // then
-        assertThrows(NoSuchElementException.class, () -> postRepository.findById(createdPost.getPostId())
+        assertThrows(NoSuchElementException.class, () -> postRepository.findById(post.getId())
                                                                        .orElseThrow(() -> new NoSuchElementException("postId에 해당하는 게시물은 없습니다.")));
     }
 
@@ -111,13 +110,12 @@ class PostServiceTest {
     public void getPost() {
         // give
         User user = entityTestHelper.createUser("홍길동");
-        PostResponse postResponse1 = entityTestHelper.createPostWithNumber(user, 1);
-        PostResponse postResponse2 = entityTestHelper.createPostWithNumber(user, 2);
-        PostResponse postResponse3 = entityTestHelper.createPostWithNumber(user, 3);
+        Post post1 = entityTestHelper.createPostWithNumber(user, 1);
+
         // when
-        PostResponse getPostById = postService.getPost(postResponse1.getPost().getPostId());
+        PostResponse getPostById = postService.getPost(post1.getId());
         // then
-        assertThat(getPostById.getPost().getPostId()).isEqualTo(postResponse1.getPost().getPostId());
+        assertThat(getPostById.getPost().getPostId()).isEqualTo(post1.getId());
         assertThat(getPostById.getPost().getContent()).isEqualTo("content1");
     }
 
@@ -129,16 +127,17 @@ class PostServiceTest {
 
         List<PostDto> originPostDtoList = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
-            originPostDtoList.add(entityTestHelper.createPostWithNumber(user, (i + 1)).getPost());
+        for (int i = 1; i <= 10; i++) {
+            Post post = entityTestHelper.createPostWithNumber(user, i);
+            originPostDtoList.add(PostDto.fromEntity(post));
         }
+
         // when
         PageRequest pageable = PageRequest.of(1, 5);
-        PostPageResponse allPostsPageResponse = postService.allPostsByPage(pageable);
+        PostPageResponse allPostPage = postService.allPostsByPage(pageable);
 
         // then
-        Page<PostDto> postPage = allPostsPageResponse.getPostPage();
-        List<PostDto> postDtoList = postPage.getContent();
+        List<PostDto> postDtoList = allPostPage.getPostPage().getContent();
         assertThat(postDtoList).isEqualTo(originPostDtoList.subList(5, 10));
     }
 
