@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 
@@ -33,7 +34,7 @@ public class Comment extends BaseTimeEntity {
     private String content;
 
     public void editComment(String content) {
-        if (content == null) {
+        if (StringUtils.isEmpty(content)) {
             throw new IllegalArgumentException("빈 내용으로 코멘트 수정이 불가능합니다.");
         }
         this.content = content;

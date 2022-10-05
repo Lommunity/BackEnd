@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @Query(value = "select p from posts p left join fetch p.user where p.id = :postId")
+    @Query(value = "select p from posts p join fetch p.user u join fetch u.region where p.id = :postId")
     Optional<Post> findWithUserById(@Param("postId") Long postId);
     Page<Post> findPostPageByUserId(Long userId, Pageable pageable);
 }
