@@ -66,12 +66,12 @@ public class CommentService {
 
     private Comment isPresentComment(Long commentId) {
         return commentRepository.findById(commentId)
-                                .orElseThrow(() -> new IllegalArgumentException("commentID에 해당하는 코멘트가 존재하지 않습니다. CommentID: " + commentId));
+                                .orElseThrow(() -> new IllegalArgumentException("commentID에 해당하는 댓글이 존재하지 않습니다. CommentID: " + commentId));
     }
 
     private void isWriter(Comment comment, Long userId) {
         if (!comment.getUser().getId().equals(userId)) {
-            throw new IllegalArgumentException("코멘트의 작성자가 아닙니다.");
+            throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다.");
         }
     }
 }

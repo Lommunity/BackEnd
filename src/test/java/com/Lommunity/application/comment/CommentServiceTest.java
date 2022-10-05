@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class CommentServiceTest {
@@ -49,6 +50,21 @@ class CommentServiceTest {
 //        assertThat(comment.getPost().getContent()).isEqualTo(post.getPost().getContent());
         assertThat(comment.getUser().getId()).isEqualTo(user.getId());
         assertThat(comment.getContent()).isEqualTo("comment content");
+    }
+
+    @Test
+    public void emptyContentCreateTest() {
+        // given
+        User user = entityTestHelper.createUser("홍길동");
+        PostResponse post = entityTestHelper.createPost(user);
+
+        // when
+        CommentCreateRequest request = CommentCreateRequest.builder()
+                                                           .postId(post.getPost().getPostId())
+                                                           .content("")
+                                                           .build();
+        // when
+        assertThrows(IllegalArgumentException.class, () -> commentService.createComment(request, user));
     }
 
     @Test
