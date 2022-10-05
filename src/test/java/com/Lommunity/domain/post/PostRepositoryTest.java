@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import static com.Lommunity.domain.user.User.builder;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class PostRepositoryTest {
@@ -45,5 +46,6 @@ class PostRepositoryTest {
                                             .postImageUrls(new ArrayList<>())
                                             .build());
         Post fetchJoinPost = postRepository.findWithUserById(post.getId()).get();
+        assertThat(fetchJoinPost.getUser().getRegion().getFullname()).isEqualTo("부산 중구 중앙동");
     }
 }

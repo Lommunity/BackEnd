@@ -42,7 +42,6 @@ public class PostService {
             postImageUrls.add(imageUrl);
         }
 
-
         Post savePost = postRepository.save(Post.builder()
                                                 .user(user)
                                                 .topicId(createRequest.getTopicId())

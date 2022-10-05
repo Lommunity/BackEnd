@@ -41,9 +41,9 @@ class PostServiceTest {
 
         // when
         PostCreateRequest createRequest = PostCreateRequest.builder()
-                                                     .topicId(1L)
-                                                     .content("content")
-                                                     .build();
+                                                           .topicId(1L)
+                                                           .content("content")
+                                                           .build();
         List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
         fileUploadRequests.add(FileUploadRequest.builder()
                                                 .filename("fileName 1")
@@ -59,6 +59,26 @@ class PostServiceTest {
         assertThat(postResponse.getPost().getPostImageUrls().get(0)).isEqualTo("fileName 1");
         assertThat(postResponse.getPost().getPostImageUrls().get(1)).isEqualTo("fileName 2");
 
+    }
+
+    @Test
+    public void emptyContentCreateTest() {
+        // then
+        User user = entityTestHelper.createUser("홍길동");
+        // given
+        PostCreateRequest createRequest = PostCreateRequest.builder()
+                                                           .topicId(1L)
+                                                           .content("")
+                                                           .build();
+        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
+        fileUploadRequests.add(FileUploadRequest.builder()
+                                                .filename("fileName 1")
+                                                .build());
+        fileUploadRequests.add(FileUploadRequest.builder()
+                                                .filename("fileName 2")
+                                                .build());
+        // when
+        assertThrows(IllegalArgumentException.class, () -> postService.createPost(createRequest, fileUploadRequests, user));
     }
 
     @Test
@@ -90,6 +110,32 @@ class PostServiceTest {
         assertThat(findPost.getPostImageUrls().get(0)).isEqualTo("fileName 1");
         assertThat(findPost.getPostImageUrls().get(1)).isEqualTo("newFileName 1");
         assertThat(findPost.getPostImageUrls().get(2)).isEqualTo("newFileName 2");
+    }
+
+    @Test
+    public void emptyContentEditTest() {
+        // given
+        User user = entityTestHelper.createUser("홍길동");
+        PostResponse postResponse = entityTestHelper.createPost(user);
+        List<String> leavePostImageUrls = postResponse.getPost().getPostImageUrls().subList(0, 1);
+        List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            newPostImageUrls.add(FileUploadRequest
+                    .builder()
+                    .filename("newFileName " + i)
+                    .build());
+        }
+
+        // when
+        PostEditRequest editRequest = PostEditRequest.builder()
+                                                     .postId(postResponse.getPost().getPostId())
+                                                     .topicId(3L)
+                                                     .content("")
+                                                     .postImageUrls(leavePostImageUrls)
+                                                     .build();
+        // when
+        assertThrows(IllegalArgumentException.class, () -> postService.editPost(editRequest, newPostImageUrls, user));
+
     }
 
     @Test

@@ -7,12 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "posts")
@@ -33,16 +34,24 @@ public class Post extends BaseEntity {
     @Column(length = 500)
     private List<String> postImageUrls;
 
+    @Builder
+    public Post(User user, Long topicId, String content, List<String> postImageUrls) {
+        if (Objects.isNull(user)) throw new IllegalArgumentException("user는 비어있으면 안됩니다.");
+        if (topicId == null) throw new IllegalArgumentException("topicId가 비어있으면 안됩니다.");
+        if (StringUtils.isEmpty(content)) throw new IllegalArgumentException("content가 비어있으면 안됩니다.");
+        this.user = user;
+        this.topicId = topicId;
+        this.content = content;
+        this.postImageUrls = postImageUrls;
+    }
+
     public void editPost(Long topicId, String content, List<String> postImageUrls) {
+        if (topicId == null) throw new IllegalArgumentException("topicId는 비어있으면 안됩니다.");
+        if (StringUtils.isEmpty(content)) throw new IllegalArgumentException("content는 비어있으면 안됩니다.");
         PostTopic.isPresentTopicId(topicId);
 
         this.topicId = topicId;
-
-        if (content != null) {
-            this.content = content;
-        }
-        if (postImageUrls != null) {
-            this.postImageUrls = postImageUrls;
-        }
+        this.content = content;
+        this.postImageUrls = postImageUrls;
     }
 }
