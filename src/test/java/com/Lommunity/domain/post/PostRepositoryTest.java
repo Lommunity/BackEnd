@@ -45,7 +45,7 @@ class PostRepositoryTest {
                                             .content("content")
                                             .postImageUrls(new ArrayList<>())
                                             .build());
-        Post fetchJoinPost = postRepository.findWithUserById(post.getId()).get();
+        Post fetchJoinPost = postRepository.findWithUserByPostId(post.getId()).get();
         assertThat(fetchJoinPost.getUser().getRegion().getFullname()).isEqualTo("부산 중구 중앙동");
     }
 }

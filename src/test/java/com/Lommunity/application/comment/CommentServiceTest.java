@@ -5,9 +5,9 @@ import com.Lommunity.application.comment.dto.request.CommentCreateRequest;
 import com.Lommunity.application.comment.dto.request.CommentEditRequest;
 import com.Lommunity.application.comment.dto.response.CommentPageResponse;
 import com.Lommunity.application.comment.dto.response.CommentResponse;
-import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.comment.Comment;
 import com.Lommunity.domain.comment.CommentRepository;
+import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.testhelper.EntityTestHelper;
 import org.junit.jupiter.api.Test;
@@ -36,19 +36,18 @@ class CommentServiceTest {
     public void createCommentTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
-        PostResponse post = entityTestHelper.createPost(user);
+        Post post = entityTestHelper.createPost(user);
 
         // when
         CommentCreateRequest request = CommentCreateRequest.builder()
-                                                           .postId(post.getPost().getPostId())
+                                                           .postId(post.getId())
                                                            .content("comment content")
                                                            .build();
         CommentResponse commentResponse = commentService.createComment(request, user);
         // then
-        Comment comment = commentRepository.findById(commentResponse.getComment().getCommentId()).get();
-        assertThat(comment.getPost().getId()).isEqualTo(post.getPost().getPostId());
-//        assertThat(comment.getPost().getContent()).isEqualTo(post.getPost().getContent());
-        assertThat(comment.getUser().getId()).isEqualTo(user.getId());
+        Comment comment = commentRepository.findWithUserByCommentId(commentResponse.getComment().getCommentId()).get();
+        assertThat(comment.getUser().getNickname()).isEqualTo("홍길동");
+        assertThat(comment.getUser().getRegion().getFullname()).isEqualTo("부산 중구 중앙동");
         assertThat(comment.getContent()).isEqualTo("comment content");
     }
 
@@ -56,11 +55,11 @@ class CommentServiceTest {
     public void emptyContentCreateTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
-        PostResponse post = entityTestHelper.createPost(user);
+        Post post = entityTestHelper.createPost(user);
 
         // when
         CommentCreateRequest request = CommentCreateRequest.builder()
-                                                           .postId(post.getPost().getPostId())
+                                                           .postId(post.getId())
                                                            .content("")
                                                            .build();
         // when
@@ -71,8 +70,8 @@ class CommentServiceTest {
     public void editCommentTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
-        PostResponse post = entityTestHelper.createPost(user);
-        Long postId = post.getPost().getPostId();
+        Post post = entityTestHelper.createPost(user);
+        Long postId = post.getId();
         CommentResponse comment_content = entityTestHelper.createComment(postId, "comment content", user);
         Long commentId = comment_content.getComment().getCommentId();
         // when
@@ -89,8 +88,8 @@ class CommentServiceTest {
     public void deleteCommentTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
-        PostResponse post = entityTestHelper.createPost(user);
-        Long postId = post.getPost().getPostId();
+        Post post = entityTestHelper.createPost(user);
+        Long postId = post.getId();
         CommentResponse comment_content = entityTestHelper.createComment(postId, "comment content", user);
         Long commentId = comment_content.getComment().getCommentId();
 
@@ -106,10 +105,10 @@ class CommentServiceTest {
         commentRepository.deleteAll();
         User user1 = entityTestHelper.createUser("포도");
         User user2 = entityTestHelper.createUser("사과");
-        PostResponse postResponse1 = entityTestHelper.createPost(user1);
-        Long postId1 = postResponse1.getPost().getPostId();
-        PostResponse postResponse2 = entityTestHelper.createPost(user2);
-        Long postId2 = postResponse2.getPost().getPostId();
+        Post post1 = entityTestHelper.createPost(user1);
+        Long postId1 = post1.getId();
+        Post post2 = entityTestHelper.createPost(user2);
+        Long postId2 = post2.getId();
 
         // when
         List<CommentDto> comments = new ArrayList<>();

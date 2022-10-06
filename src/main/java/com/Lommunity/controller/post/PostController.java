@@ -4,7 +4,6 @@ import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.PostTopicDto;
 import com.Lommunity.application.post.dto.request.PostCreateRequest;
-import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
@@ -64,9 +63,9 @@ public class PostController {
         return postService.editPost(postId, editRequest, fileUploadRequests, user);
     }
 
-    @DeleteMapping
-    public void deletePost(@RequestBody PostDeleteRequest deleteRequest, @AuthUser User user) {
-        postService.deletePost(deleteRequest, user);
+    @DeleteMapping("{postId}")
+    public void deletePost(@PathVariable("postId") Long postId, @AuthUser User user) {
+        postService.deletePost(postId, user);
     }
 
     @GetMapping("/{postId}")

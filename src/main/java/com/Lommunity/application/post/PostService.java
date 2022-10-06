@@ -4,7 +4,6 @@ import com.Lommunity.application.file.FileService;
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.post.dto.request.PostCreateRequest;
-import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
@@ -79,8 +78,8 @@ public class PostService {
     }
 
     // 게시물 삭제
-    public void deletePost(PostDeleteRequest deleteRequest, User user) {
-        Post post = isPresentPost(deleteRequest.getPostId());
+    public void deletePost(Long postId, User user) {
+        Post post = isPresentPost(postId);
         isWriter(post, user.getId());
         postRepository.delete(post);
     }

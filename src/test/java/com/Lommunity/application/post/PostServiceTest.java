@@ -3,7 +3,6 @@ package com.Lommunity.application.post;
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.post.dto.request.PostCreateRequest;
-import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
@@ -114,8 +113,8 @@ class PostServiceTest {
     public void emptyContentEditTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
-        PostResponse postResponse = entityTestHelper.createPost(user);
-        List<String> leavePostImageUrls = postResponse.getPost().getPostImageUrls().subList(0, 1);
+        Post post = entityTestHelper.createPost(user);
+        List<String> leavePostImageUrls = post.getPostImageUrls().subList(0, 1);
         List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
             newPostImageUrls.add(FileUploadRequest
@@ -126,13 +125,12 @@ class PostServiceTest {
 
         // when
         PostEditRequest editRequest = PostEditRequest.builder()
-                                                     .postId(postResponse.getPost().getPostId())
                                                      .topicId(3L)
                                                      .content("")
                                                      .postImageUrls(leavePostImageUrls)
                                                      .build();
         // when
-        assertThrows(IllegalArgumentException.class, () -> postService.editPost(editRequest, newPostImageUrls, user));
+        assertThrows(IllegalArgumentException.class, () -> postService.editPost(post.getId(), editRequest, newPostImageUrls, user));
 
     }
 
@@ -143,10 +141,8 @@ class PostServiceTest {
         Post post = entityTestHelper.createPost(user);
 
         // when
-        PostDeleteRequest deleteRequest = PostDeleteRequest.builder()
-                                                           .postId(post.getId())
-                                                           .build();
-        postService.deletePost(deleteRequest, user);
+
+        postService.deletePost(post.getId(), user);
         // then
         assertThrows(NoSuchElementException.class, () -> postRepository.findById(post.getId())
                                                                        .orElseThrow(() -> new NoSuchElementException("postId에 해당하는 게시물은 없습니다.")));

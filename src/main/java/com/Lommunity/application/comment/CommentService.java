@@ -24,7 +24,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     public CommentResponse createComment(CommentCreateRequest createRequest, User user) {
-        Post post = isPresentPost(createRequest.getPostId());
+        Post post = findPost(createRequest.getPostId());
         Comment comment = commentRepository.save(Comment.builder()
                                                         .post(post)
                                                         .user(user)
@@ -36,7 +36,7 @@ public class CommentService {
     }
 
     public CommentResponse editComment(Long commentId, CommentEditRequest editRequest, User user) {
-        Comment comment = isPresentComment(commentId);
+        Comment comment = findComment(commentId);
         isWriter(comment, user.getId());
         comment.editComment(editRequest.getContent());
         return CommentResponse.builder()
@@ -45,13 +45,13 @@ public class CommentService {
     }
 
     public void deleteComment(Long commentId, User user) {
-        Comment comment = isPresentComment(commentId);
+        Comment comment = findComment(commentId);
         isWriter(comment, user.getId());
         commentRepository.delete(comment);
     }
 
     public CommentPageResponse getCommentPage(Long postId, Pageable pageable) {
-        isPresentPost(postId);
+        findPost(postId);
         Page<CommentDto> commentDtoPage = commentRepository.findCommentPageByPostId(postId, pageable)
                                                            .map(CommentDto::fromEntity);
         return CommentPageResponse.builder()
@@ -59,12 +59,12 @@ public class CommentService {
                                   .build();
     }
 
-    private Post isPresentPost(Long postId) {
+    private Post findPost(Long postId) {
         return postRepository.findById(postId)
                              .orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. PostID: " + postId));
     }
 
-    private Comment isPresentComment(Long commentId) {
+    private Comment findComment(Long commentId) {
         return commentRepository.findById(commentId)
                                 .orElseThrow(() -> new IllegalArgumentException("commentID에 해당하는 댓글이 존재하지 않습니다. CommentID: " + commentId));
     }
