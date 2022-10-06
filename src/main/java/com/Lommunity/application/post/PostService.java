@@ -58,7 +58,7 @@ public class PostService {
                                  List<FileUploadRequest> fileUploadRequests,
                                  User user) {
 
-        Post post = isPresentPost(postId);
+        Post post = findPost(postId);
         isWriter(post, user.getId());
         checkPostImageSize(fileUploadRequests.size() + editRequest.getPostImageUrls().size());
         List<String> postImageUrls = new ArrayList<>();
@@ -79,7 +79,7 @@ public class PostService {
 
     // 게시물 삭제
     public void deletePost(Long postId, User user) {
-        Post post = isPresentPost(postId);
+        Post post = findPost(postId);
         isWriter(post, user.getId());
         postRepository.delete(post);
     }
@@ -112,7 +112,7 @@ public class PostService {
                                .build();
     }
 
-    private Post isPresentPost(Long postId) {
+    private Post findPost(Long postId) {
         return postRepository.findById(postId)
                              .orElseThrow(() -> new IllegalArgumentException("해당 postID에 해당하는 게시물은 존재하지 않습니다. userID: " + postId));
     }

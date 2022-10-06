@@ -30,7 +30,7 @@ public class UserService {
     public RegisterResponse register(RegisterRequest registerRequest, FileUploadRequest fileUploadRequest) {
         User user = findUser(registerRequest.getUserId());
         if (user.isRegistered()) throw new IllegalArgumentException("해당 사용자는 이미 가입되어 있습니다.");
-        Region region = getRegion(registerRequest.getRegionCode());
+        Region region = findRegion(registerRequest.getRegionCode());
 
         String profileImageUrl = null;
         if (fileUploadRequest != null) {
@@ -46,7 +46,7 @@ public class UserService {
     public UserEditResponse editUser(Long userId, UserEditRequest editRequest, FileUploadRequest fileUploadRequest) {
         User user = findUser(userId);
         String nickname = editRequest.getNickname();
-        Region region = getRegion(editRequest.getRegionCode());
+        Region region = findRegion(editRequest.getRegionCode());
 
         String profileImageUrl;
         if (fileUploadRequest != null) {
@@ -67,7 +67,7 @@ public class UserService {
                              .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 사용자가 존재하지 않습니다. userID: " + userId));
     }
 
-    private Region getRegion(Long regionCode) {
+    private Region findRegion(Long regionCode) {
         return regionRepository.findById(regionCode)
                                .orElseThrow(() -> new IllegalArgumentException("regionCode에 해당하는 Region이 없습니다. regionCode: " + regionCode));
     }
