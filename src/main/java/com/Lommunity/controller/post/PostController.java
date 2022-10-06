@@ -46,8 +46,9 @@ public class PostController {
         return postService.createPost(createRequest, fileUploadRequests, user);
     }
 
-    @PutMapping
-    private PostResponse editPost(@RequestPart("dto") PostEditRequest editRequest,
+    @PutMapping("/{postId}")
+    private PostResponse editPost(@PathVariable("postId") Long postId,
+                                  @RequestPart("dto") PostEditRequest editRequest,
                                   @RequestPart(required = false) List<MultipartFile> postImageFiles,
                                   @AuthUser User user) {
         if (CollectionUtils.isEmpty(editRequest.getPostImageUrls())) {
@@ -60,7 +61,7 @@ public class PostController {
                 fileUploadRequests.add(toFileUploadRequest(postImageFile));
             }
         }
-        return postService.editPost(editRequest, fileUploadRequests, user);
+        return postService.editPost(postId, editRequest, fileUploadRequests, user);
     }
 
     @DeleteMapping

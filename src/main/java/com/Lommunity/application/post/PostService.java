@@ -54,11 +54,12 @@ public class PostService {
     }
 
     // 게시물 수정
-    public PostResponse editPost(PostEditRequest editRequest,
+    public PostResponse editPost(Long postId,
+                                 PostEditRequest editRequest,
                                  List<FileUploadRequest> fileUploadRequests,
                                  User user) {
 
-        Post post = isPresentPost(editRequest.getPostId());
+        Post post = isPresentPost(postId);
         isWriter(post, user.getId());
         checkPostImageSize(fileUploadRequests.size() + editRequest.getPostImageUrls().size());
         List<String> postImageUrls = new ArrayList<>();

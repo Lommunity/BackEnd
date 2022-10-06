@@ -1,4 +1,4 @@
-package com.Lommunity.infrastructure.initresult;
+package com.Lommunity;
 
 import com.Lommunity.domain.region.Region;
 import com.Lommunity.domain.region.RegionRepository;
