@@ -63,7 +63,7 @@ public class PostController {
         return postService.editPost(postId, editRequest, fileUploadRequests, user);
     }
 
-    @DeleteMapping("{postId}")
+    @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable("postId") Long postId, @AuthUser User user) {
         postService.deletePost(postId, user);
     }
