@@ -2,6 +2,7 @@ package com.Lommunity.domain.common;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ public class ListStringConverter implements AttributeConverter<List<String>, Str
 
     @Override
     public List<String> convertToEntityAttribute(String dbData) {
+        if (dbData.isEmpty()) return new ArrayList<>();
         return Arrays.stream(dbData.split(SPLIT_CHAR))
                      .collect(Collectors.toList());
     }
