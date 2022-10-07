@@ -58,7 +58,7 @@ class PostRepositoryTest {
     @Test
     public void findPostPageByTopicId() {
         // given
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         Post post1 = postRepository.save(Post.builder()
                                             .user(user)
                                             .topicId(1L)

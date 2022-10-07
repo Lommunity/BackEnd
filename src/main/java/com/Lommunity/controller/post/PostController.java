@@ -74,9 +74,9 @@ public class PostController {
     }
 
     @GetMapping
-    public PostPageResponse getPostPageByUserId(@RequestParam(value = "userId", required = false) Long userId,
-                                                @RequestParam(value = "topicId", required = false) Long topicId,
-                                                Pageable pageable) {
+    public PostPageResponse getPostPage(@RequestParam(value = "userId", required = false) Long userId,
+                                        @RequestParam(value = "topicId", required = false) Long topicId,
+                                        Pageable pageable) {
         if (userId != null) return postService.getPostPageByUserId(userId, pageable);
         if (topicId != null) return postService.getPostPageByTopicId(topicId, pageable);
         return postService.getAllPostPage(pageable);

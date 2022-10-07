@@ -35,7 +35,7 @@ class CommentServiceTest {
     @Test
     public void createCommentTest() {
         // given
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         Post post = entityTestHelper.createPost(user);
 
         // when
@@ -54,7 +54,7 @@ class CommentServiceTest {
     @Test
     public void emptyContentCreateTest() {
         // given
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         Post post = entityTestHelper.createPost(user);
 
         // when
@@ -69,17 +69,16 @@ class CommentServiceTest {
     @Test
     public void editCommentTest() {
         // given
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         Post post = entityTestHelper.createPost(user);
         Long postId = post.getId();
-        CommentResponse comment_content = entityTestHelper.createComment(postId, "comment content", user);
-        Long commentId = comment_content.getComment().getCommentId();
+        Comment comment = entityTestHelper.createComment("comment content", post, user);
         // when
         CommentEditRequest editRequest = CommentEditRequest.builder()
                                                            .content("edit comment content")
                                                            .build();
-        commentService.editComment(commentId, editRequest, user);
-        Comment findComment = commentRepository.findById(commentId).get();
+        commentService.editComment(comment.getId(), editRequest, user);
+        Comment findComment = commentRepository.findById(comment.getId()).get();
         // then
         assertThat(findComment.getContent()).isEqualTo("edit comment content");
     }
@@ -87,44 +86,45 @@ class CommentServiceTest {
     @Test
     public void deleteCommentTest() {
         // given
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         Post post = entityTestHelper.createPost(user);
         Long postId = post.getId();
-        CommentResponse comment_content = entityTestHelper.createComment(postId, "comment content", user);
-        Long commentId = comment_content.getComment().getCommentId();
+        Comment comment = entityTestHelper.createComment("comment content", post, user);
 
         // when
-        commentService.deleteComment(commentId, user);
+        commentService.deleteComment(comment.getId(), user);
+
         // then
-        assertThat(commentRepository.existsById(commentId)).isEqualTo(false);
+        assertThat(commentRepository.existsById(comment.getId())).isEqualTo(false);
     }
 
     @Test
     public void getCommentPageTest() {
         // given
         commentRepository.deleteAll();
-        User user1 = entityTestHelper.createUser("포도");
-        User user2 = entityTestHelper.createUser("사과");
+        User user1 = entityTestHelper.registerUser("포도");
+        User user2 = entityTestHelper.registerUser("사과");
         Post post1 = entityTestHelper.createPost(user1);
-        Long postId1 = post1.getId();
         Post post2 = entityTestHelper.createPost(user2);
-        Long postId2 = post2.getId();
+
 
         // when
-        List<CommentDto> comments = new ArrayList<>();
-        for (int i = 1; i <= 6; i++) {
-            comments.add(entityTestHelper.createComment(postId1, "content " + i, user1).getComment());
+        List<CommentDto> originCommentDtoList = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            Comment comment = entityTestHelper.createComment("comment content " + i, post1, user1);
+            originCommentDtoList.add(CommentDto.fromEntity(comment));
         }
-        for (int i = 7; i <= 9; i++) {
-            comments.add(entityTestHelper.createComment(postId2, "content " + i, user2).getComment());
+        for (int i = 6; i <= 10; i++) {
+            Comment comment = entityTestHelper.createComment("comment content " + i, post2, user2);
+            originCommentDtoList.add(CommentDto.fromEntity(comment));
         }
-        PageRequest pageable1 = PageRequest.of(1, 3);
-        PageRequest pageable2 = PageRequest.of(0, 3);
-        CommentPageResponse commentPage1 = commentService.getCommentPage(postId1, pageable1);
-        CommentPageResponse commentPage2 = commentService.getCommentPage(postId2, pageable2);
+        PageRequest pageable = PageRequest.of(0, 5);
+        CommentPageResponse commentPage = commentService.getCommentPage(post1.getId(), pageable);
+        List<CommentDto> contentPageToList = commentPage.getCommentPage().getContent();
 
         // then
-        assertThat(commentPage1.getCommentPage().getContent()).isEqualTo(comments.subList(3, 6));
-        assertThat(commentPage2.getCommentPage().getContent()).isEqualTo(comments.subList(6, 9));
+        for (int i = 4; i >= 0; i--) {
+            assertThat(contentPageToList.get(4 - i)).isEqualTo(originCommentDtoList.subList(0, 5).get(i));
+        }
     }
 }

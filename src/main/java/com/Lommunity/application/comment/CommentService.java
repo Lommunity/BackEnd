@@ -12,7 +12,9 @@ import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,8 +53,9 @@ public class CommentService {
     }
 
     public CommentPageResponse getCommentPage(Long postId, Pageable pageable) {
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastModifiedDate").descending());
         findPost(postId);
-        Page<CommentDto> commentDtoPage = commentRepository.findCommentPageByPostId(postId, pageable)
+        Page<CommentDto> commentDtoPage = commentRepository.findCommentPageByPostId(postId, pageRequest)
                                                            .map(CommentDto::fromEntity);
         return CommentPageResponse.builder()
                                   .commentPage(commentDtoPage)
