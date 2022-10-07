@@ -38,7 +38,7 @@ public class User {
     }
 
     public void registerInfo(String nickname, String profileImageUrl, Region region) {
-        emptyCheck(nickname);
+        validate(nickname);
         this.role = UserRole.USER;
         this.registered = true;
         this.nickname = nickname;
@@ -47,13 +47,13 @@ public class User {
     }
 
     public void editUserInfo(String nickname, String profileImage, Region region) {
-        emptyCheck(nickname);
+        validate(nickname);
         this.nickname = nickname;
         this.profileImageUrl = profileImage;
         this.region = region;
     }
 
-    private void emptyCheck(String nickname) {
+    private void validate(String nickname) {
         if (StringUtils.isEmpty(nickname)) throw new IllegalArgumentException("닉네임은 필수입니다.");
     }
 }

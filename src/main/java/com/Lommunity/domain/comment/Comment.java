@@ -34,18 +34,18 @@ public class Comment extends BaseTimeEntity {
 
     @Builder
     public Comment(Post post, User user, String content) {
-        emptyCheck(content);
+        validate(content);
         this.post = post;
         this.user = user;
         this.content = content;
     }
 
     public void editComment(String content) {
-        emptyCheck(content);
+        validate(content);
         this.content = content;
     }
 
-    private void emptyCheck(String content) {
+    private void validate(String content) {
         if (StringUtils.isEmpty(content)) throw new IllegalArgumentException("빈 내용으로 댓글 등록이 불가능합니다.");
     }
 }
