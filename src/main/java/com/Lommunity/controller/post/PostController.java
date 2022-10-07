@@ -74,13 +74,13 @@ public class PostController {
     }
 
     @GetMapping
-    public PostPageResponse getPostsByPage(@RequestParam(value = "userId", required = false) Long userId, Pageable pageable) {
-        if (userId == null) {
-            return postService.allPostsByPage(pageable);
-        }
-        return postService.userPostsByPage(userId, pageable);
+    public PostPageResponse getPostPageByUserId(@RequestParam(value = "userId", required = false) Long userId,
+                                                @RequestParam(value = "topicId", required = false) Long topicId,
+                                                Pageable pageable) {
+        if (userId != null) return postService.getPostPageByUserId(userId, pageable);
+        if (topicId != null) return postService.getPostPageByTopicId(topicId, pageable);
+        return postService.getAllPostPage(pageable);
     }
-
 
     @GetMapping("/post-topics")
     public PostTopicListResponse getPostTopics() {

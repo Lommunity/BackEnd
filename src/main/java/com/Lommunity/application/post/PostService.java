@@ -93,7 +93,7 @@ public class PostService {
     }
 
     // 전체 게시물 목록 조회
-    public PostPageResponse allPostsByPage(Pageable pageable) {
+    public PostPageResponse getAllPostPage(Pageable pageable) {
         Page<Post> all = postRepository.findAll(pageable);
         Page<PostDto> postDtoPage = all.map(PostDto::fromEntity);
         return PostPageResponse.builder()
@@ -103,12 +103,20 @@ public class PostService {
     }
 
     // 작성자별 게시물 목록 조회 → Pagination
-    public PostPageResponse userPostsByPage(Long userId, Pageable pageable) { // userId 없애야 하나 ?
+    public PostPageResponse getPostPageByUserId(Long userId, Pageable pageable) { // userId 없애야 하나 ?
 
-        Page<PostDto> postDtoPageByuserId = postRepository.findPostPageByUserId(userId, pageable)
-                                                          .map(PostDto::fromEntity);
+        Page<PostDto> postDtoPage = postRepository.findPostPageByUserId(userId, pageable)
+                                                  .map(PostDto::fromEntity);
         return PostPageResponse.builder()
-                               .postPage(postDtoPageByuserId)
+                               .postPage(postDtoPage)
+                               .build();
+    }
+
+    public PostPageResponse getPostPageByTopicId(Long topicId, Pageable pageable) {
+        Page<PostDto> postDtoPage = postRepository.findPostPageByTopicId(topicId, pageable)
+                                                  .map(PostDto::fromEntity);
+        return PostPageResponse.builder()
+                               .postPage(postDtoPage)
                                .build();
     }
 

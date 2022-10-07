@@ -176,7 +176,7 @@ class PostServiceTest {
 
         // when
         PageRequest pageable = PageRequest.of(1, 5);
-        PostPageResponse allPostPage = postService.allPostsByPage(pageable);
+        PostPageResponse allPostPage = postService.getAllPostPage(pageable);
 
         // then
         List<PostDto> postDtoList = allPostPage.getPostPage().getContent();
@@ -200,8 +200,8 @@ class PostServiceTest {
         // when
         PageRequest pageable1 = PageRequest.of(0, 5);
         PageRequest pageable2 = PageRequest.of(1, 3);
-        PostPageResponse userPostsPageResponse1 = postService.userPostsByPage(user1.getId(), pageable1);
-        PostPageResponse userPostsPageResponse2 = postService.userPostsByPage(user2.getId(), pageable2);
+        PostPageResponse userPostsPageResponse1 = postService.getPostPageByUserId(user1.getId(), pageable1);
+        PostPageResponse userPostsPageResponse2 = postService.getPostPageByUserId(user2.getId(), pageable2);
 
         // then
         assertThat(userPostsPageResponse1.getPostPage().getTotalPages()).isEqualTo(1);
