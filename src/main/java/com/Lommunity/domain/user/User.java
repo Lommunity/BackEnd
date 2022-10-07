@@ -1,11 +1,11 @@
 package com.Lommunity.domain.user;
 
-import com.Lommunity.application.user.dto.RegisterRequest;
 import com.Lommunity.domain.region.Region;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 
@@ -37,28 +37,23 @@ public class User {
         USER, ADMIN
     }
 
-    public void registerInfo(RegisterRequest registerRequest, String profileImageUrl, Region region) {
+    public void registerInfo(String nickname, String profileImageUrl, Region region) {
+        validate(nickname);
         this.role = UserRole.USER;
         this.registered = true;
-        this.nickname = registerRequest.getNickname();
+        this.nickname = nickname;
         this.region = region;
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void checkRegister() {
-        if (!this.isRegistered()) {
-            throw new IllegalArgumentException("회원가입을 하지 않은 사용자 입니다.");
-        }
+    public void editUserInfo(String nickname, String profileImage, Region region) {
+        validate(nickname);
+        this.nickname = nickname;
+        this.profileImageUrl = profileImage;
+        this.region = region;
     }
 
-    public void editUserInfo(String newNickname, String newProfileImageUrl, Region newRegion) {
-        if (newNickname != null) {
-            this.nickname = newNickname;
-        }
-        if (newRegion != null) {
-            this.region = newRegion;
-        }
-        this.profileImageUrl = newProfileImageUrl;
+    private void validate(String nickname) {
+        if (StringUtils.isEmpty(nickname)) throw new IllegalArgumentException("닉네임은 필수입니다.");
     }
-
 }

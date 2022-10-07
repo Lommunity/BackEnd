@@ -1,8 +1,11 @@
 package com.Lommunity.testhelper;
 
+import com.Lommunity.application.comment.CommentService;
+import com.Lommunity.application.comment.dto.request.CommentCreateRequest;
+import com.Lommunity.application.comment.dto.response.CommentResponse;
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.user.UserService;
-import com.Lommunity.application.user.dto.RegisterRequest;
+import com.Lommunity.application.user.dto.request.RegisterRequest;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -30,6 +33,9 @@ public class EntityTestHelper {
     @Autowired
     PostRepository postRepository;
 
+    @Autowired
+    CommentService commentService;
+
     public User createUser(String nickname) {
         User user = userRepository.save(builder()
                 .nickname(nickname)
@@ -45,11 +51,7 @@ public class EntityTestHelper {
                                             .regionCode(2611051000L)
                                             .build(), FileUploadRequest.builder().build());
         User registeredUser = userRepository.findWithRegionById(user.getId()).get();
-
-        Authentication authentication = new JwtAuthenticationToken(registeredUser, "jwt");
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
+        makeAuthenticationToken(user.getId());
 
         return registeredUser;
     }
@@ -79,5 +81,21 @@ public class EntityTestHelper {
                                        .content("content" + contentNumber)
                                        .postImageUrls(postImageUrls)
                                        .build());
+    }
+
+    public CommentResponse createComment(Long postId, String content, User user) {
+        CommentCreateRequest createRequest = CommentCreateRequest.builder()
+                                                                 .postId(postId)
+                                                                 .content(content)
+                                                                 .build();
+        return commentService.createComment(createRequest, user);
+    }
+
+    private void makeAuthenticationToken(Long userId) {
+        User user = userRepository.findWithRegionById(userId).get();
+        Authentication authentication = new JwtAuthenticationToken(user, "jwt");
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
     }
 }

@@ -1,4 +1,4 @@
-package com.Lommunity.application.user.dto;
+package com.Lommunity.application.user.dto.request;
 
 import lombok.*;
 

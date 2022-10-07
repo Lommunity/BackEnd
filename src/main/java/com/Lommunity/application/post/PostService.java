@@ -4,7 +4,6 @@ import com.Lommunity.application.file.FileService;
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.post.dto.request.PostCreateRequest;
-import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
@@ -42,7 +41,6 @@ public class PostService {
             postImageUrls.add(imageUrl);
         }
 
-
         Post savePost = postRepository.save(Post.builder()
                                                 .user(user)
                                                 .topicId(createRequest.getTopicId())
@@ -60,7 +58,7 @@ public class PostService {
                                  List<FileUploadRequest> fileUploadRequests,
                                  User user) {
 
-        Post post = isPresentPost(postId);
+        Post post = findPost(postId);
         isWriter(post, user.getId());
         checkPostImageSize(fileUploadRequests.size() + editRequest.getPostImageUrls().size());
         List<String> postImageUrls = new ArrayList<>();
@@ -80,8 +78,8 @@ public class PostService {
     }
 
     // 게시물 삭제
-    public void deletePost(PostDeleteRequest deleteRequest, User user) {
-        Post post = isPresentPost(deleteRequest.getPostId());
+    public void deletePost(Long postId, User user) {
+        Post post = findPost(postId);
         isWriter(post, user.getId());
         postRepository.delete(post);
     }
@@ -107,21 +105,14 @@ public class PostService {
     // 작성자별 게시물 목록 조회 → Pagination
     public PostPageResponse userPostsByPage(Long userId, Pageable pageable) { // userId 없애야 하나 ?
 
-        Page<PostDto> postDtoPageByuserId = postRepository.findByUserId(userId, pageable)
+        Page<PostDto> postDtoPageByuserId = postRepository.findPostPageByUserId(userId, pageable)
                                                           .map(PostDto::fromEntity);
         return PostPageResponse.builder()
                                .postPage(postDtoPageByuserId)
                                .build();
     }
 
-
-    private void validateUser(Long userId, User user) {
-        if (user == null || !userId.equals(user.getId())) {
-            throw new IllegalArgumentException("User 정보가 일치하지 않습니다.");
-        }
-    }
-
-    private Post isPresentPost(Long postId) {
+    private Post findPost(Long postId) {
         return postRepository.findById(postId)
                              .orElseThrow(() -> new IllegalArgumentException("해당 postID에 해당하는 게시물은 존재하지 않습니다. userID: " + postId));
     }

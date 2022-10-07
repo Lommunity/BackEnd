@@ -16,8 +16,6 @@ public class UserDto {
     private Long userId;
     private String nickname;
     private String profileImageUrl;
-    private String provider;
-    private String providerId;
     private UserRole role;
     private boolean registered;
     private RegionDto region;
@@ -27,8 +25,6 @@ public class UserDto {
                       .userId(user.getId())
                       .nickname(user.getNickname())
                       .profileImageUrl(user.getProfileImageUrl())
-                      .provider(user.getProvider())
-                      .providerId(user.getProviderId())
                       .role(user.getRole())
                       .registered(user.isRegistered())
                       .region(user.getRegion() == null ? null : RegionDto.fromEntity(user.getRegion()))

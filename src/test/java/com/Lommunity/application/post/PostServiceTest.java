@@ -3,7 +3,6 @@ package com.Lommunity.application.post;
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.post.dto.PostDto;
 import com.Lommunity.application.post.dto.request.PostCreateRequest;
-import com.Lommunity.application.post.dto.request.PostDeleteRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
@@ -40,9 +39,9 @@ class PostServiceTest {
 
         // when
         PostCreateRequest createRequest = PostCreateRequest.builder()
-                                                     .topicId(1L)
-                                                     .content("content")
-                                                     .build();
+                                                           .topicId(1L)
+                                                           .content("content")
+                                                           .build();
         List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
         fileUploadRequests.add(FileUploadRequest.builder()
                                                 .filename("fileName 1")
@@ -58,6 +57,26 @@ class PostServiceTest {
         assertThat(postResponse.getPost().getPostImageUrls().get(0)).isEqualTo("fileName 1");
         assertThat(postResponse.getPost().getPostImageUrls().get(1)).isEqualTo("fileName 2");
 
+    }
+
+    @Test
+    public void emptyContentCreateTest() {
+        // then
+        User user = entityTestHelper.createUser("홍길동");
+        // given
+        PostCreateRequest createRequest = PostCreateRequest.builder()
+                                                           .topicId(1L)
+                                                           .content("")
+                                                           .build();
+        List<FileUploadRequest> fileUploadRequests = new ArrayList<>();
+        fileUploadRequests.add(FileUploadRequest.builder()
+                                                .filename("fileName 1")
+                                                .build());
+        fileUploadRequests.add(FileUploadRequest.builder()
+                                                .filename("fileName 2")
+                                                .build());
+        // when
+        assertThrows(IllegalArgumentException.class, () -> postService.createPost(createRequest, fileUploadRequests, user));
     }
 
     @Test
@@ -91,16 +110,39 @@ class PostServiceTest {
     }
 
     @Test
+    public void emptyContentEditTest() {
+        // given
+        User user = entityTestHelper.createUser("홍길동");
+        Post post = entityTestHelper.createPost(user);
+        List<String> leavePostImageUrls = post.getPostImageUrls().subList(0, 1);
+        List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            newPostImageUrls.add(FileUploadRequest
+                    .builder()
+                    .filename("newFileName " + i)
+                    .build());
+        }
+
+        // when
+        PostEditRequest editRequest = PostEditRequest.builder()
+                                                     .topicId(3L)
+                                                     .content("")
+                                                     .postImageUrls(leavePostImageUrls)
+                                                     .build();
+        // when
+        assertThrows(IllegalArgumentException.class, () -> postService.editPost(post.getId(), editRequest, newPostImageUrls, user));
+
+    }
+
+    @Test
     public void deletePostTest() {
         // given
         User user = entityTestHelper.createUser("홍길동");
         Post post = entityTestHelper.createPost(user);
 
         // when
-        PostDeleteRequest deleteRequest = PostDeleteRequest.builder()
-                                                           .postId(post.getId())
-                                                           .build();
-        postService.deletePost(deleteRequest, user);
+
+        postService.deletePost(post.getId(), user);
         // then
         assertThrows(NoSuchElementException.class, () -> postRepository.findById(post.getId())
                                                                        .orElseThrow(() -> new NoSuchElementException("postId에 해당하는 게시물은 없습니다.")));

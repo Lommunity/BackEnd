@@ -7,12 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "posts")
@@ -33,16 +33,26 @@ public class Post extends BaseEntity {
     @Column(length = 500)
     private List<String> postImageUrls;
 
+    @Builder
+    public Post(User user, Long topicId, String content, List<String> postImageUrls) {
+        validate(topicId, content);
+        this.user = user;
+        this.topicId = topicId;
+        this.content = content;
+        this.postImageUrls = postImageUrls;
+    }
+
     public void editPost(Long topicId, String content, List<String> postImageUrls) {
+        validate(topicId, content);
         PostTopic.isPresentTopicId(topicId);
 
         this.topicId = topicId;
+        this.content = content;
+        this.postImageUrls = postImageUrls;
+    }
 
-        if (content != null) {
-            this.content = content;
-        }
-        if (postImageUrls != null) {
-            this.postImageUrls = postImageUrls;
-        }
+    private void validate(Long topicId, String content) {
+        if (topicId == null) throw new IllegalArgumentException("topicId는 비어있으면 안됩니다.");
+        if (StringUtils.isEmpty(content)) throw new IllegalArgumentException("빈 내용으로 게시물 수정이 불가능합니다.");
     }
 }
