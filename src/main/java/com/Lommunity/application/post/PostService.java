@@ -86,6 +86,14 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    public PostPageResponse searchPost(String word, Pageable pageable) {
+        Page<PostDto> postPageBySearch = postRepository.findPostByWord(word, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastModifiedDate").descending()))
+                                                       .map(PostDto::fromEntity);
+        return PostPageResponse.builder()
+                               .postPage(postPageBySearch)
+                               .build();
+    }
+
     // 단일 게시물 조회
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));

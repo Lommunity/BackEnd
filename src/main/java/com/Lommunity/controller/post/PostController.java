@@ -68,6 +68,7 @@ public class PostController {
         postService.deletePost(postId, user);
     }
 
+
     @GetMapping("/{postId}")
     public PostResponse getPost(@PathVariable("postId") Long postId) {
         return postService.getPost(postId);
