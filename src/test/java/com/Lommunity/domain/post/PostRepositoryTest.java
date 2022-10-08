@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,17 +95,21 @@ class PostRepositoryTest {
     @Test
     public void postSearchTest() {
         // given
+
         User user = entityTestHelper.registerUser("홍길동");
         Post post1 = entityTestHelper.createPostWithNumber(user, 1);
         Post post2 = entityTestHelper.createPostWithNumber(user, 11);
         Post post3 = entityTestHelper.createPostWithNumber(user, 22);
 
         // when
-        Page<Post> posts = postRepository.findPostByWord("1", PageRequest.of(0, 2));
+        Page<Post> posts = postRepository.findPostByWord("1", PageRequest.of(0, 2, Sort.by("lastModifiedDate").descending()));
         List<Post> postList = posts.getContent();
         // then
+        for (Post post : postList) {
+            System.out.println(post.getContent());
+        }
         assertThat(posts.getSize()).isEqualTo(2);
-        assertThat(postList.get(0).getContent()).isEqualTo("content1");
-        assertThat(postList.get(1).getContent()).isEqualTo("content11");
+        assertThat(postList.get(0).getContent()).isEqualTo("content11");
+        assertThat(postList.get(1).getContent()).isEqualTo("content1");
     }
 }

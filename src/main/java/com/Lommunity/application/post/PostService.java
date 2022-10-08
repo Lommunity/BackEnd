@@ -90,8 +90,8 @@ public class PostService {
     }
 
     public PostPageResponse searchPost(String word, Pageable pageable) {
-        Page<PostDto> postPageBySearch = postRepository.findPostByWord(word, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastModifiedDate").descending()))
-                                                       .map(PostDto::fromEntity);
+        Page<PostDto> postPageBySearch = postRepository.findPostByWord(word, sortByLastModifiedDate(pageable))
+                                                       .map((p) -> PostDto.fromEntityWithCommentCount(p, commentRepository.countByPostId(p.getId())));
         return PostPageResponse.builder()
                                .postPage(postPageBySearch)
                                .build();
@@ -99,7 +99,7 @@ public class PostService {
 
     // 단일 게시물 조회
     public PostResponse getPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
+        Post post = findPost(postId);
         return PostResponse.builder()
                            .post(PostDto.fromEntityWithCommentCount(post, commentRepository.countByPostId(postId)))
                            .build();
@@ -107,9 +107,8 @@ public class PostService {
 
     // 전체 게시물 목록 조회
     public PostPageResponse getAllPostPage(Pageable pageable) {
-        Page<Post> all = postRepository.findAll(sortByLastModifiedDate(pageable));
-        Page<PostDto> postDtoPage = all
-                .map((p) -> PostDto.fromEntityWithCommentCount(p, commentRepository.countByPostId(p.getId())));
+        Page<PostDto> postDtoPage = postRepository.findAll(sortByLastModifiedDate(pageable))
+                                                  .map((p) -> PostDto.fromEntityWithCommentCount(p, commentRepository.countByPostId(p.getId())));
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
@@ -117,9 +116,9 @@ public class PostService {
     }
 
     // 작성자별 게시물 목록 조회 → Pagination
-    public PostPageResponse getPostPageByUserId(Long userId, Pageable pageable) { // userId 없애야 하나 ?
+    public PostPageResponse getPostPageByUserId(Long userId, Pageable pageable) {
         Page<PostDto> postDtoPage = postRepository.findPostPageByUserId(userId, sortByLastModifiedDate(pageable))
-                                                  .map((p) -> PostDto.fromEntityWithCommentCount(p, p.getId()));
+                                                  .map((p) -> PostDto.fromEntityWithCommentCount(p, commentRepository.countByPostId(p.getId())));
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
@@ -127,7 +126,7 @@ public class PostService {
 
     public PostPageResponse getPostPageByTopicId(Long topicId, Pageable pageable) {
         Page<PostDto> postDtoPage = postRepository.findPostPageByTopicId(topicId, sortByLastModifiedDate(pageable))
-                                                  .map(PostDto::fromEntity);
+                                                  .map((p) -> PostDto.fromEntityWithCommentCount(p, commentRepository.countByPostId(p.getId())));
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
