@@ -7,6 +7,7 @@ import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
+import com.Lommunity.domain.comment.CommentRepository;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -30,6 +31,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final FileService fileService;
+
+    private final CommentRepository commentRepository;
 
     // 게시물 작성
     public PostResponse createPost(PostCreateRequest createRequest,
@@ -90,14 +93,15 @@ public class PostService {
     public PostResponse getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
         return PostResponse.builder()
-                           .post(PostDto.fromEntity(post))
+                           .post(PostDto.fromEntityWithCommentCount(post, commentRepository.countByPostId(postId)))
                            .build();
     }
 
     // 전체 게시물 목록 조회
     public PostPageResponse getAllPostPage(Pageable pageable) {
         Page<Post> all = postRepository.findAll(sortByLastModifiedDate(pageable));
-        Page<PostDto> postDtoPage = all.map(PostDto::fromEntity);
+        Page<PostDto> postDtoPage = all
+                .map((p) -> PostDto.fromEntityWithCommentCount(p, commentRepository.countByPostId(p.getId())));
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
@@ -107,7 +111,7 @@ public class PostService {
     // 작성자별 게시물 목록 조회 → Pagination
     public PostPageResponse getPostPageByUserId(Long userId, Pageable pageable) { // userId 없애야 하나 ?
         Page<PostDto> postDtoPage = postRepository.findPostPageByUserId(userId, sortByLastModifiedDate(pageable))
-                                                  .map(PostDto::fromEntity);
+                                                  .map((p) -> PostDto.fromEntityWithCommentCount(p, p.getId()));
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();

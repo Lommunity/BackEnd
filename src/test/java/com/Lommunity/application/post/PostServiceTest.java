@@ -6,6 +6,7 @@ import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
+import com.Lommunity.domain.comment.Comment;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -207,5 +208,24 @@ class PostServiceTest {
         assertThat(userPostsPageResponse1.getPostPage().getTotalPages()).isEqualTo(1);
         assertThat(userPostsPageResponse2.getPostPage().getTotalPages()).isEqualTo(2);
 
+    }
+
+    @Test
+    public void postDtoWithCommentCountTest() {
+        // given
+        User postWriter = entityTestHelper.registerUser("홍길동");
+        User commentWriter = entityTestHelper.registerUser("김");
+        Post post1 = entityTestHelper.createPostWithNumber(postWriter, 1);
+        Post post2 = entityTestHelper.createPostWithNumber(postWriter, 2);
+        Comment comment1 = entityTestHelper.createComment("comment content", post1, commentWriter);
+        Comment comment2 = entityTestHelper.createComment("comment content", post1, commentWriter);
+        Comment comment3 = entityTestHelper.createComment("comment content", post2, commentWriter);
+
+        // when
+        PostPageResponse postPageResponse = postService.getPostPageByUserId(postWriter.getId(), PageRequest.of(0, 3));
+
+        // then
+        assertThat(postPageResponse.getPostPage().getContent().get(0).getCommentCount()).isEqualTo(2L);
+        assertThat(postPageResponse.getPostPage().getContent().get(1).getCommentCount()).isEqualTo(1L);
     }
 }
