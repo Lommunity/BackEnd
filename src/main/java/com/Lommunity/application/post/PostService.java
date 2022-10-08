@@ -12,7 +12,9 @@ import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -93,8 +95,9 @@ public class PostService {
     }
 
     // 전체 게시물 목록 조회
-    public PostPageResponse allPostsByPage(Pageable pageable) {
-        Page<Post> all = postRepository.findAll(pageable);
+    public PostPageResponse getAllPostPage(Pageable pageable) {
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastModifiedDate").descending());
+        Page<Post> all = postRepository.findAll(pageRequest);
         Page<PostDto> postDtoPage = all.map(PostDto::fromEntity);
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
@@ -103,12 +106,21 @@ public class PostService {
     }
 
     // 작성자별 게시물 목록 조회 → Pagination
-    public PostPageResponse userPostsByPage(Long userId, Pageable pageable) { // userId 없애야 하나 ?
-
-        Page<PostDto> postDtoPageByuserId = postRepository.findPostPageByUserId(userId, pageable)
-                                                          .map(PostDto::fromEntity);
+    public PostPageResponse getPostPageByUserId(Long userId, Pageable pageable) { // userId 없애야 하나 ?
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastModifiedDate").descending());
+        Page<PostDto> postDtoPage = postRepository.findPostPageByUserId(userId, pageRequest)
+                                                  .map(PostDto::fromEntity);
         return PostPageResponse.builder()
-                               .postPage(postDtoPageByuserId)
+                               .postPage(postDtoPage)
+                               .build();
+    }
+
+    public PostPageResponse getPostPageByTopicId(Long topicId, Pageable pageable) {
+        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastModifiedDate").descending());
+        Page<PostDto> postDtoPage = postRepository.findPostPageByTopicId(topicId, pageRequest)
+                                                  .map(PostDto::fromEntity);
+        return PostPageResponse.builder()
+                               .postPage(postDtoPage)
                                .build();
     }
 

@@ -15,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,7 +33,7 @@ class PostServiceTest {
     @Test
     public void createPostTest() {
         // given
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
 
         // when
         PostCreateRequest createRequest = PostCreateRequest.builder()
@@ -62,7 +60,7 @@ class PostServiceTest {
     @Test
     public void emptyContentCreateTest() {
         // then
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         // given
         PostCreateRequest createRequest = PostCreateRequest.builder()
                                                            .topicId(1L)
@@ -82,7 +80,7 @@ class PostServiceTest {
     @Test
     public void editPostTest() {
         // given
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         Post post = entityTestHelper.createPost(user);
         List<String> leavePostImageUrls = post.getPostImageUrls().subList(0, 1);
         List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
@@ -112,7 +110,7 @@ class PostServiceTest {
     @Test
     public void emptyContentEditTest() {
         // given
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         Post post = entityTestHelper.createPost(user);
         List<String> leavePostImageUrls = post.getPostImageUrls().subList(0, 1);
         List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
@@ -137,7 +135,7 @@ class PostServiceTest {
     @Test
     public void deletePostTest() {
         // given
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         Post post = entityTestHelper.createPost(user);
 
         // when
@@ -151,7 +149,7 @@ class PostServiceTest {
     @Test
     public void getPost() {
         // give
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
         Post post1 = entityTestHelper.createPostWithNumber(user, 1);
 
         // when
@@ -165,7 +163,7 @@ class PostServiceTest {
     public void allPostsByPageTest() {
         // given
         postRepository.deleteAll();
-        User user = entityTestHelper.createUser("홍길동");
+        User user = entityTestHelper.registerUser("홍길동");
 
         List<PostDto> originPostDtoList = new ArrayList<>();
 
@@ -176,23 +174,25 @@ class PostServiceTest {
 
         // when
         PageRequest pageable = PageRequest.of(1, 5);
-        PostPageResponse allPostPage = postService.allPostsByPage(pageable);
+        PostPageResponse allPostPage = postService.getAllPostPage(pageable);
 
         // then
         List<PostDto> postDtoList = allPostPage.getPostPage().getContent();
-        assertThat(postDtoList).isEqualTo(originPostDtoList.subList(5, 10));
+        for (int i = 4; i >= 0; i--) {
+            assertThat(postDtoList.get(4 - i)).isEqualTo(originPostDtoList.subList(0, 5).get(i));
+        }
     }
 
     @Test
     public void userPostsByPageTest() {
         // given
-        User user1 = entityTestHelper.createUser("홍길동");
+        User user1 = entityTestHelper.registerUser("홍길동");
 
         for (int i = 0; i < 5; i++) {
             entityTestHelper.createPostWithNumber(user1, (i + 1));
         }
 
-        User user2 = entityTestHelper.createUser("이혜은");
+        User user2 = entityTestHelper.registerUser("이혜은");
         for (int i = 0; i < 6; i++) {
             entityTestHelper.createPostWithNumber(user2, (i + 1));
         }
@@ -200,8 +200,8 @@ class PostServiceTest {
         // when
         PageRequest pageable1 = PageRequest.of(0, 5);
         PageRequest pageable2 = PageRequest.of(1, 3);
-        PostPageResponse userPostsPageResponse1 = postService.userPostsByPage(user1.getId(), pageable1);
-        PostPageResponse userPostsPageResponse2 = postService.userPostsByPage(user2.getId(), pageable2);
+        PostPageResponse userPostsPageResponse1 = postService.getPostPageByUserId(user1.getId(), pageable1);
+        PostPageResponse userPostsPageResponse2 = postService.getPostPageByUserId(user2.getId(), pageable2);
 
         // then
         assertThat(userPostsPageResponse1.getPostPage().getTotalPages()).isEqualTo(1);

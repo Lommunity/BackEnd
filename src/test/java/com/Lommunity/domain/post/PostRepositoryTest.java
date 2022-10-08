@@ -3,9 +3,12 @@ package com.Lommunity.domain.post;
 import com.Lommunity.domain.region.Region;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.domain.user.UserRepository;
+import com.Lommunity.testhelper.EntityTestHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -21,9 +24,12 @@ class PostRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    EntityTestHelper entityTestHelper;
+
 
     @Test
-    public void findWithUserByIdTest() {
+    public void findPostByPostId() {
         Region region = Region.builder()
                               .code(2611051000L)
                               .level(3L)
@@ -47,5 +53,40 @@ class PostRepositoryTest {
                                             .build());
         Post fetchJoinPost = postRepository.findWithUserByPostId(post.getId()).get();
         assertThat(fetchJoinPost.getUser().getRegion().getFullname()).isEqualTo("부산 중구 중앙동");
+    }
+
+    @Test
+    public void findPostPageByTopicId() {
+        // given
+        User user = entityTestHelper.registerUser("홍길동");
+        Post post1 = postRepository.save(Post.builder()
+                                            .user(user)
+                                            .topicId(1L)
+                                            .content("content1")
+                                            .postImageUrls(new ArrayList<>())
+                                            .build());
+        Post post2 = postRepository.save(Post.builder()
+                                            .user(user)
+                                            .topicId(2L)
+                                            .content("content2")
+                                            .postImageUrls(new ArrayList<>())
+                                            .build());
+        Post post3 = postRepository.save(Post.builder()
+                                            .user(user)
+                                            .topicId(2L)
+                                            .content("content3")
+                                            .postImageUrls(new ArrayList<>())
+                                            .build());
+
+        // when
+        Page<Post> postPageByTopicId = postRepository.findPostPageByTopicId(2L, PageRequest.of(0, 2));
+
+        // then
+        assertThat(postPageByTopicId.getSize()).isEqualTo(2);
+        assertThat(postPageByTopicId.getContent().get(0).getTopicId()).isEqualTo(2L);
+        assertThat(postPageByTopicId.getContent().get(1).getTopicId()).isEqualTo(2L);
+        assertThat(postPageByTopicId.getContent().get(0).getContent()).isEqualTo("content2");
+        assertThat(postPageByTopicId.getContent().get(1).getContent()).isEqualTo("content3");
+
     }
 }

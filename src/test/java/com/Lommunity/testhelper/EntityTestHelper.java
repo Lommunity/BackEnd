@@ -1,11 +1,11 @@
 package com.Lommunity.testhelper;
 
 import com.Lommunity.application.comment.CommentService;
-import com.Lommunity.application.comment.dto.request.CommentCreateRequest;
-import com.Lommunity.application.comment.dto.response.CommentResponse;
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.request.RegisterRequest;
+import com.Lommunity.domain.comment.Comment;
+import com.Lommunity.domain.comment.CommentRepository;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -32,11 +32,13 @@ public class EntityTestHelper {
     UserService userService;
     @Autowired
     PostRepository postRepository;
+    @Autowired
+    CommentRepository commentRepository;
 
     @Autowired
     CommentService commentService;
 
-    public User createUser(String nickname) {
+    public User registerUser(String nickname) {
         User user = userRepository.save(builder()
                 .nickname(nickname)
                 .profileImageUrl(null)
@@ -83,12 +85,12 @@ public class EntityTestHelper {
                                        .build());
     }
 
-    public CommentResponse createComment(Long postId, String content, User user) {
-        CommentCreateRequest createRequest = CommentCreateRequest.builder()
-                                                                 .postId(postId)
-                                                                 .content(content)
-                                                                 .build();
-        return commentService.createComment(createRequest, user);
+    public Comment createComment(String content, Post post, User user) {
+        return commentRepository.save(Comment.builder()
+                                             .post(post)
+                                             .user(user)
+                                             .content(content)
+                                             .build());
     }
 
     private void makeAuthenticationToken(Long userId) {
