@@ -30,9 +30,9 @@ public class LikeService {
     }
 
     public void deleteLike(Long postId, User user) {
-        Like like = likeRepository.findByPostIdAndUserId(postId, user.getId())
-                                  .orElseThrow(() -> new IllegalArgumentException("로그인한 사용자가 해당 게시물에 작성한 댓글은 존재하지 않습니다. PostID: " + postId));
-        likeRepository.delete(like);
+        if (isAlreadyLike(postId, user.getId())) {
+            likeRepository.delete(likeRepository.findByPostIdAndUserId(postId, user.getId()).get());
+        }
     }
 
     private Post findPost(Long postId) {
