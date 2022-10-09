@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,17 +23,16 @@ public class LikeService {
 
     public void createLike(Long postId, User user) {
         if (!isAlreadyLike(postId, user.getId())) {
-            Like like = likeRepository.save(Like.builder()
-                                                .user(user)
-                                                .post(findPost(postId))
-                                                .build());
+            likeRepository.save(Like.builder()
+                                    .user(user)
+                                    .post(findPost(postId))
+                                    .build());
         }
     }
 
     public void deleteLike(Long postId, User user) {
-        if (isAlreadyLike(postId, user.getId())) {
-            likeRepository.delete(likeRepository.findByPostIdAndUserId(postId, user.getId()).get());
-        }
+        Optional<Like> like = likeRepository.findByPostIdAndUserId(postId, user.getId());
+        like.ifPresent(likeRepository::delete);
     }
 
     private Post findPost(Long postId) {
