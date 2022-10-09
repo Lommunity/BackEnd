@@ -56,7 +56,7 @@ public class CommentService {
         findPost(postId);
         PageRequest pageRequestAsce = PageRequest.of(pageable.getPageNumber(),
                 pageable.getPageSize(),
-                Sort.by("lastModifiedDate").ascending());
+                Sort.by("createdDate").ascending());
 
         Page<CommentDto> commentDtoPage = commentRepository.findCommentPageByPostId(postId, pageRequestAsce)
                                                            .map(CommentDto::fromEntity);
