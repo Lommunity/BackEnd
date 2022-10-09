@@ -81,7 +81,7 @@ public class PostController {
                                         Pageable pageable) {
         if (userId != null) return postService.getPostPageByUserId(userId, pageable);
         if (topicId != null) return postService.getPostPageByTopicId(topicId, pageable);
-        if (!word.isEmpty()) return postService.searchPost(word, pageable);
+        if (!StringUtils.isEmpty(word)) return postService.searchPost(word, pageable);
         return postService.getAllPostPage(pageable);
     }
 

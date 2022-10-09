@@ -174,7 +174,7 @@ class PostServiceTest {
 
         for (int i = 1; i <= 10; i++) {
             Post post = entityTestHelper.createPostWithNumber(user, i);
-            originPostDtoList.add(PostDto.fromEntity(post));
+            originPostDtoList.add(PostDto.fromEntityWithCommentCount(post, 0L));
         }
 
         // when
@@ -219,7 +219,7 @@ class PostServiceTest {
         // given
         commentRepository.deleteAll();
         postRepository.deleteAll();
-        User postWriter = entityTestHelper.registerUser("홍길동");
+        User postWriter = entityTestHelper.registerUser("돼지");
         User commentWriter = entityTestHelper.registerUser("김");
         Post post1 = entityTestHelper.createPostWithNumber(postWriter, 1);
         Post post2 = entityTestHelper.createPostWithNumber(postWriter, 2);
@@ -231,6 +231,9 @@ class PostServiceTest {
         PostPageResponse postPageResponse = postService.getPostPageByUserId(postWriter.getId(), PageRequest.of(0, 3));
 
         // then
+        for (PostDto postDto : postPageResponse.getPostPage().getContent()) {
+            System.out.println(postDto.getLastModifiedDate() + " " + postDto.getContent());
+        }
         PostDto actualPost1 = postPageResponse.getPostPage().getContent().get(0);
         assertThat(actualPost1.getPostId()).isEqualTo(post2.getId());
         assertThat(actualPost1.getCommentCount()).isEqualTo(1L);
@@ -251,14 +254,11 @@ class PostServiceTest {
         // when
         PostPageResponse postPageResponse = postService.searchPost("1", PageRequest.of(0, 4));
         List<PostDto> postDtoList = postPageResponse.getPostPage().getContent();
-        for (PostDto postDto : postDtoList) {
-            System.out.println(postDto.getContent());
-        }
         // then
         assertThat(postDtoList.get(0).getContent()).isEqualTo("content41");
         assertThat(postDtoList.get(1).getContent()).isEqualTo("content12");
         assertThat(postDtoList.get(2).getContent()).isEqualTo("content1");
-        assertThat(postDtoList.contains(PostDto.fromEntity(post4))).isEqualTo(false);
+        assertThat(postDtoList.contains(PostDto.fromEntityWithCommentCount(post4, 0L))).isEqualTo(false);
     }
 }
 
