@@ -1,7 +1,5 @@
 package com.Lommunity.application.like;
 
-import com.Lommunity.application.like.dto.LikeDto;
-import com.Lommunity.application.like.dto.response.LikeResponse;
 import com.Lommunity.domain.comment.CommentRepository;
 import com.Lommunity.domain.like.Like;
 import com.Lommunity.domain.like.LikeRepository;
@@ -22,18 +20,13 @@ public class LikeService {
     private final PostRepository postRepository;
     protected final CommentRepository commentRepository;
 
-    public LikeResponse createLike(Long postId, User user) {
-        Post post = findPost(postId);
-        Long commentCount = commentRepository.countByPostId(postId);
-        Like like = likeRepository.save(Like.builder()
-                                            .user(user)
-                                            .post(post)
-                                            .build());
-        Long likeCount = likeRepository.countByPostId(postId);
-        boolean isWriterLike = likeRepository.existsByPostIdAndUserId(postId, post.getUser().getId());
-        return LikeResponse.builder()
-                           .like(LikeDto.fromEntity(like, commentCount, likeCount, isWriterLike))
-                           .build();
+    public void createLike(Long postId, User user) {
+        if (!isAlreadyLike(postId, user.getId())) {
+            Like like = likeRepository.save(Like.builder()
+                                                .user(user)
+                                                .post(findPost(postId))
+                                                .build());
+        }
     }
 
     public void deleteLike(Long postId, User user) {
@@ -45,5 +38,9 @@ public class LikeService {
     private Post findPost(Long postId) {
         return postRepository.findById(postId)
                              .orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
+    }
+
+    private boolean isAlreadyLike(Long postId, Long userId) {
+        return likeRepository.existsByPostIdAndUserId(postId, userId);
     }
 }

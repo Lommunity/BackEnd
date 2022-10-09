@@ -21,12 +21,12 @@ public class PostDto {
     private String content;
     private Long commentCount;
     private Long likeCount;
-    private boolean isWriterLike;
+    private boolean writerLike;
     private List<String> postImageUrls;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 
-    public static PostDto fromEntityWithCommentCount(Post post, Long commentCount, Long likeCount, boolean isWriterLike) {
+    public static PostDto fromEntityWithCommentCount(Post post, Long commentCount, Long likeCount, boolean writerLike) {
         return PostDto.builder()
                       .postId(post.getId())
                       .topic(PostTopicDto.fromPostTopic(PostTopic.findTopicById(post.getTopicId())))
@@ -34,7 +34,7 @@ public class PostDto {
                       .content(post.getContent())
                       .commentCount(commentCount)
                       .likeCount(likeCount)
-                      .isWriterLike(isWriterLike)
+                      .writerLike(writerLike)
                       .postImageUrls(post.getPostImageUrls())
                       .createdDate(post.getCreatedDate())
                       .lastModifiedDate(post.getLastModifiedDate())
