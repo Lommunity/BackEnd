@@ -30,8 +30,10 @@ public class LikeService {
                                             .user(user)
                                             .post(post)
                                             .build());
+        Long likeCount = likeRepository.countByPostId(postId);
+        boolean isWriterLike = likeRepository.existsByPostIdAndUserId(postId, post.getUser().getId());
         return LikeResponse.builder()
-                           .like(LikeDto.fromEntity(like, commentCount))
+                           .like(LikeDto.fromEntity(like, commentCount, likeCount, isWriterLike))
                            .build();
     }
 }

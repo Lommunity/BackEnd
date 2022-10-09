@@ -8,6 +8,7 @@ import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.comment.CommentRepository;
+import com.Lommunity.domain.like.LikeRepository;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -28,11 +29,10 @@ import static com.Lommunity.utils.PageUtils.sortByLastModifiedDate;
 @Transactional
 public class PostService {
     private static final String POST_IMAGE_DIRECTORY = "post";
-
     private final PostRepository postRepository;
     private final FileService fileService;
-
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 
     // 게시물 작성
     public PostResponse createPost(PostCreateRequest createRequest,
@@ -47,13 +47,13 @@ public class PostService {
         }
 
         Post post = postRepository.save(Post.builder()
-                                                .user(user)
-                                                .topicId(createRequest.getTopicId())
-                                                .content(createRequest.getContent())
-                                                .postImageUrls(postImageUrls)
-                                                .build());
+                                            .user(user)
+                                            .topicId(createRequest.getTopicId())
+                                            .content(createRequest.getContent())
+                                            .postImageUrls(postImageUrls)
+                                            .build());
         return PostResponse.builder()
-                           .post(PostDto.fromEntityWithCommentCount(post, 0L))
+                           .post(PostDto.fromEntityWithCommentCount(post, 0L, 0L, false))
                            .build();
     }
 
@@ -78,7 +78,7 @@ public class PostService {
 
         post.editPost(editRequest.getTopicId(), editRequest.getContent(), postImageUrls);
         return PostResponse.builder()
-                           .post(findPostDtoWithCommentCount(post))
+                           .post(findPostDtoWithCount(post))
                            .build();
     }
 
@@ -91,7 +91,7 @@ public class PostService {
 
     public PostPageResponse searchPost(String word, Pageable pageable) {
         Page<PostDto> postPageBySearch = postRepository.findPostByWord(word, sortByLastModifiedDate(pageable))
-                                                       .map(this::findPostDtoWithCommentCount);
+                                                       .map(this::findPostDtoWithCount);
         return PostPageResponse.builder()
                                .postPage(postPageBySearch)
                                .build();
@@ -101,14 +101,14 @@ public class PostService {
     public PostResponse getPost(Long postId) {
         Post post = findPost(postId);
         return PostResponse.builder()
-                           .post(findPostDtoWithCommentCount(post))
+                           .post(findPostDtoWithCount(post))
                            .build();
     }
 
     // 전체 게시물 목록 조회
     public PostPageResponse getAllPostPage(Pageable pageable) {
         Page<PostDto> postDtoPage = postRepository.findAll(sortByLastModifiedDate(pageable))
-                                                  .map(this::findPostDtoWithCommentCount);
+                                                  .map(this::findPostDtoWithCount);
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
@@ -118,7 +118,7 @@ public class PostService {
     // 작성자별 게시물 목록 조회 → Pagination
     public PostPageResponse getPostPageByUserId(Long userId, Pageable pageable) {
         Page<PostDto> postDtoPage = postRepository.findPostPageByUserId(userId, sortByLastModifiedDate(pageable))
-                                                  .map(this::findPostDtoWithCommentCount);
+                                                  .map(this::findPostDtoWithCount);
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
@@ -126,7 +126,7 @@ public class PostService {
 
     public PostPageResponse getPostPageByTopicId(Long topicId, Pageable pageable) {
         Page<PostDto> postDtoPage = postRepository.findPostPageByTopicId(topicId, sortByLastModifiedDate(pageable))
-                                                  .map(this::findPostDtoWithCommentCount);
+                                                  .map(this::findPostDtoWithCount);
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
@@ -149,7 +149,10 @@ public class PostService {
         }
     }
 
-    private PostDto findPostDtoWithCommentCount(Post post) {
-        return PostDto.fromEntityWithCommentCount(post, commentRepository.countByPostId(post.getId()));
+    private PostDto findPostDtoWithCount(Post post) {
+        return PostDto.fromEntityWithCommentCount(post,
+                commentRepository.countByPostId(post.getId()),
+                likeRepository.countByPostId(post.getId()),
+                likeRepository.existsByPostIdAndUserId(post.getId(), post.getUser().getId()));
     }
 }

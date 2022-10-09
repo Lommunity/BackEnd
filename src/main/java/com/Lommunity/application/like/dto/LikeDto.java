@@ -16,11 +16,11 @@ public class LikeDto {
     private UserDto user;
     private PostDto post;
 
-    public static LikeDto fromEntity(Like like, Long commentCount) {
+    public static LikeDto fromEntity(Like like, Long commentCount, Long likeCount, boolean isWriterLike) {
         return LikeDto.builder()
                       .likeId(like.getId())
                       .user(UserDto.fromEntity(like.getUser()))
-                      .post(PostDto.fromEntityWithCommentCount(like.getPost(), commentCount))
+                      .post(PostDto.fromEntityWithCommentCount(like.getPost(), commentCount, likeCount, isWriterLike))
                       .build();
     }
 }
