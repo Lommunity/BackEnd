@@ -23,8 +23,7 @@ public class LikeService {
     protected final CommentRepository commentRepository;
 
     public LikeResponse createLike(Long postId, User user) {
-        Post post = postRepository.findById(postId)
-                                  .orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
+        Post post = findPost(postId);
         Long commentCount = commentRepository.countByPostId(postId);
         Like like = likeRepository.save(Like.builder()
                                             .user(user)
@@ -35,5 +34,16 @@ public class LikeService {
         return LikeResponse.builder()
                            .like(LikeDto.fromEntity(like, commentCount, likeCount, isWriterLike))
                            .build();
+    }
+
+    public void deleteLike(Long postId, User user) {
+        Like like = likeRepository.findByPostIdAndUserId(postId, user.getId())
+                                  .orElseThrow(() -> new IllegalArgumentException("로그인한 사용자가 해당 게시물에 작성한 댓글은 존재하지 않습니다. PostID: " + postId));
+        likeRepository.delete(like);
+    }
+
+    private Post findPost(Long postId) {
+        return postRepository.findById(postId)
+                             .orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
     }
 }
