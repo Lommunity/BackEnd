@@ -15,4 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findPostPageByUserId(Long userId, Pageable pageable);
 
     Page<Post> findPostPageByTopicId(Long topicId, Pageable pageable);
+
+    @Query(value = "select p from posts p where p.content like %:word%")
+    Page<Post> findPostByWord(@Param("word") String word, Pageable pageable);
 }

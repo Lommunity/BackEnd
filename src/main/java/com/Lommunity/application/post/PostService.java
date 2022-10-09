@@ -7,20 +7,21 @@ import com.Lommunity.application.post.dto.request.PostCreateRequest;
 import com.Lommunity.application.post.dto.request.PostEditRequest;
 import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
+import com.Lommunity.domain.comment.CommentRepository;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.Lommunity.utils.PageUtils.sortByLastModifiedDate;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final FileService fileService;
+
+    private final CommentRepository commentRepository;
 
     // 게시물 작성
     public PostResponse createPost(PostCreateRequest createRequest,
@@ -43,14 +46,14 @@ public class PostService {
             postImageUrls.add(imageUrl);
         }
 
-        Post savePost = postRepository.save(Post.builder()
+        Post post = postRepository.save(Post.builder()
                                                 .user(user)
                                                 .topicId(createRequest.getTopicId())
                                                 .content(createRequest.getContent())
                                                 .postImageUrls(postImageUrls)
                                                 .build());
         return PostResponse.builder()
-                           .post(PostDto.fromEntity(savePost))
+                           .post(PostDto.fromEntityWithCommentCount(post, 0L))
                            .build();
     }
 
@@ -75,7 +78,7 @@ public class PostService {
 
         post.editPost(editRequest.getTopicId(), editRequest.getContent(), postImageUrls);
         return PostResponse.builder()
-                           .post(PostDto.fromEntity(post))
+                           .post(findPostDtoWithCommentCount(post))
                            .build();
     }
 
@@ -86,19 +89,26 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    public PostPageResponse searchPost(String word, Pageable pageable) {
+        Page<PostDto> postPageBySearch = postRepository.findPostByWord(word, sortByLastModifiedDate(pageable))
+                                                       .map(this::findPostDtoWithCommentCount);
+        return PostPageResponse.builder()
+                               .postPage(postPageBySearch)
+                               .build();
+    }
+
     // 단일 게시물 조회
     public PostResponse getPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
+        Post post = findPost(postId);
         return PostResponse.builder()
-                           .post(PostDto.fromEntity(post))
+                           .post(findPostDtoWithCommentCount(post))
                            .build();
     }
 
     // 전체 게시물 목록 조회
     public PostPageResponse getAllPostPage(Pageable pageable) {
-        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastModifiedDate").descending());
-        Page<Post> all = postRepository.findAll(pageRequest);
-        Page<PostDto> postDtoPage = all.map(PostDto::fromEntity);
+        Page<PostDto> postDtoPage = postRepository.findAll(sortByLastModifiedDate(pageable))
+                                                  .map(this::findPostDtoWithCommentCount);
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
@@ -106,19 +116,17 @@ public class PostService {
     }
 
     // 작성자별 게시물 목록 조회 → Pagination
-    public PostPageResponse getPostPageByUserId(Long userId, Pageable pageable) { // userId 없애야 하나 ?
-        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastModifiedDate").descending());
-        Page<PostDto> postDtoPage = postRepository.findPostPageByUserId(userId, pageRequest)
-                                                  .map(PostDto::fromEntity);
+    public PostPageResponse getPostPageByUserId(Long userId, Pageable pageable) {
+        Page<PostDto> postDtoPage = postRepository.findPostPageByUserId(userId, sortByLastModifiedDate(pageable))
+                                                  .map(this::findPostDtoWithCommentCount);
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
     }
 
     public PostPageResponse getPostPageByTopicId(Long topicId, Pageable pageable) {
-        PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastModifiedDate").descending());
-        Page<PostDto> postDtoPage = postRepository.findPostPageByTopicId(topicId, pageRequest)
-                                                  .map(PostDto::fromEntity);
+        Page<PostDto> postDtoPage = postRepository.findPostPageByTopicId(topicId, sortByLastModifiedDate(pageable))
+                                                  .map(this::findPostDtoWithCommentCount);
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
                                .build();
@@ -139,5 +147,9 @@ public class PostService {
         if (size > 5) {
             throw new IllegalArgumentException("게시물에 업로드할 수 있는 이미지의 개수는 최대 5개 입니다.");
         }
+    }
+
+    private PostDto findPostDtoWithCommentCount(Post post) {
+        return PostDto.fromEntityWithCommentCount(post, commentRepository.countByPostId(post.getId()));
     }
 }

@@ -68,6 +68,7 @@ public class PostController {
         postService.deletePost(postId, user);
     }
 
+
     @GetMapping("/{postId}")
     public PostResponse getPost(@PathVariable("postId") Long postId) {
         return postService.getPost(postId);
@@ -76,9 +77,11 @@ public class PostController {
     @GetMapping
     public PostPageResponse getPostPage(@RequestParam(value = "userId", required = false) Long userId,
                                         @RequestParam(value = "topicId", required = false) Long topicId,
+                                        @RequestParam(value = "word", required = false) String word,
                                         Pageable pageable) {
         if (userId != null) return postService.getPostPageByUserId(userId, pageable);
         if (topicId != null) return postService.getPostPageByTopicId(topicId, pageable);
+        if (!StringUtils.isEmpty(word)) return postService.searchPost(word, pageable);
         return postService.getAllPostPage(pageable);
     }
 

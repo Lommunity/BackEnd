@@ -12,5 +12,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query(value = "select c from comments c join fetch c.user u join fetch u.region where c.id = :commentId")
     Optional<Comment> findWithUserByCommentId(@Param("commentId") Long commentId);
+
     Page<Comment> findCommentPageByPostId(Long postId, Pageable pageable);
+
+    Long countByPostId(Long postId);
 }

@@ -118,13 +118,17 @@ class CommentServiceTest {
             Comment comment = entityTestHelper.createComment("comment content " + i, post2, user2);
             originCommentDtoList.add(CommentDto.fromEntity(comment));
         }
+        originCommentDtoList.sort(((o1, o2) -> {
+            if (o1.getLastModifiedDate().isAfter(o2.getLastModifiedDate())) return 1;
+            else return -1;
+        }));
         PageRequest pageable = PageRequest.of(0, 5);
         CommentPageResponse commentPage = commentService.getCommentPage(post1.getId(), pageable);
         List<CommentDto> contentPageToList = commentPage.getCommentPage().getContent();
 
         // then
-        for (int i = 4; i >= 0; i--) {
-            assertThat(contentPageToList.get(4 - i)).isEqualTo(originCommentDtoList.subList(0, 5).get(i));
+        for (int i = 0; i < 5; i++) {
+            assertThat(contentPageToList).isEqualTo(originCommentDtoList.subList(0, 5));
         }
     }
 }
