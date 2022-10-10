@@ -1,6 +1,5 @@
 package com.Lommunity.domain.like;
 
-import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +24,9 @@ public class Like {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "target_type")
+    private LikeTarget targetType;
+    private Long targetId;
+
 }

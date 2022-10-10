@@ -21,7 +21,7 @@ public class PostDto {
     private String content;
     private Long commentCount;
     private Long likeCount;
-    private boolean writerLike;
+    private boolean userLike;
     private List<String> postImageUrls;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
@@ -34,7 +34,7 @@ public class PostDto {
                       .content(post.getContent())
                       .commentCount(commentCount)
                       .likeCount(likeCount)
-                      .writerLike(writerLike)
+                      .userLike(writerLike)
                       .postImageUrls(post.getPostImageUrls())
                       .createdDate(post.getCreatedDate())
                       .lastModifiedDate(post.getLastModifiedDate())

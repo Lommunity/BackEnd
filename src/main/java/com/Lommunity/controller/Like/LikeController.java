@@ -1,6 +1,7 @@
 package com.Lommunity.controller.Like;
 
 import com.Lommunity.application.like.LikeService;
+import com.Lommunity.application.like.dto.request.LikeRequest;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.infrastructure.security.AuthUser;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +15,12 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping()
-    public void createLike(@RequestParam("postId") Long postId, @AuthUser User user) {
-        likeService.createLike(postId, user);
+    public void createLike(@RequestBody LikeRequest likeRequest, @AuthUser User user) {
+        likeService.createLike(likeRequest, user);
     }
 
     @DeleteMapping()
-    public void deleteLike(@RequestParam("postId") Long postId, @AuthUser User user) {
-        likeService.deleteLike(postId, user);
+    public void deleteLike(@RequestBody LikeRequest likeRequest, @AuthUser User user) {
+        likeService.deleteLike(likeRequest, user);
     }
 }

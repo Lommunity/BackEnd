@@ -7,6 +7,7 @@ import com.Lommunity.domain.comment.Comment;
 import com.Lommunity.domain.comment.CommentRepository;
 import com.Lommunity.domain.like.Like;
 import com.Lommunity.domain.like.LikeRepository;
+import com.Lommunity.domain.like.LikeTarget;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -93,10 +94,11 @@ public class EntityTestHelper {
                                              .build());
     }
 
-    public Like createLike(User user, Post post) {
+    public Like createLike(User user, LikeTarget targetType, Long targetId) {
         return likeRepository.save(Like.builder()
                                        .user(user)
-                                       .post(post)
+                                       .targetType(targetType)
+                                       .targetId(targetId)
                                        .build());
     }
 

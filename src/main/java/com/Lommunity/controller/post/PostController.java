@@ -70,19 +70,20 @@ public class PostController {
 
 
     @GetMapping("/{postId}")
-    public PostResponse getPost(@PathVariable("postId") Long postId) {
-        return postService.getPost(postId);
+    public PostResponse getPost(@PathVariable("postId") Long postId, @AuthUser User user) {
+        return postService.getPost(postId, user);
     }
 
     @GetMapping
     public PostPageResponse getPostPage(@RequestParam(value = "userId", required = false) Long userId,
                                         @RequestParam(value = "topicId", required = false) Long topicId,
                                         @RequestParam(value = "word", required = false) String word,
+                                        @AuthUser User user,
                                         Pageable pageable) {
-        if (userId != null) return postService.getPostPageByUserId(userId, pageable);
-        if (topicId != null) return postService.getPostPageByTopicId(topicId, pageable);
-        if (!StringUtils.isEmpty(word)) return postService.searchPost(word, pageable);
-        return postService.getAllPostPage(pageable);
+        if (userId != null) return postService.getPostPageByUserId(userId, user, pageable);
+        if (topicId != null) return postService.getPostPageByTopicId(topicId, user, pageable);
+        if (!StringUtils.isEmpty(word)) return postService.searchPost(word, user, pageable);
+        return postService.getAllPostPage(user, pageable);
     }
 
     @GetMapping("/post-topics")

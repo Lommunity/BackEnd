@@ -9,6 +9,7 @@ import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.comment.Comment;
 import com.Lommunity.domain.comment.CommentRepository;
 import com.Lommunity.domain.like.LikeRepository;
+import com.Lommunity.domain.like.LikeTarget;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -163,7 +164,7 @@ class PostServiceTest {
         Post post1 = entityTestHelper.createPostWithNumber(user, 1);
 
         // when
-        PostResponse getPostById = postService.getPost(post1.getId());
+        PostResponse getPostById = postService.getPost(post1.getId(), user);
         // then
         assertThat(getPostById.getPost().getPostId()).isEqualTo(post1.getId());
         assertThat(getPostById.getPost().getContent()).isEqualTo("content1");
@@ -186,7 +187,7 @@ class PostServiceTest {
 
         // when
         PageRequest pageable = PageRequest.of(1, 5);
-        PostPageResponse allPostPage = postService.getAllPostPage(pageable);
+        PostPageResponse allPostPage = postService.getAllPostPage(user, pageable);
 
         // then
         List<PostDto> postDtoList = allPostPage.getPostPage().getContent();
@@ -212,8 +213,8 @@ class PostServiceTest {
         // when
         PageRequest pageable1 = PageRequest.of(0, 5);
         PageRequest pageable2 = PageRequest.of(1, 3);
-        PostPageResponse userPostsPageResponse1 = postService.getPostPageByUserId(user1.getId(), pageable1);
-        PostPageResponse userPostsPageResponse2 = postService.getPostPageByUserId(user2.getId(), pageable2);
+        PostPageResponse userPostsPageResponse1 = postService.getPostPageByUserId(user1.getId(), user1, pageable1);
+        PostPageResponse userPostsPageResponse2 = postService.getPostPageByUserId(user2.getId(), user1, pageable2);
 
         // then
         assertThat(userPostsPageResponse1.getPostPage().getTotalPages()).isEqualTo(1);
@@ -236,7 +237,7 @@ class PostServiceTest {
         Comment comment3 = entityTestHelper.createComment("comment content", post2, commentWriter);
 
         // when
-        PostPageResponse postPageResponse = postService.getPostPageByUserId(postWriter.getId(), PageRequest.of(0, 3));
+        PostPageResponse postPageResponse = postService.getPostPageByUserId(postWriter.getId(), postWriter, PageRequest.of(0, 3));
 
         // then
         for (PostDto postDto : postPageResponse.getPostPage().getContent()) {
@@ -260,17 +261,17 @@ class PostServiceTest {
         Post post1 = entityTestHelper.createPost(user1);
         Post post2 = entityTestHelper.createPost(user2);
 
-        entityTestHelper.createLike(user1, post1);
-        entityTestHelper.createLike(user2, post1);
-        entityTestHelper.createLike(user3, post1);
+        entityTestHelper.createLike(user1, LikeTarget.POST, post1.getId());
+        entityTestHelper.createLike(user2, LikeTarget.POST, post1.getId());
+        entityTestHelper.createLike(user3, LikeTarget.POST, post1.getId());
 
-        entityTestHelper.createLike(user1, post2);
+        entityTestHelper.createLike(user1, LikeTarget.POST, post2.getId());
 
         // when
-        PostResponse postDtoResponse1 = postService.getPost(post1.getId());
+        PostResponse postDtoResponse1 = postService.getPost(post1.getId(), user1);
         PostDto postDto1 = postDtoResponse1.getPost();
 
-        PostResponse postDtoResponse2 = postService.getPost(post2.getId());
+        PostResponse postDtoResponse2 = postService.getPost(post2.getId(), user1);
         PostDto postDto2 = postDtoResponse2.getPost();
 
         // then
@@ -288,7 +289,7 @@ class PostServiceTest {
         Post post4 = entityTestHelper.createPostWithNumber(user, 2);
 
         // when
-        PostPageResponse postPageResponse = postService.searchPost("1", PageRequest.of(0, 4));
+        PostPageResponse postPageResponse = postService.searchPost("1", user, PageRequest.of(0, 4));
         List<PostDto> postDtoList = postPageResponse.getPostPage().getContent();
         // then
         assertThat(postDtoList.get(0).getContent()).isEqualTo("content41");
@@ -298,28 +299,28 @@ class PostServiceTest {
     }
 
     @Test
-    public void isWriterLikePostTest() {
+    public void userLikePostTest() {
         // given
-        User postWriter1 = entityTestHelper.registerUser("apple");
+        User loginUser = entityTestHelper.registerUser("apple");
         User postWriter2 = entityTestHelper.registerUser("peach");
         User liker = entityTestHelper.registerUser("potato");
 
-        Post post1 = entityTestHelper.createPost(postWriter1);
+        Post post1 = entityTestHelper.createPost(loginUser);
         Post post2 = entityTestHelper.createPost(postWriter2);
 
         // when
-        entityTestHelper.createLike(postWriter1, post1);
-        entityTestHelper.createLike(liker, post1);
+        entityTestHelper.createLike(loginUser, LikeTarget.POST, post1.getId());
+        entityTestHelper.createLike(liker, LikeTarget.POST, post1.getId());
 
-        entityTestHelper.createLike(liker, post2);
+        entityTestHelper.createLike(postWriter2, LikeTarget.POST, post2.getId());
 
 
-        PostResponse postResponse1 = postService.getPost(post1.getId());
-        PostResponse postResponse2 = postService.getPost(post2.getId());
+        PostResponse postResponse1 = postService.getPost(post1.getId(), loginUser);
+        PostResponse postResponse2 = postService.getPost(post2.getId(), loginUser);
 
         // then
-        assertThat(postResponse1.getPost().isWriterLike()).isEqualTo(true);
-        assertThat(postResponse2.getPost().isWriterLike()).isEqualTo(false);
+        assertThat(postResponse1.getPost().isUserLike()).isEqualTo(true);
+        assertThat(postResponse2.getPost().isUserLike()).isEqualTo(false);
     }
 }
 

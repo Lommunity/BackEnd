@@ -1,7 +1,9 @@
 package com.Lommunity.application.like;
 
+import com.Lommunity.application.like.dto.request.LikeRequest;
 import com.Lommunity.application.post.PostService;
 import com.Lommunity.application.post.dto.response.PostResponse;
+import com.Lommunity.domain.like.LikeTarget;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.user.User;
 import com.Lommunity.testhelper.EntityTestHelper;
@@ -28,13 +30,17 @@ class LikeServiceTest {
         Post post = entityTestHelper.createPostWithNumber(user1, 1);
 
         // when
-        likeService.createLike(post.getId(), user1);
-        likeService.createLike(post.getId(), user2);
-        PostResponse postResponse = postService.getPost(post.getId());
+        LikeRequest likeRequest = LikeRequest.builder()
+                                       .targetType(LikeTarget.POST)
+                                       .targetId(post.getId())
+                                       .build();
+        likeService.createLike(likeRequest, user1);
+        likeService.createLike(likeRequest, user2);
+        PostResponse postResponse = postService.getPost(post.getId(), user1);
 
         // then
         assertThat(postResponse.getPost().getLikeCount()).isEqualTo(2L);
-        assertThat(postResponse.getPost().isWriterLike()).isEqualTo(true);
+        assertThat(postResponse.getPost().isUserLike()).isEqualTo(true);
     }
 
     @Test
@@ -44,9 +50,13 @@ class LikeServiceTest {
         Post post = entityTestHelper.createPostWithNumber(user1, 1);
 
         // when
-        likeService.createLike(post.getId(), user1);
-        likeService.createLike(post.getId(), user1);
-        PostResponse postResponse = postService.getPost(post.getId());
+        LikeRequest likeRequest = LikeRequest.builder()
+                                             .targetType(LikeTarget.POST)
+                                             .targetId(post.getId())
+                                             .build();
+        likeService.createLike(likeRequest, user1);
+        likeService.createLike(likeRequest, user1);
+        PostResponse postResponse = postService.getPost(post.getId(), user1);
 
         // then
         assertThat(postResponse.getPost().getLikeCount()).isEqualTo(1L);

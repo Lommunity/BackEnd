@@ -1,8 +1,10 @@
 package com.Lommunity.application.like;
 
+import com.Lommunity.application.like.dto.request.LikeRequest;
 import com.Lommunity.domain.comment.CommentRepository;
 import com.Lommunity.domain.like.Like;
 import com.Lommunity.domain.like.LikeRepository;
+import com.Lommunity.domain.like.LikeTarget;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -21,17 +23,21 @@ public class LikeService {
     private final PostRepository postRepository;
     protected final CommentRepository commentRepository;
 
-    public void createLike(Long postId, User user) {
-        if (!isAlreadyLike(postId, user.getId())) {
-            likeRepository.save(Like.builder()
-                                    .user(user)
-                                    .post(findPost(postId))
-                                    .build());
+    public void createLike(LikeRequest likeRequest, User user) {
+        if (likeRequest.getTargetType().equals(LikeTarget.POST)) {
+            if (!isAlreadyLike(likeRequest.getTargetType(), likeRequest.getTargetId(), user.getId())) {
+                likeRepository.save(Like.builder()
+                                        .user(user)
+                                        .targetType(likeRequest.getTargetType())
+                                        .targetId(likeRequest.getTargetId())
+                                        .build());
+            }
         }
     }
 
-    public void deleteLike(Long postId, User user) {
-        Optional<Like> like = likeRepository.findByPostIdAndUserId(postId, user.getId());
+    public void deleteLike(LikeRequest likeRequest, User user) {
+        Optional<Like> like = likeRepository
+                .findByTargetTypeAndTargetIdAndUserId(likeRequest.getTargetType(), likeRequest.getTargetId(), user.getId());
         like.ifPresent(likeRepository::delete);
     }
 
@@ -40,7 +46,7 @@ public class LikeService {
                              .orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
     }
 
-    private boolean isAlreadyLike(Long postId, Long userId) {
-        return likeRepository.existsByPostIdAndUserId(postId, userId);
+    private boolean isAlreadyLike(LikeTarget targetType, Long targetId, Long userId) {
+        return likeRepository.existsByTargetTypeAndTargetIdAndUserId(targetType, targetId, userId);
     }
 }
