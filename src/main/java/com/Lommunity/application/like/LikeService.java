@@ -5,7 +5,6 @@ import com.Lommunity.domain.comment.CommentRepository;
 import com.Lommunity.domain.like.Like;
 import com.Lommunity.domain.like.LikeRepository;
 import com.Lommunity.domain.like.LikeTarget;
-import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +37,6 @@ public class LikeService {
         Optional<Like> like = likeRepository
                 .findByTargetTypeAndTargetIdAndUserId(likeRequest.getTargetType(), likeRequest.getTargetId(), user.getId());
         like.ifPresent(likeRepository::delete);
-    }
-
-    private Post findPost(Long postId) {
-        return postRepository.findById(postId)
-                             .orElseThrow(() -> new IllegalArgumentException("postID에 해당하는 게시물이 존재하지 않습니다. postID: " + postId));
     }
 
     private boolean isAlreadyLike(LikeTarget targetType, Long targetId, Long userId) {
