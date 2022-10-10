@@ -54,11 +54,11 @@ public class CommentService {
 
     public CommentPageResponse getCommentPage(Long postId, Pageable pageable) {
         findPost(postId);
-        PageRequest pageRequestAsce = PageRequest.of(pageable.getPageNumber(),
+        PageRequest pageRequestAsc = PageRequest.of(pageable.getPageNumber(),
                 pageable.getPageSize(),
                 Sort.by("createdDate").ascending());
 
-        Page<CommentDto> commentDtoPage = commentRepository.findCommentPageByPostId(postId, pageRequestAsce)
+        Page<CommentDto> commentDtoPage = commentRepository.findCommentPageByPostId(postId, pageRequestAsc)
                                                            .map(CommentDto::fromEntity);
         return CommentPageResponse.builder()
                                   .commentPage(commentDtoPage)

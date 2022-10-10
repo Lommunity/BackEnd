@@ -1,11 +1,13 @@
 package com.Lommunity.testhelper;
 
-import com.Lommunity.application.comment.CommentService;
 import com.Lommunity.application.file.dto.FileUploadRequest;
 import com.Lommunity.application.user.UserService;
 import com.Lommunity.application.user.dto.request.RegisterRequest;
 import com.Lommunity.domain.comment.Comment;
 import com.Lommunity.domain.comment.CommentRepository;
+import com.Lommunity.domain.like.Like;
+import com.Lommunity.domain.like.LikeRepository;
+import com.Lommunity.domain.like.LikeTarget;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -34,9 +36,8 @@ public class EntityTestHelper {
     PostRepository postRepository;
     @Autowired
     CommentRepository commentRepository;
-
     @Autowired
-    CommentService commentService;
+    LikeRepository likeRepository;
 
     public User registerUser(String nickname) {
         User user = userRepository.save(builder()
@@ -91,6 +92,14 @@ public class EntityTestHelper {
                                              .user(user)
                                              .content(content)
                                              .build());
+    }
+
+    public Like createLike(User user, LikeTarget targetType, Long targetId) {
+        return likeRepository.save(Like.builder()
+                                       .user(user)
+                                       .targetType(targetType)
+                                       .targetId(targetId)
+                                       .build());
     }
 
     private void makeAuthenticationToken(Long userId) {

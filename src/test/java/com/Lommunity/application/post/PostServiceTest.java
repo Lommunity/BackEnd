@@ -8,6 +8,8 @@ import com.Lommunity.application.post.dto.response.PostPageResponse;
 import com.Lommunity.application.post.dto.response.PostResponse;
 import com.Lommunity.domain.comment.Comment;
 import com.Lommunity.domain.comment.CommentRepository;
+import com.Lommunity.domain.like.LikeRepository;
+import com.Lommunity.domain.like.LikeTarget;
 import com.Lommunity.domain.post.Post;
 import com.Lommunity.domain.post.PostRepository;
 import com.Lommunity.domain.user.User;
@@ -17,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,7 +36,10 @@ class PostServiceTest {
     @Autowired
     CommentRepository commentRepository;
     @Autowired
+    LikeRepository likeRepository;
+    @Autowired
     EntityTestHelper entityTestHelper;
+
 
     @Test
     public void createPostTest() {
@@ -157,7 +164,7 @@ class PostServiceTest {
         Post post1 = entityTestHelper.createPostWithNumber(user, 1);
 
         // when
-        PostResponse getPostById = postService.getPost(post1.getId());
+        PostResponse getPostById = postService.getPost(post1.getId(), user);
         // then
         assertThat(getPostById.getPost().getPostId()).isEqualTo(post1.getId());
         assertThat(getPostById.getPost().getContent()).isEqualTo("content1");
@@ -166,6 +173,7 @@ class PostServiceTest {
     @Test
     public void allPostsByPageTest() {
         // given
+        likeRepository.deleteAll();
         commentRepository.deleteAll();
         postRepository.deleteAll();
         User user = entityTestHelper.registerUser("홍길동");
@@ -174,12 +182,12 @@ class PostServiceTest {
 
         for (int i = 1; i <= 10; i++) {
             Post post = entityTestHelper.createPostWithNumber(user, i);
-            originPostDtoList.add(PostDto.fromEntityWithCommentCount(post, 0L));
+            originPostDtoList.add(PostDto.fromEntityWithCommentCount(post, 0L, 0L, false));
         }
 
         // when
         PageRequest pageable = PageRequest.of(1, 5);
-        PostPageResponse allPostPage = postService.getAllPostPage(pageable);
+        PostPageResponse allPostPage = postService.getAllPostPage(user, pageable);
 
         // then
         List<PostDto> postDtoList = allPostPage.getPostPage().getContent();
@@ -205,8 +213,8 @@ class PostServiceTest {
         // when
         PageRequest pageable1 = PageRequest.of(0, 5);
         PageRequest pageable2 = PageRequest.of(1, 3);
-        PostPageResponse userPostsPageResponse1 = postService.getPostPageByUserId(user1.getId(), pageable1);
-        PostPageResponse userPostsPageResponse2 = postService.getPostPageByUserId(user2.getId(), pageable2);
+        PostPageResponse userPostsPageResponse1 = postService.getPostPageByUserId(user1.getId(), user1, pageable1);
+        PostPageResponse userPostsPageResponse2 = postService.getPostPageByUserId(user2.getId(), user1, pageable2);
 
         // then
         assertThat(userPostsPageResponse1.getPostPage().getTotalPages()).isEqualTo(1);
@@ -217,6 +225,7 @@ class PostServiceTest {
     @Test
     public void postDtoWithCommentCountTest() {
         // given
+        likeRepository.deleteAll();
         commentRepository.deleteAll();
         postRepository.deleteAll();
         User postWriter = entityTestHelper.registerUser("돼지");
@@ -228,7 +237,7 @@ class PostServiceTest {
         Comment comment3 = entityTestHelper.createComment("comment content", post2, commentWriter);
 
         // when
-        PostPageResponse postPageResponse = postService.getPostPageByUserId(postWriter.getId(), PageRequest.of(0, 3));
+        PostPageResponse postPageResponse = postService.getPostPageByUserId(postWriter.getId(), postWriter, PageRequest.of(0, 3));
 
         // then
         for (PostDto postDto : postPageResponse.getPostPage().getContent()) {
@@ -243,6 +252,34 @@ class PostServiceTest {
     }
 
     @Test
+    public void postDtoWithLikeCountTest() {
+        // given
+        User user1 = entityTestHelper.registerUser("peach");
+        User user2 = entityTestHelper.registerUser("apple");
+        User user3 = entityTestHelper.registerUser("potato");
+
+        Post post1 = entityTestHelper.createPost(user1);
+        Post post2 = entityTestHelper.createPost(user2);
+
+        entityTestHelper.createLike(user1, LikeTarget.POST, post1.getId());
+        entityTestHelper.createLike(user2, LikeTarget.POST, post1.getId());
+        entityTestHelper.createLike(user3, LikeTarget.POST, post1.getId());
+
+        entityTestHelper.createLike(user1, LikeTarget.POST, post2.getId());
+
+        // when
+        PostResponse postDtoResponse1 = postService.getPost(post1.getId(), user1);
+        PostDto postDto1 = postDtoResponse1.getPost();
+
+        PostResponse postDtoResponse2 = postService.getPost(post2.getId(), user1);
+        PostDto postDto2 = postDtoResponse2.getPost();
+
+        // then
+        assertThat(postDto1.getLikeCount()).isEqualTo(3L);
+        assertThat(postDto2.getLikeCount()).isEqualTo(1L);
+    }
+
+    @Test
     public void search() {
         // given
         User user = entityTestHelper.registerUser("홍길동");
@@ -252,13 +289,38 @@ class PostServiceTest {
         Post post4 = entityTestHelper.createPostWithNumber(user, 2);
 
         // when
-        PostPageResponse postPageResponse = postService.searchPost("1", PageRequest.of(0, 4));
+        PostPageResponse postPageResponse = postService.searchPost("1", user, PageRequest.of(0, 4));
         List<PostDto> postDtoList = postPageResponse.getPostPage().getContent();
         // then
         assertThat(postDtoList.get(0).getContent()).isEqualTo("content41");
         assertThat(postDtoList.get(1).getContent()).isEqualTo("content12");
         assertThat(postDtoList.get(2).getContent()).isEqualTo("content1");
-        assertThat(postDtoList.contains(PostDto.fromEntityWithCommentCount(post4, 0L))).isEqualTo(false);
+        assertThat(postDtoList.contains(PostDto.fromEntityWithCommentCount(post4, 0L, 0L, false))).isEqualTo(false);
+    }
+
+    @Test
+    public void userLikePostTest() {
+        // given
+        User loginUser = entityTestHelper.registerUser("apple");
+        User postWriter2 = entityTestHelper.registerUser("peach");
+        User liker = entityTestHelper.registerUser("potato");
+
+        Post post1 = entityTestHelper.createPost(loginUser);
+        Post post2 = entityTestHelper.createPost(postWriter2);
+
+        // when
+        entityTestHelper.createLike(loginUser, LikeTarget.POST, post1.getId());
+        entityTestHelper.createLike(liker, LikeTarget.POST, post1.getId());
+
+        entityTestHelper.createLike(postWriter2, LikeTarget.POST, post2.getId());
+
+
+        PostResponse postResponse1 = postService.getPost(post1.getId(), loginUser);
+        PostResponse postResponse2 = postService.getPost(post2.getId(), loginUser);
+
+        // then
+        assertThat(postResponse1.getPost().isUserLike()).isEqualTo(true);
+        assertThat(postResponse2.getPost().isUserLike()).isEqualTo(false);
     }
 }
 
