@@ -24,15 +24,14 @@ public class LikeService {
     protected final CommentRepository commentRepository;
 
     public void createLike(LikeRequest likeRequest, User user) {
-        if (likeRequest.getTargetType().equals(LikeTarget.POST)) {
-            if (!isAlreadyLike(likeRequest.getTargetType(), likeRequest.getTargetId(), user.getId())) {
-                likeRepository.save(Like.builder()
-                                        .user(user)
-                                        .targetType(likeRequest.getTargetType())
-                                        .targetId(likeRequest.getTargetId())
-                                        .build());
-            }
+        if (!isAlreadyLike(likeRequest.getTargetType(), likeRequest.getTargetId(), user.getId())) {
+            likeRepository.save(Like.builder()
+                                    .user(user)
+                                    .targetType(likeRequest.getTargetType())
+                                    .targetId(likeRequest.getTargetId())
+                                    .build());
         }
+
     }
 
     public void deleteLike(LikeRequest likeRequest, User user) {
