@@ -64,3 +64,4 @@ Temporary Items
 .apdisk
 
 /src/main/resources/aws-properties.yml
+/src/main/resources/application-prod-secret.yml
