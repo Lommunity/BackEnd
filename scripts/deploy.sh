@@ -21,4 +21,7 @@ else
 fi
 
 echo ">> 새 애플리케이션 배포 <<"
-sudo nohup java -jar build/libs/Lommunity-0.0.1-SNAPSHOT.jar 2>&1 &
+sudo nohup java -jar \
+-Dspring.profiles.active=prod \
+-Dspring.config.location=classpath:/application-prod.yml,/lommunity/config/application-prod-secret.yml \
+build/libs/Lommunity-0.0.1-SNAPSHOT.jar 2>&1 &
