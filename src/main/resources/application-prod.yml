@@ -6,9 +6,6 @@ spring:
       hibernate:
         #        show_sql: true
 #        format_sql: true
-  config:
-    import:
-      - classpath:application-prod-secret.yml
 
 #logging.level:
 #  org.hibernate.SQL: debug
