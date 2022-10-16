@@ -1,15 +1,17 @@
-## 프로젝트 소개
+<img src="https://user-images.githubusercontent.com/93714741/196025954-a59a6e85-1a6c-4bc1-b198-1036d96c8419.png">
 
-## 프로젝트 아키텍처
+## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> 프로젝트 소개
+
+## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> 프로젝트 아키텍처
 <div>
 <img src="https://user-images.githubusercontent.com/93714741/196023117-fd6ac7eb-8783-49a3-b948-2d800c4b8ff0.png">
 </div>
 
-## API 명세
+## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> API 명세
 [📌 API 명세 바로가기 ](https://www.notion.so/7d509ec7b5cb4d15a1b034fdb77b19bf?v=2edc097490604d28bf1db139db339678)
 
 
-## 기술 스택
+## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> 기술 스택
 #### Language & Build Tool
 <div>
     <img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">
@@ -44,9 +46,9 @@
     <img src="https://img.shields.io/badge/NAVER-03C75A?style=for-the-badge&logo=NAVER&logoColor=white">
 </div>
 
-## ERD
+## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> ERD
 <div>
 <img src="https://user-images.githubusercontent.com/93714741/196023171-16234533-5ce7-4554-960e-154be3a00a7d.png">
 </div>
 
-## TODO
+## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> TODO
