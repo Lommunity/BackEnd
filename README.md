@@ -1,7 +1,13 @@
+## 프로젝트 소개
+
 ## 프로젝트 아키텍처
 <div>
 <img src="https://user-images.githubusercontent.com/93714741/196023117-fd6ac7eb-8783-49a3-b948-2d800c4b8ff0.png">
 </div>
+
+## API 명세
+[📌 API 명세 바로가기 ](https://www.notion.so/7d509ec7b5cb4d15a1b034fdb77b19bf?v=2edc097490604d28bf1db139db339678)
+
 
 ## 기술 스택
 #### Language & Build Tool
@@ -42,3 +48,5 @@
 <div>
 <img src="https://user-images.githubusercontent.com/93714741/196023171-16234533-5ce7-4554-960e-154be3a00a7d.png">
 </div>
+
+## TODO
