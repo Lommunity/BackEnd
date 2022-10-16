@@ -1,6 +1,13 @@
 <img src="https://user-images.githubusercontent.com/93714741/196025954-a59a6e85-1a6c-4bc1-b198-1036d96c8419.png">
 
 ## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> 프로젝트 소개
+궁금한 것이 생겼을 때, <br/> 나누고 싶은 이야기가 생겼을 때, <br/> 이웃들과 소통할 수 있는 로컬 커뮤니티 서비스 입니다.
+
+- 주제별로 게시글을 작성할 수 있습니다.<br/>
+- 댓글을 통해 자신의 의견을 전달할 수 있습니다. <br/>
+- 게시글의 내용이 공감이 된다면 좋아요(❤)️를 남길 수 있습니다. <br/>
+
+
 
 ## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> 프로젝트 아키텍처
 <div>
@@ -8,7 +15,7 @@
 </div>
 
 ## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> API 명세
-[📌 API 명세 바로가기 ](https://www.notion.so/7d509ec7b5cb4d15a1b034fdb77b19bf?v=2edc097490604d28bf1db139db339678)
+[► API 명세 바로가기 ](https://www.notion.so/7d509ec7b5cb4d15a1b034fdb77b19bf?v=2edc097490604d28bf1db139db339678)
 
 
 ## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> 기술 스택
@@ -51,4 +58,4 @@
 <img src="https://user-images.githubusercontent.com/93714741/196023171-16234533-5ce7-4554-960e-154be3a00a7d.png">
 </div>
 
-## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> TODO
+[//]: # (## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> TODO)
