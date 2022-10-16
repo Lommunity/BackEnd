@@ -19,6 +19,7 @@ public class LoginService {
     private final KakaoOauth2LoginService kakaoOauth2LoginService;
     private final NaverOauth2LoginService naverOauth2LoginService;
     private final JwtHelper jwtHelper;
+    private final TestOauthLoginService testOauthLoginService;
 
     public LoginResponse login(LoginRequest loginRequest) {
         Oauth2UserInfo oauth2UserInfo = getOauth2UserInfo(loginRequest); // provider에게서 얻은 정보를 담은 oauth2UserInfo
@@ -30,10 +31,13 @@ public class LoginService {
     }
 
     private Oauth2UserInfo getOauth2UserInfo(LoginRequest loginRequest) {
-        if (loginRequest.getProvider().equals("kakao")) {
-            return kakaoOauth2LoginService.login(loginRequest);
-        } else if (loginRequest.getProvider().equals("naver")) {
-            return naverOauth2LoginService.login(loginRequest);
+        switch (loginRequest.getProvider()) {
+            case "kakao":
+                return kakaoOauth2LoginService.login(loginRequest);
+            case "naver":
+                return naverOauth2LoginService.login(loginRequest);
+            case "test":
+                return testOauthLoginService.login(loginRequest);
         }
         throw new IllegalArgumentException("지원하지 않는 Provider 입니다. provider: " + loginRequest.getProvider());
     }
