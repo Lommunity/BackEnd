@@ -31,8 +31,8 @@ class UserRepositoryTest {
 
     @Test
     public void leftFetchJoinTest() {
-        User hasRegion1 = entityTestHelper.registerUser("홍길동");
-        User hasRegion2 = entityTestHelper.registerUser("감자");
+        User hasRegion1 = entityTestHelper.userRegisterBusan("홍길동");
+        User hasRegion2 = entityTestHelper.userRegisterBusan("감자");
         User noRegion = userRepository.save(builder()
                 .nickname("이혜은")
                 .profileImageUrl("aaa")

@@ -23,6 +23,8 @@ public class PostDto {
     private Long likeCount;
     private boolean userLike;
     private List<String> postImageUrls;
+    private Long secondRegionLevel;
+    private Long thirdRegionLevel;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 
@@ -36,6 +38,8 @@ public class PostDto {
                       .likeCount(likeCount)
                       .userLike(writerLike)
                       .postImageUrls(post.getPostImageUrls())
+                      .secondRegionLevel(post.getSecondRegionLevel())
+                      .thirdRegionLevel(post.getThirdRegionLevel())
                       .createdDate(post.getCreatedDate())
                       .lastModifiedDate(post.getLastModifiedDate())
                       .build();

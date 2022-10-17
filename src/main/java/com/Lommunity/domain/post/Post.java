@@ -32,14 +32,18 @@ public class Post extends BaseEntity {
     @Convert(converter = ListStringConverter.class)
     @Column(length = 500)
     private List<String> postImageUrls;
+    private Long secondRegionLevel;
+    private Long thirdRegionLevel;
 
     @Builder
-    public Post(User user, Long topicId, String content, List<String> postImageUrls) {
+    public Post(User user, Long topicId, String content, List<String> postImageUrls, Long secondRegionLevel, Long thirdRegionLevel) {
         validate(topicId, content);
         this.user = user;
         this.topicId = topicId;
         this.content = content;
         this.postImageUrls = postImageUrls;
+        this.secondRegionLevel = secondRegionLevel;
+        this.thirdRegionLevel = thirdRegionLevel;
     }
 
     public void editPost(Long topicId, String content, List<String> postImageUrls) {

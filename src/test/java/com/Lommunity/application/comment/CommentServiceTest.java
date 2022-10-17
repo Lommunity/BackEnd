@@ -35,7 +35,7 @@ class CommentServiceTest {
     @Test
     public void createCommentTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         Post post = entityTestHelper.createPost(user);
 
         // when
@@ -54,7 +54,7 @@ class CommentServiceTest {
     @Test
     public void emptyContentCreateTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         Post post = entityTestHelper.createPost(user);
 
         // when
@@ -69,7 +69,7 @@ class CommentServiceTest {
     @Test
     public void editCommentTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         Post post = entityTestHelper.createPost(user);
         Long postId = post.getId();
         Comment comment = entityTestHelper.createComment("comment content", post, user);
@@ -86,7 +86,7 @@ class CommentServiceTest {
     @Test
     public void deleteCommentTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         Post post = entityTestHelper.createPost(user);
         Long postId = post.getId();
         Comment comment = entityTestHelper.createComment("comment content", post, user);
@@ -102,8 +102,8 @@ class CommentServiceTest {
     public void getCommentPageTest() {
         // given
         commentRepository.deleteAll();
-        User user1 = entityTestHelper.registerUser("포도");
-        User user2 = entityTestHelper.registerUser("사과");
+        User user1 = entityTestHelper.userRegisterBusan("포도");
+        User user2 = entityTestHelper.userRegisterBusan("사과");
         Post post1 = entityTestHelper.createPost(user1);
         Post post2 = entityTestHelper.createPost(user2);
 
