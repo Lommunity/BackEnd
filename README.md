@@ -66,6 +66,9 @@
 
 [//]: # (## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> TODO)
 
+## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> 기능
+[► Lommunity 기능 바로가기](https://www.notion.so/Lommunity-2bee65270a604464b64851376e42e620#816e896962e04601b358443165be9e55)
+
 ## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> Application UI
 <div>
 <img src="https://user-images.githubusercontent.com/93714741/196097016-5aa86fa9-8c07-4c66-b9ff-ff7b18c613eb.png">
