@@ -34,6 +34,8 @@ create table posts (
         last_modified_by bigint,
         content varchar(255),
         post_image_urls varchar(500),
+        second_level_region_code bigint,
+        third_level_region_code bigint,
         topic_id bigint,
         user_id bigint,
         primary key (post_id)
