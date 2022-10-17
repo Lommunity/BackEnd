@@ -12,10 +12,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query(value = "select p from posts p join fetch p.user u join fetch u.region where p.id = :postId")
     Optional<Post> findWithUserByPostId(@Param("postId") Long postId);
+
+    Page<Post> findPostAllPageBySecondLevelRegionCode(Long secondRegionLevel, Pageable pageable);
+
     Page<Post> findPostPageByUserId(Long userId, Pageable pageable);
 
-    Page<Post> findPostPageByTopicId(Long topicId, Pageable pageable);
+    Page<Post> findPostPageBySecondLevelRegionCodeAndTopicId(Long secondLevelRegionCode, Long topicId, Pageable pageable);
 
-    @Query(value = "select p from posts p where p.content like %:word%")
-    Page<Post> findPostByWord(@Param("word") String word, Pageable pageable);
+    @Query(value = "select p from posts p where p.secondLevelRegionCode = :secondLevelRegionCode and p.content like %:word%")
+    Page<Post> findPostBySecondLevelRegionCodeAndWord(@Param("secondLevelRegionCode") Long secondLevelRegionCode, @Param("word") String word, Pageable pageable);
 }

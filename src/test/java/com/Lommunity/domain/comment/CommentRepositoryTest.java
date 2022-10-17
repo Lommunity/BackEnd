@@ -20,7 +20,7 @@ class CommentRepositoryTest {
     @Test
     public void countByPostIdTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         Post post1 = entityTestHelper.createPostWithNumber(user, 1);
         Post post2 = entityTestHelper.createPostWithNumber(user, 2);
         Comment comment1 = entityTestHelper.createComment("content 1", post1, user);

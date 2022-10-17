@@ -20,9 +20,9 @@ class LikeRepositoryTest {
     @Test
     public void likeCountByPostIdTest() {
         // given
-        User user1 = entityTestHelper.registerUser("홍길동");
-        User user2 = entityTestHelper.registerUser("돼지");
-        User user3 = entityTestHelper.registerUser("감자");
+        User user1 = entityTestHelper.userRegisterBusan("홍길동");
+        User user2 = entityTestHelper.userRegisterBusan("돼지");
+        User user3 = entityTestHelper.userRegisterBusan("감자");
 
         Post post = entityTestHelper.createPost(user1);
         Like like1 = entityTestHelper.createLike(user1, LikeTarget.POST, post.getId());
@@ -39,8 +39,8 @@ class LikeRepositoryTest {
     @Test
     public void existsLikeByPostIdAndUserId() {
         // given
-        User post1Writer = entityTestHelper.registerUser("홍길동");
-        User post2Writer = entityTestHelper.registerUser("돼지");
+        User post1Writer = entityTestHelper.userRegisterBusan("홍길동");
+        User post2Writer = entityTestHelper.userRegisterBusan("돼지");
 
         Post post1 = entityTestHelper.createPost(post1Writer);
         Post post2 = entityTestHelper.createPost(post2Writer);

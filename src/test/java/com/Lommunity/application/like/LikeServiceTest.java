@@ -25,8 +25,8 @@ class LikeServiceTest {
     @Test
     public void createLikeTest() {
         // given
-        User user1 = entityTestHelper.registerUser("홍길동");
-        User user2 = entityTestHelper.registerUser("apple");
+        User user1 = entityTestHelper.userRegisterBusan("홍길동");
+        User user2 = entityTestHelper.userRegisterBusan("apple");
         Post post = entityTestHelper.createPostWithNumber(user1, 1);
 
         // when
@@ -46,7 +46,7 @@ class LikeServiceTest {
     @Test
     public void createLikeOverlapTest() {
         // given
-        User user1 = entityTestHelper.registerUser("홍길동");
+        User user1 = entityTestHelper.userRegisterBusan("홍길동");
         Post post = entityTestHelper.createPostWithNumber(user1, 1);
 
         // when

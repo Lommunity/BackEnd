@@ -44,7 +44,7 @@ class PostServiceTest {
     @Test
     public void createPostTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
 
         // when
         PostCreateRequest createRequest = PostCreateRequest.builder()
@@ -71,7 +71,7 @@ class PostServiceTest {
     @Test
     public void emptyContentCreateTest() {
         // then
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         // given
         PostCreateRequest createRequest = PostCreateRequest.builder()
                                                            .topicId(1L)
@@ -91,7 +91,7 @@ class PostServiceTest {
     @Test
     public void editPostTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         Post post = entityTestHelper.createPost(user);
         List<String> leavePostImageUrls = post.getPostImageUrls().subList(0, 1);
         List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
@@ -121,7 +121,7 @@ class PostServiceTest {
     @Test
     public void emptyContentEditTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         Post post = entityTestHelper.createPost(user);
         List<String> leavePostImageUrls = post.getPostImageUrls().subList(0, 1);
         List<FileUploadRequest> newPostImageUrls = new ArrayList<>();
@@ -146,7 +146,7 @@ class PostServiceTest {
     @Test
     public void deletePostTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         Post post = entityTestHelper.createPost(user);
 
         // when
@@ -160,7 +160,7 @@ class PostServiceTest {
     @Test
     public void getPost() {
         // give
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
         Post post1 = entityTestHelper.createPostWithNumber(user, 1);
 
         // when
@@ -176,36 +176,40 @@ class PostServiceTest {
         likeRepository.deleteAll();
         commentRepository.deleteAll();
         postRepository.deleteAll();
-        User user = entityTestHelper.registerUser("홍길동");
+        User busanUser = entityTestHelper.userRegisterBusan("홍길동");
+        User seoulUser = entityTestHelper.userRegisterSeoul("김서울");
 
-        List<PostDto> originPostDtoList = new ArrayList<>();
+        List<PostDto> busanPersonPostList = new ArrayList<>();
 
+        Post seoulPersonPost = entityTestHelper.createPost(seoulUser);
         for (int i = 1; i <= 10; i++) {
-            Post post = entityTestHelper.createPostWithNumber(user, i);
-            originPostDtoList.add(PostDto.fromEntityWithCommentCount(post, 0L, 0L, false));
+            Post post = entityTestHelper.createPostWithNumber(busanUser, i);
+            busanPersonPostList.add(PostDto.fromEntityWithCommentCount(post, 0L, 0L, false));
         }
 
         // when
         PageRequest pageable = PageRequest.of(1, 5);
-        PostPageResponse allPostPage = postService.getAllPostPage(user, pageable);
+        PostPageResponse busan = postService.getAllPostPage(busanUser, pageable);
+        PostPageResponse seoul = postService.getAllPostPage(seoulUser, PageRequest.of(0, 1));
 
         // then
-        List<PostDto> postDtoList = allPostPage.getPostPage().getContent();
+        List<PostDto> postDtoList = busan.getPostPage().getContent();
         for (int i = 4; i >= 0; i--) {
-            assertThat(postDtoList.get(4 - i)).isEqualTo(originPostDtoList.subList(0, 5).get(i));
+            assertThat(postDtoList.get(4 - i)).isEqualTo(busanPersonPostList.subList(0, 5).get(i));
         }
+        assertThat(seoul.getPostPage().getContent().get(0).getWriter().getNickname()).isEqualTo("김서울");
     }
 
     @Test
     public void userPostsByPageTest() {
         // given
-        User user1 = entityTestHelper.registerUser("홍길동");
+        User user1 = entityTestHelper.userRegisterBusan("홍길동");
 
         for (int i = 0; i < 5; i++) {
             entityTestHelper.createPostWithNumber(user1, (i + 1));
         }
 
-        User user2 = entityTestHelper.registerUser("이혜은");
+        User user2 = entityTestHelper.userRegisterBusan("이혜은");
         for (int i = 0; i < 6; i++) {
             entityTestHelper.createPostWithNumber(user2, (i + 1));
         }
@@ -228,8 +232,8 @@ class PostServiceTest {
         likeRepository.deleteAll();
         commentRepository.deleteAll();
         postRepository.deleteAll();
-        User postWriter = entityTestHelper.registerUser("돼지");
-        User commentWriter = entityTestHelper.registerUser("김");
+        User postWriter = entityTestHelper.userRegisterBusan("돼지");
+        User commentWriter = entityTestHelper.userRegisterBusan("김");
         Post post1 = entityTestHelper.createPostWithNumber(postWriter, 1);
         Post post2 = entityTestHelper.createPostWithNumber(postWriter, 2);
         Comment comment1 = entityTestHelper.createComment("comment content", post1, commentWriter);
@@ -254,9 +258,9 @@ class PostServiceTest {
     @Test
     public void postDtoWithLikeCountTest() {
         // given
-        User user1 = entityTestHelper.registerUser("peach");
-        User user2 = entityTestHelper.registerUser("apple");
-        User user3 = entityTestHelper.registerUser("potato");
+        User user1 = entityTestHelper.userRegisterBusan("peach");
+        User user2 = entityTestHelper.userRegisterBusan("apple");
+        User user3 = entityTestHelper.userRegisterBusan("potato");
 
         Post post1 = entityTestHelper.createPost(user1);
         Post post2 = entityTestHelper.createPost(user2);
@@ -282,28 +286,34 @@ class PostServiceTest {
     @Test
     public void search() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
-        Post post1 = entityTestHelper.createPostWithNumber(user, 1);
-        Post post2 = entityTestHelper.createPostWithNumber(user, 12);
-        Post post3 = entityTestHelper.createPostWithNumber(user, 41);
-        Post post4 = entityTestHelper.createPostWithNumber(user, 2);
+        User busanUser = entityTestHelper.userRegisterBusan("홍길동");
+        User seoulUser = entityTestHelper.userRegisterSeoul("김서울");
+        Post post1 = entityTestHelper.createPostWithNumber(busanUser, 1);
+        Post post2 = entityTestHelper.createPostWithNumber(busanUser, 12);
+        Post post3 = entityTestHelper.createPostWithNumber(busanUser, 41);
+        Post post4 = entityTestHelper.createPostWithNumber(busanUser, 2);
+        Post post5 = entityTestHelper.createPostWithNumber(seoulUser, 111);
 
         // when
-        PostPageResponse postPageResponse = postService.searchPost("1", user, PageRequest.of(0, 4));
-        List<PostDto> postDtoList = postPageResponse.getPostPage().getContent();
+        PostPageResponse busanPostPage = postService.searchPost("1", busanUser, PageRequest.of(0, 4));
+        List<PostDto> busanPostList = busanPostPage.getPostPage().getContent();
+
+        PostPageResponse seoulPostPage = postService.searchPost("1", seoulUser, PageRequest.of(0, 2));
+        List<PostDto> seoulPostList = seoulPostPage.getPostPage().getContent();
         // then
-        assertThat(postDtoList.get(0).getContent()).isEqualTo("content41");
-        assertThat(postDtoList.get(1).getContent()).isEqualTo("content12");
-        assertThat(postDtoList.get(2).getContent()).isEqualTo("content1");
-        assertThat(postDtoList.contains(PostDto.fromEntityWithCommentCount(post4, 0L, 0L, false))).isEqualTo(false);
+        assertThat(busanPostList.get(0).getContent()).isEqualTo("content41");
+        assertThat(busanPostList.get(1).getContent()).isEqualTo("content12");
+        assertThat(busanPostList.get(2).getContent()).isEqualTo("content1");
+        assertThat(busanPostList.contains(PostDto.fromEntityWithCommentCount(post4, 0L, 0L, false))).isEqualTo(false);
+        assertThat(seoulPostList.get(0).getContent()).isEqualTo("content111");
     }
 
     @Test
     public void userLikePostTest() {
         // given
-        User loginUser = entityTestHelper.registerUser("apple");
-        User postWriter2 = entityTestHelper.registerUser("peach");
-        User liker = entityTestHelper.registerUser("potato");
+        User loginUser = entityTestHelper.userRegisterBusan("apple");
+        User postWriter2 = entityTestHelper.userRegisterBusan("peach");
+        User liker = entityTestHelper.userRegisterBusan("potato");
 
         Post post1 = entityTestHelper.createPost(loginUser);
         Post post2 = entityTestHelper.createPost(postWriter2);

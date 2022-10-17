@@ -86,7 +86,7 @@ class UserServiceTest {
     @Test
     public void edit() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
 
         // when
         UserEditRequest editRequest = UserEditRequest.builder()
@@ -107,7 +107,7 @@ class UserServiceTest {
     @Test
     public void emptyNicknameEditTest() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User user = entityTestHelper.userRegisterBusan("홍길동");
 
         // when
         UserEditRequest editRequest = UserEditRequest.builder()

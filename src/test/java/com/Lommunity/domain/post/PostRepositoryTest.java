@@ -60,35 +60,55 @@ class PostRepositoryTest {
     @Test
     public void findPostPageByTopicId() {
         // given
-        User user = entityTestHelper.registerUser("홍길동");
+        User userBusan = entityTestHelper.userRegisterBusan("홍길동");
+        User userSeoul = entityTestHelper.userRegisterSeoul("김서울");
+
         Post post1 = postRepository.save(Post.builder()
-                                            .user(user)
-                                            .topicId(1L)
-                                            .content("content1")
-                                            .postImageUrls(new ArrayList<>())
-                                            .build());
+                                             .user(userBusan)
+                                             .topicId(1L)
+                                             .content("content1")
+                                             .postImageUrls(new ArrayList<>())
+                                             .secondLevelRegionCode(userBusan.getRegion().getParentCode())
+                                             .thirdLevelRegionCode(userBusan.getRegion().getCode())
+                                             .build());
         Post post2 = postRepository.save(Post.builder()
-                                            .user(user)
-                                            .topicId(2L)
-                                            .content("content2")
-                                            .postImageUrls(new ArrayList<>())
-                                            .build());
+                                             .user(userBusan)
+                                             .topicId(2L)
+                                             .content("content2")
+                                             .postImageUrls(new ArrayList<>())
+                                             .secondLevelRegionCode(userBusan.getRegion().getParentCode())
+                                             .thirdLevelRegionCode(userBusan.getRegion().getCode())
+                                             .build());
         Post post3 = postRepository.save(Post.builder()
-                                            .user(user)
-                                            .topicId(2L)
-                                            .content("content3")
-                                            .postImageUrls(new ArrayList<>())
-                                            .build());
+                                             .user(userBusan)
+                                             .topicId(2L)
+                                             .content("content3")
+                                             .postImageUrls(new ArrayList<>())
+                                             .secondLevelRegionCode(userBusan.getRegion().getParentCode())
+                                             .thirdLevelRegionCode(userBusan.getRegion().getCode())
+                                             .build());
+        Post post4 = postRepository.save(Post.builder()
+                                             .user(userSeoul)
+                                             .topicId(2L)
+                                             .content("content seoul 1")
+                                             .postImageUrls(new ArrayList<>())
+                                             .secondLevelRegionCode(userSeoul.getRegion().getParentCode())
+                                             .thirdLevelRegionCode(userSeoul.getRegion().getCode())
+                                             .build());
 
         // when
-        Page<Post> postPageByTopicId = postRepository.findPostPageByTopicId(2L, PageRequest.of(0, 2));
+        System.out.println(userBusan.getRegion().getParentCode());
+        Page<Post> postPageByTopicId1 = postRepository.findPostPageBySecondLevelRegionCodeAndTopicId(userBusan.getRegion().getParentCode(), 2L, PageRequest.of(0, 2));
+        Page<Post> postPageByTopicId2 = postRepository.findPostPageBySecondLevelRegionCodeAndTopicId(userSeoul.getRegion().getParentCode(), 2L, PageRequest.of(0, 1));
 
         // then
-        assertThat(postPageByTopicId.getSize()).isEqualTo(2);
-        assertThat(postPageByTopicId.getContent().get(0).getTopicId()).isEqualTo(2L);
-        assertThat(postPageByTopicId.getContent().get(1).getTopicId()).isEqualTo(2L);
-        assertThat(postPageByTopicId.getContent().get(0).getContent()).isEqualTo("content2");
-        assertThat(postPageByTopicId.getContent().get(1).getContent()).isEqualTo("content3");
+        assertThat(postPageByTopicId1.getSize()).isEqualTo(2);
+        assertThat(postPageByTopicId2.getSize()).isEqualTo(1);
+        assertThat(postPageByTopicId1.getContent().get(0).getTopicId()).isEqualTo(2L);
+        assertThat(postPageByTopicId1.getContent().get(1).getTopicId()).isEqualTo(2L);
+        assertThat(postPageByTopicId1.getContent().get(0).getContent()).isEqualTo("content2");
+        assertThat(postPageByTopicId1.getContent().get(1).getContent()).isEqualTo("content3");
+        assertThat(postPageByTopicId2.getContent().get(0).getContent()).isEqualTo("content seoul 1");
 
     }
 
@@ -96,18 +116,17 @@ class PostRepositoryTest {
     public void postSearchTest() {
         // given
 
-        User user = entityTestHelper.registerUser("홍길동");
-        Post post1 = entityTestHelper.createPostWithNumber(user, 1);
-        Post post2 = entityTestHelper.createPostWithNumber(user, 11);
-        Post post3 = entityTestHelper.createPostWithNumber(user, 22);
+        User userBusan = entityTestHelper.userRegisterBusan("홍길동");
+        User userSeoul = entityTestHelper.userRegisterSeoul("김서울");
+        Post post1 = entityTestHelper.createPostWithNumber(userBusan, 1);
+        Post post2 = entityTestHelper.createPostWithNumber(userBusan, 11);
+        Post post3 = entityTestHelper.createPostWithNumber(userBusan, 22);
+        Post post4 = entityTestHelper.createPostWithNumber(userSeoul, 31);
 
         // when
-        Page<Post> posts = postRepository.findPostByWord("1", PageRequest.of(0, 2, Sort.by("lastModifiedDate").descending()));
+        Page<Post> posts = postRepository.findPostBySecondLevelRegionCodeAndWord(userBusan.getRegion().getParentCode(), "1", PageRequest.of(0, 2, Sort.by("lastModifiedDate").descending()));
         List<Post> postList = posts.getContent();
         // then
-        for (Post post : postList) {
-            System.out.println(post.getContent());
-        }
         assertThat(posts.getSize()).isEqualTo(2);
         assertThat(postList.get(0).getContent()).isEqualTo("content11");
         assertThat(postList.get(1).getContent()).isEqualTo("content1");

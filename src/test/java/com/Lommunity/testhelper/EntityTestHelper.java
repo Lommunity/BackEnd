@@ -39,7 +39,7 @@ public class EntityTestHelper {
     @Autowired
     LikeRepository likeRepository;
 
-    public User registerUser(String nickname) {
+    public User userRegisterBusan(String nickname) {
         User user = userRepository.save(builder()
                 .nickname(nickname)
                 .profileImageUrl(null)
@@ -59,6 +59,26 @@ public class EntityTestHelper {
         return registeredUser;
     }
 
+    public User userRegisterSeoul(String nickname) {
+        User user = userRepository.save(builder()
+                .nickname(nickname)
+                .profileImageUrl(null)
+                .provider("naver")
+                .providerId(UUID.randomUUID().toString())
+                .role(UserRole.USER)
+                .registered(false)
+                .build());
+        userService.register(RegisterRequest.builder()
+                                            .userId(user.getId())
+                                            .nickname(nickname)
+                                            .regionCode(1111010100L)
+                                            .build(), FileUploadRequest.builder().build());
+        User registeredUser = userRepository.findWithRegionById(user.getId()).get();
+        makeAuthenticationToken(user.getId());
+
+        return registeredUser;
+    }
+
     public Post createPost(User user) {
         List<String> postImageUrls = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
@@ -70,6 +90,8 @@ public class EntityTestHelper {
                                        .topicId(1L)
                                        .content("content")
                                        .postImageUrls(postImageUrls)
+                                       .secondLevelRegionCode(user.getRegion().getParentCode())
+                                       .thirdLevelRegionCode(user.getRegion().getCode())
                                        .build());
     }
 
@@ -83,6 +105,8 @@ public class EntityTestHelper {
                                        .topicId(1L)
                                        .content("content" + contentNumber)
                                        .postImageUrls(postImageUrls)
+                                       .secondLevelRegionCode(user.getRegion().getParentCode())
+                                       .thirdLevelRegionCode(user.getRegion().getCode())
                                        .build());
     }
 
