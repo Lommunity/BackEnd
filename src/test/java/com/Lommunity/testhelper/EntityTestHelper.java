@@ -90,8 +90,8 @@ public class EntityTestHelper {
                                        .topicId(1L)
                                        .content("content")
                                        .postImageUrls(postImageUrls)
-                                       .secondRegionLevel(user.getRegion().getParentCode())
-                                       .thirdRegionLevel(user.getRegion().getCode())
+                                       .secondLevelRegionCode(user.getRegion().getParentCode())
+                                       .thirdLevelRegionCode(user.getRegion().getCode())
                                        .build());
     }
 
@@ -105,8 +105,8 @@ public class EntityTestHelper {
                                        .topicId(1L)
                                        .content("content" + contentNumber)
                                        .postImageUrls(postImageUrls)
-                                       .secondRegionLevel(user.getRegion().getParentCode())
-                                       .thirdRegionLevel(user.getRegion().getCode())
+                                       .secondLevelRegionCode(user.getRegion().getParentCode())
+                                       .thirdLevelRegionCode(user.getRegion().getCode())
                                        .build());
     }
 

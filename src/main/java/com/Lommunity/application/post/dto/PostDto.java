@@ -38,8 +38,8 @@ public class PostDto {
                       .likeCount(likeCount)
                       .userLike(writerLike)
                       .postImageUrls(post.getPostImageUrls())
-                      .secondRegionLevel(post.getSecondRegionLevel())
-                      .thirdRegionLevel(post.getThirdRegionLevel())
+                      .secondRegionLevel(post.getSecondLevelRegionCode())
+                      .thirdRegionLevel(post.getThirdLevelRegionCode())
                       .createdDate(post.getCreatedDate())
                       .lastModifiedDate(post.getLastModifiedDate())
                       .build();

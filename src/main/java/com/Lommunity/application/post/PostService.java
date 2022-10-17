@@ -52,8 +52,8 @@ public class PostService {
                                             .topicId(createRequest.getTopicId())
                                             .content(createRequest.getContent())
                                             .postImageUrls(postImageUrls)
-                                            .secondRegionLevel(user.getRegion().getParentCode())
-                                            .thirdRegionLevel(user.getRegion().getCode())
+                                            .secondLevelRegionCode(user.getRegion().getParentCode())
+                                            .thirdLevelRegionCode(user.getRegion().getCode())
                                             .build());
         return PostResponse.builder()
                            .post(PostDto.fromEntityWithCommentCount(post, 0L, 0L, false))
@@ -94,7 +94,7 @@ public class PostService {
 
     public PostPageResponse searchPost(String word, User user, Pageable pageable) {
         Long secondRegionLevel = user.getRegion().getParentCode();
-        Page<PostDto> postPageBySearch = postRepository.findPostBySecondRegionLevelAndWord(secondRegionLevel, word, sortByLastModifiedDate(pageable))
+        Page<PostDto> postPageBySearch = postRepository.findPostBySecondLevelRegionCodeAndWord(secondRegionLevel, word, sortByLastModifiedDate(pageable))
                                                        .map((p) -> findPostDtoWithCountAndIsLike(p, user));
         return PostPageResponse.builder()
                                .postPage(postPageBySearch)
@@ -112,7 +112,7 @@ public class PostService {
     // 전체 게시물 목록 조회
     public PostPageResponse getAllPostPage(User user, Pageable pageable) {
         Long secondRegionLevel = user.getRegion().getParentCode();
-        Page<PostDto> postDtoPage = postRepository.findPostAllPageBySecondRegionLevel(secondRegionLevel, sortByLastModifiedDate(pageable))
+        Page<PostDto> postDtoPage = postRepository.findPostAllPageBySecondLevelRegionCode(secondRegionLevel, sortByLastModifiedDate(pageable))
                                                   .map((p) -> findPostDtoWithCountAndIsLike(p, user));
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
@@ -131,7 +131,7 @@ public class PostService {
 
     public PostPageResponse getPostPageByTopicId(Long topicId, User user, Pageable pageable) {
         Long secondRegionLevel = user.getRegion().getParentCode();
-        Page<PostDto> postDtoPage = postRepository.findPostPageBySecondRegionLevelAndTopicId(secondRegionLevel, topicId, sortByLastModifiedDate(pageable))
+        Page<PostDto> postDtoPage = postRepository.findPostPageBySecondLevelRegionCodeAndTopicId(secondRegionLevel, topicId, sortByLastModifiedDate(pageable))
                                                   .map((p) -> findPostDtoWithCountAndIsLike(p, user));
         return PostPageResponse.builder()
                                .postPage(postDtoPage)
