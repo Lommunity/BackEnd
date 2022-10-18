@@ -61,7 +61,7 @@
 ## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> ERD
 
 <div>
-<img src="https://user-images.githubusercontent.com/93714741/196023171-16234533-5ce7-4554-960e-154be3a00a7d.png">
+<img src="https://user-images.githubusercontent.com/93714741/196314759-6edd9f49-7384-422a-9327-cb36bc7ac8c9.png">
 </div>
 
 [//]: # (## <img height="25px" src="https://user-images.githubusercontent.com/93714741/196025893-de4f3e23-9271-46e9-a6a3-ee1eb69f2cf9.png"> TODO)
