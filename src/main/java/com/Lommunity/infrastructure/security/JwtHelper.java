@@ -2,7 +2,7 @@ package com.Lommunity.infrastructure.security;
 
 import com.Lommunity.domain.user.User;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
@@ -14,23 +14,28 @@ import java.time.ZonedDateTime;
 @Component
 public class JwtHelper {
 
-    private final static SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final static Integer EXPIRY_MINUITES = 60;
+    private final SecretKey secretKey;
+    private final Integer expiryMinutes;
+
+    public JwtHelper(JwtProperties jwtProperties) {
+        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtProperties.getSecretKey()));
+        this.expiryMinutes = jwtProperties.getExpiryMinutes();
+    }
 
     public String createJwt(User user) {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         return Jwts.builder()
                    .setSubject(user.getId().toString())
                    .setIssuedAt(Date.from(now.toInstant()))
-                   .setExpiration(Date.from(now.plusMinutes(EXPIRY_MINUITES).toInstant()))
-                   .signWith(SECRET_KEY)
+                   .setExpiration(Date.from(now.plusMinutes(expiryMinutes).toInstant()))
+                   .signWith(secretKey)
                    .compact();
     }
 
     public String extractUserId(String jwt) {
         // jwt에서 userId 꺼내는 메서드
         return Jwts.parserBuilder()
-                   .setSigningKey(SECRET_KEY)
+                   .setSigningKey(secretKey)
                    .build()
                    .parseClaimsJws(jwt)
                    .getBody()
