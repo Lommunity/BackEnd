@@ -25,3 +25,7 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
+
+jwt:
+  secretKey: v20ytpkubX9aQHvjZG3pbDk0kxgeOort6Lh8R2o24NM
+  expiryMinutes: 60
