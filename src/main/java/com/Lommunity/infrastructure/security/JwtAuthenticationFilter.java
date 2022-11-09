@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = resolveJwt(request);
             if (jwt != null) {
-                Authentication authentication = jwtAuthenticationProvider.authentication(jwt); // Authentication 객체 생성
+                Authentication authentication = jwtAuthenticationProvider.authentication(jwt);
                 // authentication 객체를 SecurityContextHolder에 넣는 과정
                 SecurityContext context = SecurityContextHolder.getContext();
                 context.setAuthentication(authentication);
@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (AuthenticationException e) {
             // 인증 실패
             SecurityContextHolder.clearContext();
-            authenticationExceptionHandler.handleException(response, e); // 401 응답을 반환
+            authenticationExceptionHandler.handleException(response, e);
         }
     }
 

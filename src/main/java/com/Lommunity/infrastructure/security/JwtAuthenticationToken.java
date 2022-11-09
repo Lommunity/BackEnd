@@ -16,7 +16,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     private final String jwt;
 
     public JwtAuthenticationToken(User user, String jwt) {
-        // 객체 생성 시 인가 정보(Authorization)은 AbstractAuthenticationToken에 넘겨준다.
         super(Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
         this.user = user;
         this.jwt = jwt;

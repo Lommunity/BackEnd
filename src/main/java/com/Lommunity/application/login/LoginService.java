@@ -22,7 +22,7 @@ public class LoginService {
     private final TestOauthLoginService testOauthLoginService;
 
     public LoginResponse login(LoginRequest loginRequest) {
-        Oauth2UserInfo oauth2UserInfo = getOauth2UserInfo(loginRequest); // provider에게서 얻은 정보를 담은 oauth2UserInfo
+        Oauth2UserInfo oauth2UserInfo = getOauth2UserInfo(loginRequest);
         User user = findUser(oauth2UserInfo, loginRequest.getProvider());
         return LoginResponse.builder()
                             .user(UserDto.fromEntity(user))
@@ -44,7 +44,7 @@ public class LoginService {
 
     private User findUser(Oauth2UserInfo oauth2UserInfo, String provider) {
         Optional<User> user = userRepository.findByProviderProviderId(provider, oauth2UserInfo.getProviderId());
-        if (user.isPresent()) { // userRepository에 providerId에 해당하는 user 가 있는 경우(registered는 false 혹은 true)
+        if (user.isPresent()) {
             return user.get();
         }
         // SNS 로그인을 처음 해본 사용자

@@ -39,6 +39,6 @@ public class JwtHelper {
                    .build()
                    .parseClaimsJws(jwt)
                    .getBody()
-                   .getSubject(); // subject에 userId를 넣어서 jwt를 만들었었다.
+                   .getSubject();
     }
 }
